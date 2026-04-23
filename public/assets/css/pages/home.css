@@ -1,0 +1,227 @@
+/* HERO SECTION */
+.hero {
+    height: 100vh;
+    background: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    margin-top: -80px; /* Ajuste para o hero ignorar o padding-top do body e ficar full screen */
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #00000080;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    padding: 0 20px;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.highlight {
+    color: #D4AF37;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin-bottom: 30px;
+}
+
+.hero-btns .btn-primary {
+    background-color: #D4AF37;
+    color: #333333;
+    padding: 15px 40px;
+    border-radius: 5px;
+    font-weight: 700;
+    margin-right: 15px;
+    display: inline-block;
+}
+
+.hero-btns .btn-secondary {
+    border: 2px solid #FFFFFF;
+    color: #FFFFFF;
+    padding: 13px 40px;
+    border-radius: 5px;
+    font-weight: 700;
+    display: inline-block;
+}
+
+.hero-btns .btn-primary:hover { background-color: #FFFFFF; }
+.hero-btns .btn-secondary:hover { background-color: #FFFFFF; color: #333333; }
+
+/* FEATURES & GENERAL SECTIONS */
+.features, .pricing {
+    padding: 100px 0;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 60px;
+    text-transform: uppercase;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: #D4AF37;
+    margin: 10px auto;
+}
+
+/* FEATURE CARDS */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.feature-card {
+    background-color: #444444;
+    padding: 40px;
+    text-align: center;
+    border-radius: 10px;
+    border-bottom: 4px solid transparent;
+    transition: 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    border-color: #D4AF37;
+}
+
+.feature-card .icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.feature-card h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+/* PRICING CARDS */
+.price-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+}
+
+.price-card {
+    background-color: #2a2a2a;
+    padding: 50px 30px;
+    text-align: center;
+    border-radius: 15px;
+    border: 1px solid #555555;
+    position: relative;
+    transition: 0.3s;
+}
+
+.price-card:hover {
+    transform: translateY(-5px);
+    border-color: #D4AF37;
+}
+
+.price-card.featured {
+    border: 2px solid #D4AF37;
+}
+
+.price-card h3 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.price-card .price {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #D4AF37;
+    margin-bottom: 30px;
+}
+
+.price-card .price span {
+    font-size: 1rem;
+    color: #B0B1B1;
+}
+
+.price-card ul {
+    list-style: none;
+    margin-bottom: 30px;
+}
+
+.price-card ul li {
+    padding: 10px 0;
+    border-bottom: 1px solid #444;
+    color: #ccc;
+}
+
+/* Badge "Recomendado" */
+.badge {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #D4AF37;
+    color: #333333;
+    padding: 5px 20px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+/* Botões dos planos */
+.btn-outline {
+    display: inline-block;
+    border: 2px solid #D4AF37;
+    color: #D4AF37;
+    padding: 12px 30px;
+    border-radius: 5px;
+    font-weight: 700;
+    transition: 0.3s;
+    width: 100%;
+    text-align: center;
+}
+
+.btn-outline:hover {
+    background-color: #D4AF37;
+    color: #333333;
+}
+
+.price-card .btn-primary {
+    display: inline-block;
+    background-color: #D4AF37;
+    color: #333333;
+    padding: 12px 30px;
+    border-radius: 5px;
+    font-weight: 700;
+    width: 100%;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.price-card .btn-primary:hover {
+    filter: brightness(1.1);
+}
+
+/* RESPONSIVE HOME */
+@media (max-width: 768px) {
+    .hero h1 { font-size: 2.5rem; }
+    .price-card.featured { transform: scale(1); }
+}
