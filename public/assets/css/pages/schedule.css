@@ -1,0 +1,64 @@
+.schedule-header {
+    text-align: center;
+    padding: 3rem 5%;
+    color: white;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://cdn.fitnessup.pt/tim.php?src=uploads/gallery/2023/05/porto-foz-11684848376.jpg&w=1920&h=1280&a=c&f=5,3&q=85');
+    background-size: cover;
+    background-position: center;
+}
+
+.schedule-header h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.highlight {
+    color: #D4AF37;
+}
+
+.filters-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.filters-bar select {
+    min-width: 180px;
+    background: #444444;
+    color: white;
+    border: 1px solid var(--primary-color);
+    padding: 0.7rem;
+    border-radius: 5px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+}
+
+/* Botão Filtrar inline (override do width:100% do components.css) */
+.filters-bar .btn-primary {
+    width: auto;
+    margin-top: 0;
+    padding: 0.7rem 1.8rem;
+}
+
+/* Tags de Modalidades */
+.tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+    color: #fff;
+}
+
+.yoga    { background-color: #45a049; }
+.pilates { background-color: #2980b9; }
+.zumba   { background-color: #c2185b; }
+.hiit    { background-color: #e67e22; }
+
+.full { color: #ff4444; font-weight: bold; }
