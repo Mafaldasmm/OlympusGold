@@ -16,6 +16,13 @@
     <header>
         <nav class="navbar">
             <div class="logo">OLYMPUS<span>GOLD</span></div>
+
+            <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
             <ul class="nav-links">
                 <li><a href="home.html">Home</a></li>
                 <li><a href="schedule.html" class="active">Horários</a></li>
@@ -177,6 +184,26 @@
             <p>Localização: Porto, Portugal | Contacto: info@oggym.pt</p>
         </div>
     </footer>
+
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+
+        hamburger.addEventListener('click', () => {
+            const isOpen = navLinks.classList.toggle('open');
+            hamburger.classList.toggle('active');
+            hamburger.setAttribute('aria-expanded', isOpen);
+        });
+
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('open');
+                hamburger.classList.remove('active');
+                hamburger.setAttribute('aria-expanded', false);
+            });
+        });
+    </script>
+    
 
 </body>
 </html>
