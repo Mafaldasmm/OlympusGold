@@ -1,0 +1,60 @@
+.profile-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 5%;
+}
+
+.profile-header {
+    margin-bottom: 1rem;
+    text-align: center;
+    color: var(--text-light); /* Para destacar sobre o fundo escuro */
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+}
+
+.profile-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.highlight {
+    color: #D4AF37;
+}
+
+.profile-photo-section {
+    text-align: center;
+    padding: 1rem;
+}
+
+.profile-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 1.5rem;
+    border: 3px solid var(--primary-color);
+    box-shadow: var(--shadow);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.card.featured {
+    border: 1px solid #D4AF37;
+}
+
+/* Ajuste específico para o botão de guardar no mobile */
+@media (max-width: 768px) {
+    .btn-save { width: 100%; }
+}
+
+/* Background Picture */
+body {
+    background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.7)), 
+                url('https://images.hdqwalls.com/download/triangle-solid-black-gold-4k-wk-1440x2960.jpg') no-repeat center center / cover;
+    background-attachment: fixed;
+}
+
