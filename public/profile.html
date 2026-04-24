@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil do Utilizador</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/pages/profile.css">
+    
+</head>
+<body>
+    
+    <header>
+        <nav class="navbar">
+            <div class="logo">OLYMPUS<span>GOLD</span></div>
+            <ul class="nav-links">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="schedule.html">Horários</a></li>
+                <li><a href="profile.html" class="active">Perfil</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="profile-container">
+        <div class="profile-header">
+            <h1>EDITAR <span class="highlight">PERFIL</span></h1>
+            <p>Gira as suas informações pessoais.</p>
+        </div>
+
+        <form action="update_profile.php" method="POST" enctype="multipart/form-data">
+            
+            <div class="card-grid">
+                
+                <article class="card featured">
+                    <h2>Foto de Perfil</h2>
+                    <div class="profile-photo-section">
+                        <img src="default-profile.png" alt="" class="profile-img">
+                        <input type="file" id="profile_photo" name="profile_photo" accept="image/*">
+                    </div>
+                </article>
+
+                <article class="card featured">
+                    <h2>Dados Pessoais</h2>
+                    <div class="input-group">
+                        <label for="name">Nome</label>
+                        <input type="text" id="name" name="name" placeholder="Ex: André Restivo" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="username">Nome de Utilizador</label>
+                        <input type="text" id="username" name="username" placeholder="utilizador123" required>
+                    </div>
+                </article>
+
+                <article class="card featured">
+                    <h2>Segurança</h2>
+                    <div class="input-group">
+                        <label for="password">Nova Palavra Passe</label>
+                        <input type="password" id="password" name="password" placeholder="Introduza para alterar">
+                        <small>Deixe em branco caso não deseje alterar.</small>
+                    </div>
+                </article>
+
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-save">Guardar Alterações</button>
+            </div>
+            
+        </form>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2026 Olympus Gold Gym. Todos os direitos reservados.</p>
+            <p>Localização: Porto, Portugal | Contacto: info@oggym.pt</p>
+        </div>
+    </footer>
+
+</body>
+</html>
