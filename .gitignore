@@ -1,0 +1,11 @@
+# SQLite database (generated locally)
+database/*.sqlite
+database/*.sqlite-journal
+database/*.sqlite-wal
+database/*.sqlite-shm
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
