@@ -1,40 +1,23 @@
-<!DOCTYPE html>
-<html lang="pt-PT">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horário de Aulas - Olympus Gold Gym</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/base.css">
-    <link rel="stylesheet" href="assets/css/components.css">
-    <link rel="stylesheet" href="assets/css/pages/schedule.css">
-</head>
-<body>
+<?php
 
-    <header class="navbar">
-        <div class="logo">OLYMPUS<span>GOLD</span></div>
+declare(strict_types=1);
 
-        <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+require_once __DIR__ . '/includes/init.php';
 
-        <ul class="nav-links" id="nav-links">
-            <li><a href="home.html">Home</a></li>
-            <li><a href="schedule.html" class="active">Horários</a></li>
-            <li><a href="profile.html">Perfil</a></li>
-        </ul>
-    </header>
+$currentPage        = 'schedule';
+$pageTitle          = 'Horário de Aulas - Olympus Gold Gym';
+$extraStylesheets   = ['pages/schedule.css'];
 
+require INCLUDES_PATH . '/header.php';
+require INCLUDES_PATH . '/nav.php';
+
+?>
     <main>
         <section class="schedule-section">
             <div class="schedule-header">
                 <h2><span class="highlight">HORÁRIOS</span> DAS AULAS </h2>
                 <p>Filtre por modalidade, treinador ou dia para encontrar o seu treino ideal.</p>
-                
+
                 <form class="filters-bar">
                     <select name="type" aria-label="Filtrar por Modalidade">
                         <option value="">Todas as Modalidades</option>
@@ -61,13 +44,13 @@
                         <option value="marco">Marco Rebelo</option>
                         <option value="ricardo">Ricardo Pereira</option>
                     </select>
-                    
+
                     <button type="submit" class="btn-primary" style="width: auto; margin-top: 0;">Filtrar</button>
                 </form>
             </div>
 
             <div class="card-grid">
-                
+
                 <article class="card">
                     <div class="card-header">
                         <span class="tag yoga">Yoga</span>
@@ -173,35 +156,8 @@
                     </div>
                 </article>
 
-            </div> </section>
+            </div>
+        </section>
     </main>
 
-    <footer class="footer">
-        <div class="footer-content">
-            <p>&copy; 2026 Olympus Gold Gym. Todos os direitos reservados.</p>
-            <p>Localização: Porto, Portugal | Contacto: info@oggym.pt</p>
-        </div>
-    </footer>
-
-    <script>
-        const hamburger = document.getElementById('hamburger');
-        const navLinks = document.getElementById('nav-links');
-
-        hamburger.addEventListener('click', () => {
-            const isOpen = navLinks.classList.toggle('open');
-            hamburger.classList.toggle('active');
-            hamburger.setAttribute('aria-expanded', isOpen);
-        });
-
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('open');
-                hamburger.classList.remove('active');
-                hamburger.setAttribute('aria-expanded', false);
-            });
-        });
-    </script>
-    
-
-</body>
-</html>
+<?php require INCLUDES_PATH . '/footer.php'; ?>
