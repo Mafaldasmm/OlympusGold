@@ -1,34 +1,17 @@
-<!DOCTYPE html>
-<html lang="pt-pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Olympus Gold Gym | Excelência em Fitness</title>
-    <link rel="stylesheet" href="assets/css/base.css">
-    <link rel="stylesheet" href="assets/css/components.css">
-    <link rel="stylesheet" href="assets/css/pages/home.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
-</head>
-<body>
+<?php
 
-    <header class="navbar">
-        <div class="logo">OLYMPUS<span>GOLD</span></div>
+declare(strict_types=1);
 
-        <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+require_once __DIR__ . '/includes/init.php';
 
-        <ul class="nav-links" id="nav-links">
-            <li><a href="home.html" class="active">Home</a></li>
-            <li><a href="schedule.html">Horários</a></li>
-            <li><a href="profile.html">Perfil</a></li>
-        </ul>
-    </header>
+$currentPage        = 'home';
+$pageTitle          = 'Olympus Gold Gym | Excelência em Fitness';
+$extraStylesheets   = ['pages/home.css'];
 
+require INCLUDES_PATH . '/header.php';
+require INCLUDES_PATH . '/nav.php';
+
+?>
     <section class="hero">
         <div class="hero-overlay"></div>
         <div class="hero-content">
@@ -110,31 +93,4 @@
         </div>
     </section>
 
-    <footer class="footer">
-        <div class="footer-content">
-            <p>&copy; 2026 Olympus Gold Gym. Todos os direitos reservados.</p>
-            <p>Localização: Porto, Portugal | Contacto: info@oggym.pt</p>
-        </div>
-    </footer>
-
-<script>
-        const hamburger = document.getElementById('hamburger');
-        const navLinks = document.getElementById('nav-links');
-
-        hamburger.addEventListener('click', () => {
-            const isOpen = navLinks.classList.toggle('open');
-            hamburger.classList.toggle('active');
-            hamburger.setAttribute('aria-expanded', isOpen);
-        });
-
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('open');
-                hamburger.classList.remove('active');
-                hamburger.setAttribute('aria-expanded', false);
-            });
-        });
-    </script>
-
-</body>
-</html>
+<?php require INCLUDES_PATH . '/footer.php'; ?>
