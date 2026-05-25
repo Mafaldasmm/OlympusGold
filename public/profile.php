@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/init.php';
+require_once INCLUDES_PATH . '/auth.php';
+
+$user = requireLogin();
 
 $currentPage        = 'profile';
 $pageTitle          = 'Perfil do Utilizador - Olympus Gold Gym';
@@ -38,11 +41,25 @@ require INCLUDES_PATH . '/nav.php';
                     <h2>Dados Pessoais</h2>
                     <div class="input-group">
                         <label for="name">Nome</label>
-                        <input type="text" id="name" name="name" placeholder="Ex: André Restivo" required>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Ex: André Restivo"
+                            required
+                            value="<?= e((string) ($user['name'] ?? '')) ?>"
+                        >
                     </div>
                     <div class="input-group">
                         <label for="username">Nome de Utilizador</label>
-                        <input type="text" id="username" name="username" placeholder="utilizador123" required>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="utilizador123"
+                            required
+                            value="<?= e((string) $user['username']) ?>"
+                        >
                     </div>
                 </article>
 
