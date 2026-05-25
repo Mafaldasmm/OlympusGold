@@ -21,16 +21,17 @@ require INCLUDES_PATH . '/nav.php';
             <p>Gira as suas informações pessoais.</p>
         </div>
 
-        <form action="<?= htmlspecialchars(pageUrl('update_profile.php'), ENT_QUOTES, 'UTF-8') ?>"
+        <form action="<?= e(pageUrl('update_profile.php')) ?>"
               method="POST"
               enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
 
             <div class="card-grid">
 
                 <article class="card featured">
                     <h2>Foto de Perfil</h2>
                     <div class="profile-photo-section">
-                        <img src="<?= htmlspecialchars(pageUrl('default-profile.png'), ENT_QUOTES, 'UTF-8') ?>"
+                        <img src="<?= e(pageUrl('default-profile.png')) ?>"
                              alt="Foto de perfil"
                              class="profile-img">
                         <input type="file" id="profile_photo" name="profile_photo" accept="image/*">
