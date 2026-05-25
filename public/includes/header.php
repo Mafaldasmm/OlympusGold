@@ -17,11 +17,11 @@ $extraStylesheets ??= [];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?></title>
-    <link rel="stylesheet" href="<?= htmlspecialchars(asset('css/base.css'), ENT_QUOTES, 'UTF-8') ?>">
-    <link rel="stylesheet" href="<?= htmlspecialchars(asset('css/components.css'), ENT_QUOTES, 'UTF-8') ?>">
+    <title><?= e($pageTitle) ?></title>
+    <link rel="stylesheet" href="<?= e(asset('css/base.css')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('css/components.css')) ?>">
 <?php foreach ($extraStylesheets as $stylesheet): ?>
-    <link rel="stylesheet" href="<?= htmlspecialchars(asset('css/' . $stylesheet), ENT_QUOTES, 'UTF-8') ?>">
+    <link rel="stylesheet" href="<?= e(asset('css/' . $stylesheet)) ?>">
 <?php endforeach; ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

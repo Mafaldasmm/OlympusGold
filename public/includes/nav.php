@@ -27,16 +27,16 @@ if ($user !== null) {
         <ul class="nav-links" id="nav-links">
 <?php foreach ($navItems as $key => $item):
     $isActive = $currentPage === $key;
-    $href     = htmlspecialchars(pageUrl($item['file']), ENT_QUOTES, 'UTF-8');
-    $label    = htmlspecialchars($item['label'], ENT_QUOTES, 'UTF-8');
+    $href     = e(pageUrl($item['file']));
+    $label    = e($item['label']);
 ?>
             <li><a href="<?= $href ?>"<?= $isActive ? ' class="active"' : '' ?>><?= $label ?></a></li>
 <?php endforeach; ?>
 <?php if ($user !== null): ?>
-            <li><span class="nav-label">Olá, <?= htmlspecialchars((string) ($user['name'] ?: $user['username']), ENT_QUOTES, 'UTF-8') ?></span></li>
+            <li><span class="nav-label">Olá, <?= e((string) ($user['name'] ?: $user['username'])) ?></span></li>
             <li>
-                <form class="nav-form" method="POST" action="<?= htmlspecialchars(pageUrl('actions/logout.php'), ENT_QUOTES, 'UTF-8') ?>">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken(), ENT_QUOTES, 'UTF-8') ?>">
+                <form class="nav-form" method="POST" action="<?= e(pageUrl('actions/logout.php')) ?>">
+                    <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
                     <button type="submit" class="nav-button">Logout</button>
                 </form>
             </li>
