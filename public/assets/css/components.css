@@ -40,8 +40,32 @@ header.navbar .nav-links li a {
     display: block;
 }
 
+header.navbar .nav-links .nav-label {
+    color: #B0B1B1;
+    padding: 0.5rem 1rem;
+    display: block;
+    font-size: 0.95rem;
+}
+
+header.navbar .nav-links .nav-form {
+    margin: 0;
+}
+
+header.navbar .nav-links .nav-button {
+    color: #ccc;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s;
+    text-decoration: none;
+    display: block;
+    background: none;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+}
+
 header.navbar .nav-links li a.active,
-header.navbar .nav-links li a:hover {
+header.navbar .nav-links li a:hover,
+header.navbar .nav-links .nav-button:hover {
     color: var(--primary-color);
 }
 
@@ -116,7 +140,18 @@ header.navbar .nav-links li a:hover {
         border-bottom: 1px solid #333;
     }
 
-    header.navbar .nav-links li:last-child a {
+    header.navbar .nav-links .nav-button,
+    header.navbar .nav-links .nav-label {
+        padding: 1rem 0;
+        font-size: 1.1rem;
+        border-bottom: 1px solid #333;
+        width: 100%;
+        text-align: left;
+    }
+
+    header.navbar .nav-links li:last-child a,
+    header.navbar .nav-links li:last-child .nav-button,
+    header.navbar .nav-links li:last-child .nav-label {
         border-bottom: none;
     }
 }
@@ -181,6 +216,7 @@ header.navbar .nav-links li a:hover {
 }
 
 input[type="text"],
+input[type="email"],
 input[type="password"],
 input[type="file"],
 select {
@@ -195,6 +231,7 @@ select {
 }
 
 input[type="text"]:focus,
+input[type="email"]:focus,
 input[type="password"]:focus,
 select:focus {
     outline: none;
