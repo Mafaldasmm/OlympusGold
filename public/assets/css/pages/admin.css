@@ -1,0 +1,445 @@
+/* =========================================================
+   Admin Panel Styles — Olympus Gold Gym
+   Consistent with base.css + components.css
+   ========================================================= */
+ 
+/* ---- Layout ---- */
+.admin-main {
+    min-height: calc(100vh - 80px);
+    padding: 2rem 0 4rem;
+}
+ 
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+ 
+/* ---- Page Header ---- */
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+ 
+.admin-title {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--text-light);
+}
+ 
+.admin-title span {
+    color: var(--primary-color);
+}
+ 
+/* ---- Cards ---- */
+.admin-card {
+    background: rgba(68, 68, 68, 0.45);
+    border: 1px solid #555;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+}
+ 
+.admin-card h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid #444;
+    padding-bottom: 0.75rem;
+}
+ 
+/* ---- Badge count ---- */
+.badge-count {
+    background: var(--primary-color);
+    color: #000;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+ 
+/* ---- Form Grid ---- */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1.5rem;
+}
+ 
+.input-group--full {
+    grid-column: 1 / -1;
+}
+ 
+.input-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #ccc;
+}
+ 
+.input-group input[type="text"],
+.input-group input[type="email"],
+.input-group input[type="password"],
+.input-group input[type="number"],
+.input-group input[type="time"],
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    padding: 0.65rem 0.9rem;
+    background: #3a3a3a;
+    border: 1px solid #666;
+    border-radius: 6px;
+    color: var(--text-light);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+}
+ 
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+ 
+.input-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+ 
+/* ---- Form Actions ---- */
+.form-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+ 
+/* ---- Buttons ---- */
+.btn-admin-primary {
+    background-color: var(--primary-color);
+    color: #000;
+    border: none;
+    padding: 0.7rem 1.6rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: filter 0.2s, transform 0.2s;
+}
+ 
+.btn-admin-primary:hover {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+}
+ 
+.btn-admin-secondary {
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 0.65rem 1.4rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+ 
+.btn-admin-secondary:hover {
+    background: var(--primary-color);
+    color: #000;
+}
+ 
+.btn-admin-cancel {
+    color: #aaa;
+    font-size: 0.9rem;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+ 
+.btn-admin-cancel:hover {
+    color: #fff;
+}
+ 
+/* ---- Table ---- */
+.table-wrapper {
+    overflow-x: auto;
+}
+ 
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+ 
+.admin-table thead th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #aaa;
+    border-bottom: 1px solid #555;
+    white-space: nowrap;
+}
+ 
+.admin-table tbody tr {
+    border-bottom: 1px solid #444;
+    transition: background 0.15s;
+}
+ 
+.admin-table tbody tr:hover {
+    background: rgba(212, 175, 55, 0.06);
+}
+ 
+.admin-table tbody td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+}
+ 
+.row--inactive td {
+    opacity: 0.5;
+}
+ 
+/* ---- Table Action Buttons ---- */
+.table-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+ 
+.btn-table-edit,
+.btn-table-delete,
+.btn-table-promote {
+    border: none;
+    border-radius: 5px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    transition: filter 0.2s;
+    white-space: nowrap;
+    text-decoration: none;
+    display: inline-block;
+}
+ 
+.btn-table-edit {
+    background: rgba(212, 175, 55, 0.2);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+ 
+.btn-table-edit:hover {
+    background: var(--primary-color);
+    color: #000;
+}
+ 
+.btn-table-delete {
+    background: rgba(220, 50, 50, 0.15);
+    color: #e06060;
+    border: 1px solid #e06060;
+}
+ 
+.btn-table-delete:hover {
+    background: #e06060;
+    color: #fff;
+}
+ 
+.btn-table-promote {
+    background: rgba(80, 180, 120, 0.15);
+    color: #6fcf97;
+    border: 1px solid #6fcf97;
+}
+ 
+.btn-table-promote:hover {
+    background: #6fcf97;
+    color: #000;
+}
+ 
+.btn-table-promote:disabled,
+.btn-table-delete:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+ 
+/* ---- Inline promote form ---- */
+.inline-form {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+ 
+.select-inline {
+    padding: 0.3rem 0.5rem;
+    background: #3a3a3a;
+    border: 1px solid #666;
+    border-radius: 5px;
+    color: var(--text-light);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+}
+ 
+/* ---- Tags / Badges ---- */
+.tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+ 
+.tag--yoga    { background: rgba(152,201,186,0.2); color: #98c9ba; }
+.tag--pilates { background: rgba(180,152,201,0.2); color: #b498c9; }
+.tag--hiit    { background: rgba(220,100,80,0.2);  color: #e07060; }
+.tag--zumba   { background: rgba(220,180,80,0.2);  color: #deb84f; }
+.tag--cycling { background: rgba(80,160,220,0.2);  color: #50a0dc; }
+.tag--boxing  { background: rgba(220,120,60,0.2);  color: #dc783c; }
+.tag--other   { background: rgba(160,160,160,0.2); color: #aaa; }
+ 
+/* ---- Role Badges ---- */
+.role-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+ 
+.role-badge--admin   { background: rgba(212,175,55,0.25); color: var(--primary-color); }
+.role-badge--trainer { background: rgba(80,160,220,0.2);  color: #50a0dc; }
+.role-badge--member  { background: rgba(160,160,160,0.15); color: #bbb; }
+ 
+/* ---- Status dot ---- */
+.status-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+ 
+.status-dot::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+ 
+.status-dot--on::before  { background: #6fcf97; }
+.status-dot--off::before { background: #e06060; }
+.status-dot--on  { color: #6fcf97; }
+.status-dot--off { color: #e06060; }
+ 
+/* ---- Alerts ---- */
+.alert {
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+ 
+.alert-success {
+    background: rgba(111,207,151,0.15);
+    border: 1px solid rgba(111,207,151,0.4);
+    color: #6fcf97;
+}
+ 
+.alert-error {
+    background: rgba(220,80,80,0.12);
+    border: 1px solid rgba(220,80,80,0.4);
+    color: #e07070;
+}
+ 
+.alert-error p { margin-bottom: 0.25rem; }
+.alert-error p:last-child { margin-bottom: 0; }
+ 
+/* ---- Empty state ---- */
+.empty-state {
+    text-align: center;
+    color: #888;
+    padding: 2rem;
+    font-style: italic;
+}
+ 
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+ 
+    .input-group--full {
+        grid-column: 1;
+    }
+ 
+    .admin-title {
+        font-size: 1.5rem;
+    }
+ 
+    .admin-table thead {
+        display: none;
+    }
+ 
+    .admin-table,
+    .admin-table tbody,
+    .admin-table tr,
+    .admin-table td {
+        display: block;
+        width: 100%;
+    }
+ 
+    .admin-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid #555;
+        border-radius: 8px;
+        padding: 0.75rem;
+    }
+ 
+    .admin-table td {
+        padding: 0.3rem 0;
+        border: none;
+    }
+ 
+    .admin-table td::before {
+        content: attr(data-label);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #888;
+        display: block;
+        margin-bottom: 2px;
+    }
+ 
+    .table-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+ 
+    .inline-form {
+        flex-wrap: wrap;
+    }
+}
+ 
