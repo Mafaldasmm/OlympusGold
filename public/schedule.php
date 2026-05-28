@@ -110,7 +110,6 @@ $typeLabels = [
     'zumba'   => 'Zumba',
     'cycling' => 'Cycling',
     'boxing'  => 'Boxe',
-    'other'   => 'Outro',
 ];
 
 $currentPage      = 'schedule';
