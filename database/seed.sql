@@ -52,6 +52,42 @@ INSERT INTO classes (title, description, type, trainer_id, day_of_week, start_ti
         '07:00',
         '07:45',
         10
+    )
+    (   'VIbe Cycle',
+        'Treino de ciclismo indoor em grupo, feito ao ritmo de música motivadora.',
+        'cycling',
+        5,
+        'monday',
+        '17:00',
+        '18:00',
+        15
+    )
+    (   'The Ring',
+        'Treino estruturado de alta intensidade que combina condicionamento físico com técnicas de combate.',
+        'boxing',
+        6,
+        'tuesday',
+        '17:00',
+        '18:00',
+        15
+    )
+    (   'Aero',
+        'Aula que combina música, coordenação motora e exercícios cardiovasculares focados na queima de calorias.',
+        'hiit',
+        7,
+        'thursay',
+        '17:30',
+        '18:30',
+        20
+    )
+    (   'Zumba Party',
+        'Treino aeróbico de alta energia que transforma o exercício numa verdadeira festa de dança.',
+        'zumba',
+        8,
+        'friday',
+        '19:00',
+        '20:00',
+        20
     );
 
 INSERT INTO enrollments (user_id, class_id) VALUES
