@@ -10,6 +10,14 @@ define('PUBLIC_ROOT', dirname(__DIR__));
 define('INCLUDES_PATH', __DIR__);
 
 /**
+ * Escapes text for safe HTML output.
+ */
+function e(string $value): string
+{
+    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+}
+
+/**
  * Relative URL prefix from the executing script back to public/.
  */
 function publicBasePath(): string
@@ -56,5 +64,35 @@ function asset(string $path): string
 function pageUrl(string $page): string
 {
     return publicBasePath() . ltrim($page, '/');
+}
+
+/**
+ * Renders a minimal error page and stops execution.
+ */
+function renderErrorPage(int $statusCode, string $title, string $message): never
+{
+    http_response_code($statusCode);
+
+    ?><!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= e($title) ?></title>
+    <link rel="stylesheet" href="<?= e(asset('css/base.css')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('css/components.css')) ?>">
+</head>
+<body>
+    <main class="profile-container" style="min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: center; padding: 2rem;">
+        <section class="card" style="max-width: 42rem; width: 100%;">
+            <h1><?= e($title) ?></h1>
+            <p><?= e($message) ?></p>
+            <p><a class="btn-primary" href="<?= e(pageUrl('home.php')) ?>" style="display: inline-block; width: auto;">Voltar ao site</a></p>
+        </section>
+    </main>
+</body>
+</html>
+<?php
+    exit;
 }
 

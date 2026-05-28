@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/init.php';
+require_once INCLUDES_PATH . '/auth.php';
+
+$user = requireLogin();
 
 $currentPage        = 'profile';
 $pageTitle          = 'Perfil do Utilizador - Olympus Gold Gym';
@@ -18,16 +21,17 @@ require INCLUDES_PATH . '/nav.php';
             <p>Gira as suas informações pessoais.</p>
         </div>
 
-        <form action="<?= htmlspecialchars(pageUrl('update_profile.php'), ENT_QUOTES, 'UTF-8') ?>"
+        <form action="<?= e(pageUrl('update_profile.php')) ?>"
               method="POST"
               enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
 
             <div class="card-grid">
 
                 <article class="card featured">
                     <h2>Foto de Perfil</h2>
                     <div class="profile-photo-section">
-                        <img src="<?= htmlspecialchars(pageUrl('default-profile.png'), ENT_QUOTES, 'UTF-8') ?>"
+                        <img src="<?= e(pageUrl('default-profile.png')) ?>"
                              alt="Foto de perfil"
                              class="profile-img">
                         <input type="file" id="profile_photo" name="profile_photo" accept="image/*">
@@ -38,11 +42,25 @@ require INCLUDES_PATH . '/nav.php';
                     <h2>Dados Pessoais</h2>
                     <div class="input-group">
                         <label for="name">Nome</label>
-                        <input type="text" id="name" name="name" placeholder="Ex: André Restivo" required>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Ex: André Restivo"
+                            required
+                            value="<?= e((string) ($user['name'] ?? '')) ?>"
+                        >
                     </div>
                     <div class="input-group">
                         <label for="username">Nome de Utilizador</label>
-                        <input type="text" id="username" name="username" placeholder="utilizador123" required>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="utilizador123"
+                            required
+                            value="<?= e((string) $user['username']) ?>"
+                        >
                     </div>
                 </article>
 

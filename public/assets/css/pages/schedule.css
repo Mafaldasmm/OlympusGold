@@ -56,10 +56,13 @@
     color: #fff;
 }
 
-.yoga    { background-color: #45a049; }
-.pilates { background-color: #2980b9; }
-.zumba   { background-color: #c2185b; }
-.hiit    { background-color: #e67e22; }
+.yoga    { background-color: #43bd98; }
+.pilates { background-color: #ba5fd1; }
+.zumba   { background-color: #f1c32a; }
+.hiit    { background-color: #b90000; }
+.cycling { background-color: #44abff; }
+.boxing  { background-color: #df7e10; }
+.other   { background-color: #175f47; }
 
 .full { color: #ff4444; font-weight: bold; }
 
@@ -93,4 +96,17 @@
 
 .btn-cancel:hover {
     background-color: #e74c3c;
+}
+
+.card-footer .btn-secondary {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    box-sizing: border-box;
+}
+
+.card-footer .btn-primary {
+    font-size: 0.9rem;
 }

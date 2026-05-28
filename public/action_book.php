@@ -3,8 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/init.php';
-require_once dirname(__DIR__) . '/includes/database.php';
-require_once dirname(__DIR__) . '/includes/session.php';
+require_once __DIR__ . '/includes/auth.php';
 
 // Só aceita POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -16,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 requireLogin();
 
 // Validar CSRF
-verifyCsrfToken($_POST['csrf_token'] ?? '');
+verifyCsrf();
 
 $classId = isset($_POST['class_id']) ? (int)$_POST['class_id'] : 0;
 $userId  = (int)$_SESSION['user_id'];

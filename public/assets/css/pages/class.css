@@ -1,0 +1,213 @@
+/* ============================================================
+   class.php — detalhes de aula + reviews
+   ============================================================ */
+
+/* Hero */
+.class-hero {
+    text-align: center;
+    padding: 3rem 5%;
+    color: white;
+    background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
+                url('https://www.fitness4all.pt/wp-content/uploads/2025/01/element-matosinhos-p2-1024x683.jpeg');
+    background-size: cover;
+    background-position: center;
+}
+
+.class-hero h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin: 0.5rem 0;
+}
+
+.class-description {
+    max-width: 600px;
+    margin: 0.8rem auto 0;
+    opacity: 0.9;
+    font-size: 1rem;
+}
+
+/* Body layout */
+.class-body {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 5%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Detail list */
+.detail-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.detail-list li {
+    font-size: 0.95rem;
+}
+
+.class-actions {
+    margin-top: 1rem;
+}
+
+.btn-secondary {
+    display: inline-block;
+    padding: 0.6rem 1.4rem;
+    border: 1px solid var(--primary-color, #D4AF37);
+    color: var(--primary-color, #D4AF37);
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-secondary:hover {
+    background: var(--primary-color, #D4AF37);
+    color: #111;
+}
+
+/* Stars display */
+.stars-display {
+    color: #D4AF37;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+}
+
+/* Review form */
+.review-form-section h2 {
+    margin-bottom: 1rem;
+}
+
+/* CSS-only star rating */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 4px;
+    margin: 0.4rem 0 0.8rem;
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+}
+
+.star-rating label {
+    font-size: 2rem;
+    color: #555;
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #D4AF37;
+}
+
+textarea {
+    width: 100%;
+    background: #2a2a2a;
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 0.7rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color, #D4AF37);
+}
+
+.optional {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    font-weight: normal;
+}
+
+.already-reviewed {
+    color: #a8e6aa;
+    font-weight: 600;
+}
+
+.review-notice {
+    opacity: 0.8;
+}
+
+.review-notice a {
+    color: var(--primary-color, #D4AF37);
+}
+
+/* Reviews list */
+.reviews-section h2 {
+    margin-bottom: 1rem;
+}
+
+.review-count {
+    font-size: 1rem;
+    opacity: 0.6;
+    font-weight: normal;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.review-card {
+    padding: 1rem 1.2rem;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+
+.reviewer-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.review-stars {
+    color: #D4AF37;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+}
+
+.review-comment {
+    font-size: 0.9rem;
+    margin: 0.3rem 0 0.5rem;
+    opacity: 0.9;
+}
+
+.review-date {
+    font-size: 0.75rem;
+    opacity: 0.5;
+}
+
+.no-reviews {
+    opacity: 0.6;
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .class-hero h1 {
+        font-size: 1.6rem;
+    }
+
+    .star-rating label {
+        font-size: 1.6rem;
+    }
+}
