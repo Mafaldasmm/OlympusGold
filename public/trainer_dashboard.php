@@ -1,22 +1,18 @@
 <?php
- 
+
 declare(strict_types=1);
 
-$currentPage      = 'trainer';
-$pageTitle        = 'Dashboard Treinador | Olympus Gold Gym';
-$extraStylesheets = ['pages/trainer.css'];
- 
 require_once __DIR__ . '/includes/init.php';
-require_once __DIR__ . '/includes/auth.php';
- 
+require_once INCLUDES_PATH . '/auth.php';
+
 $trainer = requireRole('trainer');
- 
+
 $pdo = getDatabase();
- 
+
 /* -------------------------------------------------------------------------
  * Fetch trainer's assigned classes with enrollment count
  * ---------------------------------------------------------------------- */
-$classes = $pdo->prepare('
+$classStmt = $pdo->prepare('
     SELECT
         c.*,
         COUNT(e.id) AS enrolled_count
@@ -36,9 +32,9 @@ $classes = $pdo->prepare('
         END,
         c.start_time
 ');
-$classes->execute(['trainer_id' => $trainer['id']]);
-$classes = $classes->fetchAll();
- 
+$classStmt->execute(['trainer_id' => $trainer['id']]);
+$classes = $classStmt->fetchAll();
+
 /* -------------------------------------------------------------------------
  * Fetch enrolled members for each class
  * ---------------------------------------------------------------------- */
@@ -54,7 +50,7 @@ foreach ($classes as $class) {
     $stmt->execute(['class_id' => $class['id']]);
     $enrollments[$class['id']] = $stmt->fetchAll();
 }
- 
+
 $dayLabels = [
     'monday'    => 'Segunda-feira',
     'tuesday'   => 'Terça-feira',
@@ -64,7 +60,7 @@ $dayLabels = [
     'saturday'  => 'Sábado',
     'sunday'    => 'Domingo',
 ];
- 
+
 $typeLabels = [
     'yoga'    => 'Yoga',
     'pilates' => 'Pilates',
@@ -75,13 +71,17 @@ $typeLabels = [
     'other'   => 'Outro',
 ];
 
+$currentPage      = 'trainer';
+$pageTitle        = 'Dashboard Treinador | Olympus Gold Gym';
+$extraStylesheets = ['pages/trainer.css'];
+
 require INCLUDES_PATH . '/header.php';
 require INCLUDES_PATH . '/nav.php';
 ?>
- 
+
 <main class="trainer-main">
     <div class="trainer-container">
- 
+
         <div class="trainer-header">
             <div>
                 <h1 class="trainer-title">Olá, <span><?= e($trainer['name'] ?? $trainer['username']) ?></span></h1>
@@ -98,7 +98,7 @@ require INCLUDES_PATH . '/nav.php';
                 </div>
             </div>
         </div>
- 
+
         <?php if (empty($classes)): ?>
             <div class="trainer-card">
                 <p class="empty-state">Ainda não tens aulas atribuídas. Contacta um administrador.</p>
@@ -123,7 +123,7 @@ require INCLUDES_PATH . '/nav.php';
                         </div>
                         <div class="capacity-bar-wrap">
                             <?php
-                            $pct = $class['capacity'] > 0
+                            $pct  = $class['capacity'] > 0
                                 ? min(100, round(($class['enrolled_count'] / $class['capacity']) * 100))
                                 : 0;
                             $full = $class['enrolled_count'] >= $class['capacity'];
@@ -137,13 +137,12 @@ require INCLUDES_PATH . '/nav.php';
                             </div>
                         </div>
                     </div>
- 
-                    <!-- Enrolled members list -->
+
                     <div class="members-section">
                         <h3>Membros Inscritos
                             <span class="badge-count"><?= count($enrollments[$class['id']]) ?></span>
                         </h3>
- 
+
                         <?php if (empty($enrollments[$class['id']])): ?>
                             <p class="empty-state-small">Nenhum membro inscrito nesta aula.</p>
                         <?php else: ?>
@@ -174,9 +173,8 @@ require INCLUDES_PATH . '/nav.php';
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>
- 
+
     </div>
 </main>
- 
+
 <?php require INCLUDES_PATH . '/footer.php'; ?>
- 

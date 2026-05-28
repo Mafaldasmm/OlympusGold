@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Expected variable: $currentPage — one of: home, schedule, profile, login, register
+ * Expected variable: $currentPage — one of: home, schedule, profile, login, register, admin, trainer
  */
 
 require_once __DIR__ . '/auth.php';
@@ -32,6 +32,15 @@ if ($user !== null) {
 ?>
             <li><a href="<?= $href ?>"<?= $isActive ? ' class="active"' : '' ?>><?= $label ?></a></li>
 <?php endforeach; ?>
+
+<?php if ($user !== null && $user['role'] === 'trainer'): ?>
+            <li><a href="<?= e(pageUrl('trainer_dashboard.php')) ?>"<?= $currentPage === 'trainer' ? ' class="active"' : '' ?>>Dashboard</a></li>
+<?php endif; ?>
+
+<?php if ($user !== null && $user['role'] === 'admin'): ?>
+            <li><a href="<?= e(pageUrl('admin_classes.php')) ?>"<?= $currentPage === 'admin' ? ' class="active"' : '' ?>>Admin</a></li>
+<?php endif; ?>
+
 <?php if ($user !== null): ?>
             <li><span class="nav-label">Olá, <?= e((string) ($user['name'] ?: $user['username'])) ?></span></li>
             <li>
