@@ -9,3 +9,11 @@ database/*.sqlite-shm
 Thumbs.db
 *.swp
 *~
+
+storage/sessions/
+public/uploads/profiles/*
+!public/uploads/profiles/.gitkeep
+context/
+router.php
+README.md
+docs
