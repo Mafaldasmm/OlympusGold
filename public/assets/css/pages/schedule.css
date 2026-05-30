@@ -1,16 +1,65 @@
+/* Zoom / viewport: fundo contínuo e sem scroll horizontal */
+html:has(.schedule-section) {
+    overflow-x: clip;
+}
+
+body:has(.schedule-section) {
+    display: flex;
+    flex-direction: column;
+    overflow-x: clip;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background-color: #2a2a2a;
+}
+
+body:has(.schedule-section) > main {
+    flex: 1 0 auto;
+    width: 100%;
+    max-width: 100%;
+}
+
+body:has(.schedule-section) .footer {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.schedule-section {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
 .schedule-header {
     text-align: center;
-    padding: 3rem 5%;
+    padding: clamp(2rem, 5vw, 3rem) clamp(1rem, 4vw, 2.5rem);
     color: white;
-    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://www.fitness4all.pt/wp-content/uploads/2025/01/element-matosinhos-p2-1024x683.jpeg');
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    background-color: #1f1f1f;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+        url('https://www.fitness4all.pt/wp-content/uploads/2025/01/element-matosinhos-p2-1024x683.jpeg');
+    background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+    background-attachment: scroll;
 }
 
 .schedule-header h2 {
-    font-size: 2.5rem;
+    font-size: clamp(1.6rem, 6vw, 2.5rem);
     font-weight: 800;
     margin-bottom: 0.5rem;
+    line-height: 1.15;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.schedule-header p {
+    font-size: clamp(0.9rem, 3.5vw, 1rem);
+    max-width: 100%;
+    overflow-wrap: break-word;
 }
 
 .highlight {
@@ -27,7 +76,8 @@
 }
 
 .filters-bar select {
-    min-width: 180px;
+    min-width: min(180px, 100%);
+    max-width: 100%;
     background: #444444;
     color: white;
     border: 1px solid var(--primary-color);
@@ -66,10 +116,50 @@
 
 .full { color: #ff4444; font-weight: bold; }
 
+/* Grelha de aulas: alinhada e sem overflow no mobile */
+.schedule-section .card-grid {
+    width: 100%;
+    max-width: min(1200px, 100%);
+    margin: 0 auto;
+    padding: clamp(1.25rem, 4vw, 2rem) clamp(1rem, 4vw, 2.5rem);
+    box-sizing: border-box;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.schedule-section .card-grid .card {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+    .schedule-section .card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .schedule-section .card-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.empty-schedule {
+    text-align: center;
+    padding: 2rem clamp(1rem, 4vw, 2.5rem);
+    color: #B0B1B1;
+    max-width: 100%;
+}
+
 /* --- Flash Messages --- */
 .flash {
-    margin: 1rem 5%;
+    margin: 1rem clamp(1rem, 4vw, 2.5rem);
+    max-width: min(1200px, calc(100% - 2rem));
+    margin-left: auto;
+    margin-right: auto;
     padding: 0.9rem 1.2rem;
+    box-sizing: border-box;
     border-radius: 6px;
     font-weight: 600;
     font-size: 0.95rem;
@@ -109,4 +199,17 @@
 
 .card-footer .btn-primary {
     font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .filters-bar {
+        width: 100%;
+        padding: 0 0.25rem;
+    }
+
+    .filters-bar select,
+    .filters-bar .btn-primary {
+        width: 100%;
+        max-width: 100%;
+    }
 }

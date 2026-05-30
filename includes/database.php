@@ -42,8 +42,33 @@ function getDatabase(): PDO
     ]);
 
     $pdo->exec('PRAGMA foreign_keys = ON');
+    ensureUsersProfilePhotoColumn($pdo);
 
     return $pdo;
+}
+
+/**
+ * Adds profile_photo to existing databases created before the column existed.
+ */
+function ensureUsersProfilePhotoColumn(PDO $pdo): void
+{
+    static $checked = false;
+
+    if ($checked) {
+        return;
+    }
+
+    $checked = true;
+
+    $columns = $pdo->query('PRAGMA table_info(users)')->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($columns as $column) {
+        if (($column['name'] ?? '') === 'profile_photo') {
+            return;
+        }
+    }
+
+    $pdo->exec('ALTER TABLE users ADD COLUMN profile_photo TEXT');
 }
 
 /**

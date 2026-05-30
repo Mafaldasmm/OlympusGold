@@ -46,10 +46,15 @@ function redirect(string $url): never
 /**
  * Returns the currently authenticated user row.
  */
-function currentUser(): ?array
+function currentUser(bool $forceRefresh = false): ?array
 {
     static $cachedUser = null;
     static $cachedUserId = null;
+
+    if ($forceRefresh) {
+        $cachedUser = null;
+        $cachedUserId = null;
+    }
 
     $userId = currentUserId();
 
@@ -59,12 +64,13 @@ function currentUser(): ?array
         return null;
     }
 
-    if ($cachedUserId === $userId) {
+    if ($cachedUserId === $userId && $cachedUser !== null) {
         return $cachedUser;
     }
 
     $user = dbQuery(
-        'SELECT id, username, name, email, role, active FROM users WHERE id = :id',
+        'SELECT id, username, name, email, role, active, profile_photo
+         FROM users WHERE id = :id',
         ['id' => $userId]
     )->fetch();
 
@@ -79,6 +85,49 @@ function currentUser(): ?array
     $cachedUserId = $userId;
 
     return $cachedUser;
+}
+
+/**
+ * Clears the in-request cache for currentUser() after profile updates.
+ */
+function clearCurrentUserCache(): void
+{
+    currentUser(true);
+}
+
+/**
+ * Returns the display name shown in navigation and greetings.
+ *
+ * @param array<string, mixed> $user
+ */
+function userDisplayName(array $user): string
+{
+    $name = trim((string) ($user['name'] ?? ''));
+
+    if ($name !== '') {
+        return $name;
+    }
+
+    return (string) $user['username'];
+}
+
+/**
+ * Returns the public URL for a user's profile photo.
+ *
+ * @param array<string, mixed>|null $user
+ */
+function profilePhotoUrl(?array $user): string
+{
+    if ($user !== null) {
+        $path = trim((string) ($user['profile_photo'] ?? ''));
+
+        if ($path !== '' && is_file(PUBLIC_ROOT . '/' . $path)) {
+            return pageUrl($path);
+        }
+    }
+
+    return 'https://ui-avatars.com/api/?background=D4AF37&color=333333&size=150&name='
+        . rawurlencode($user !== null ? userDisplayName($user) : 'User');
 }
 
 /**

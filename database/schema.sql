@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS users (
     username   TEXT    NOT NULL UNIQUE,
     password   TEXT    NOT NULL,
     email      TEXT    UNIQUE,
-    name       TEXT,
+    name          TEXT,
+    profile_photo TEXT,
     role       TEXT    NOT NULL DEFAULT 'member'
                        CHECK (role IN ('member', 'trainer', 'admin')),
     active     INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0, 1)),
