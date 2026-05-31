@@ -192,6 +192,35 @@ function promotionTrainerInitials(string $name, string $username): string
     return strtoupper($slice($source, 0, 2));
 }
 
+/**
+ * JSON response for admin promotion toggles (fetch/XHR); otherwise no-op (page re-renders).
+ *
+ * @param array<string, mixed> $extra
+ */
+function respondAdminPromotion(
+    PDO $pdo,
+    bool $success,
+    string $message,
+    array $extra = [],
+    int $status = 200
+): never {
+    if ($status !== 200) {
+        http_response_code($status);
+    }
+
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode(array_merge([
+        'success'              => $success,
+        'message'              => $message,
+        'csrfToken'            => csrfToken(),
+        'featuredClassCount'   => countFeaturedClasses($pdo),
+        'featuredTrainerCount' => countFeaturedTrainers($pdo),
+        'maxFeaturedClasses'   => MAX_FEATURED_CLASSES,
+        'maxFeaturedTrainers'  => MAX_FEATURED_TRAINERS,
+    ], $extra), JSON_THROW_ON_ERROR);
+    exit;
+}
+
 function promotionBioExcerpt(string $bio, int $maxLength = 140): string
 {
     $bio = trim($bio);

@@ -187,6 +187,9 @@ $dayLabels = [
     'sunday'    => 'Domingo',
 ];
 
+$formSectionOpen = $editClass !== null
+    || ($errors !== [] && in_array($_POST['action'] ?? '', ['create', 'edit'], true));
+
 $typeLabels = [
     'yoga'    => 'Yoga',
     'pilates' => 'Pilates',
@@ -231,9 +234,11 @@ require INCLUDES_PATH . '/nav.php';
         <?php endif; ?>
 
         <!-- ===== FORM: CREATE / EDIT ===== -->
-        <section class="admin-card">
-            <h2><?= $editClass ? 'Editar Aula' : 'Nova Aula' ?></h2>
-
+        <details class="admin-card admin-details"<?= $formSectionOpen ? ' open' : '' ?>>
+            <summary class="admin-details__summary">
+                <span class="admin-details__title"><?= $editClass ? 'Editar Aula' : 'Nova Aula' ?></span>
+            </summary>
+            <div class="admin-details__body">
             <form method="POST" action="<?= e(pageUrl('admin_classes.php')) ?>" novalidate>
                 <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
                 <input type="hidden" name="action"     value="<?= $editClass ? 'edit' : 'create' ?>">
@@ -340,12 +345,18 @@ require INCLUDES_PATH . '/nav.php';
                 <?php endif; ?>
             </div>
             <?php endif; ?>
-        </section>
+            </div>
+        </details>
 
         <!-- ===== TABLE: CLASS LIST ===== -->
-        <section class="admin-card">
-            <h2>Aulas Existentes <span class="badge-count"><?= count($classes) ?></span></h2>
-
+        <details class="admin-card admin-details" open>
+            <summary class="admin-details__summary">
+                <span class="admin-details__title">
+                    Aulas Existentes
+                    <span class="badge-count"><?= count($classes) ?></span>
+                </span>
+            </summary>
+            <div class="admin-details__body">
             <?php if (empty($classes)): ?>
                 <p class="empty-state">Nenhuma aula encontrada. Crie a primeira acima!</p>
             <?php else: ?>
@@ -398,7 +409,8 @@ require INCLUDES_PATH . '/nav.php';
                     </table>
                 </div>
             <?php endif; ?>
-        </section>
+            </div>
+        </details>
 
     </div>
 </main>

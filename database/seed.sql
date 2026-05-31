@@ -130,8 +130,8 @@ INSERT INTO classes (title, description, type, trainer_id, day_of_week, start_ti
     ('Pilates Flow', 'Sequências fluídas de pilates para corpo inteiro.', 'pilates', 2, 'friday', '11:00', '12:00', 14),
     ('Dance Mix', 'Combinação de estilos latinos e pop para queima calórica.', 'zumba', 9, 'sunday', '18:00', '19:00', 20);
 
-UPDATE classes SET featured = 1 WHERE title IN ('Yoga Matinal', 'Zumba Energy', 'Vibe Cycle', 'HIIT Sunrise');
-UPDATE users SET featured = 1 WHERE username IN ('ana.silva', 'ricardo.pereira', 'marco.rebelo', 'beatriz.nogueira');
+UPDATE classes SET featured = 1 WHERE title IN ('Yoga Matinal', 'Zumba Energy', 'Vibe Cycle');
+UPDATE users SET featured = 1 WHERE username IN ('ana.silva', 'ricardo.pereira', 'marco.rebelo');
 
 INSERT INTO equipment (name, type, area, status) VALUES
     ('Banco de supino reto', 'strength', 'main', 'available'),

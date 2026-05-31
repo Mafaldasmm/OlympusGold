@@ -283,8 +283,8 @@ foreach ($classes as $c) {
 $out[] = implode(",\n", $classRows) . ';';
 $out[] = '';
 
-$out[] = "UPDATE classes SET featured = 1 WHERE title IN ('Yoga Matinal', 'Zumba Energy', 'Vibe Cycle', 'HIIT Sunrise');";
-$out[] = "UPDATE users SET featured = 1 WHERE username IN ('ana.silva', 'ricardo.pereira', 'marco.rebelo', 'beatriz.nogueira');";
+$out[] = "UPDATE classes SET featured = 1 WHERE title IN ('Yoga Matinal', 'Zumba Energy', 'Vibe Cycle');";
+$out[] = "UPDATE users SET featured = 1 WHERE username IN ('ana.silva', 'ricardo.pereira', 'marco.rebelo');";
 $out[] = '';
 
 $out[] = 'INSERT INTO equipment (name, type, area, status) VALUES';
