@@ -27,7 +27,8 @@
 - [x] Oversee and ensure the smooth operation of the entire system.
 
 **Extra:**
-- [ ] Something extra (e.g., personal training bookings, membership plans, waitlist, ...).
+- [x] Class waitlist when a class is full (join, leave, automatic promotion on cancellation).
+- [x] Trainer analytics for assigned classes (enrollments, capacity utilization, review averages, waitlist and enrolled members).
 
 ## Running
 
