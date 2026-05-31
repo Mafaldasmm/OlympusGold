@@ -48,6 +48,16 @@ CREATE TABLE IF NOT EXISTS trainer_specializations (
 );
 
 -- ---------------------------------------------------------------------------
+-- trainer_certifications
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS trainer_certifications (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    trainer_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    name       TEXT    NOT NULL,
+    UNIQUE (trainer_id, name)
+);
+
+-- ---------------------------------------------------------------------------
 -- equipment (main training area availability)
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS equipment (
@@ -92,6 +102,9 @@ CREATE INDEX IF NOT EXISTS idx_users_role ON users (role);
 
 CREATE INDEX IF NOT EXISTS idx_trainer_specializations_trainer
     ON trainer_specializations (trainer_id);
+
+CREATE INDEX IF NOT EXISTS idx_trainer_certifications_trainer
+    ON trainer_certifications (trainer_id);
 
 CREATE INDEX IF NOT EXISTS idx_equipment_area ON equipment (area);
 CREATE INDEX IF NOT EXISTS idx_equipment_status ON equipment (status);

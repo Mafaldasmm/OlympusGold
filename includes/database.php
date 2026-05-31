@@ -46,6 +46,7 @@ function getDatabase(): PDO
     ensureUsersReviewsBlockedColumn($pdo);
     ensureUsersBioColumn($pdo);
     ensureTrainerSpecializationsTable($pdo);
+    ensureTrainerCertificationsTable($pdo);
     ensureEquipmentTable($pdo);
     migrateEquipmentMaintenanceStatus($pdo);
 
@@ -148,6 +149,33 @@ function ensureTrainerSpecializationsTable(PDO $pdo): void
     $pdo->exec(
         'CREATE INDEX IF NOT EXISTS idx_trainer_specializations_trainer
          ON trainer_specializations (trainer_id)'
+    );
+}
+
+/**
+ * Creates trainer_certifications on databases created before the table existed.
+ */
+function ensureTrainerCertificationsTable(PDO $pdo): void
+{
+    static $checked = false;
+
+    if ($checked) {
+        return;
+    }
+
+    $checked = true;
+
+    $pdo->exec(
+        'CREATE TABLE IF NOT EXISTS trainer_certifications (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            trainer_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+            name       TEXT    NOT NULL,
+            UNIQUE (trainer_id, name)
+        )'
+    );
+    $pdo->exec(
+        'CREATE INDEX IF NOT EXISTS idx_trainer_certifications_trainer
+         ON trainer_certifications (trainer_id)'
     );
 }
 
