@@ -6,7 +6,8 @@ require_once __DIR__ . '/includes/init.php';
 require_once INCLUDES_PATH . '/auth.php';
 require_once INCLUDES_PATH . '/equipment.php';
 
-requireLogin();
+$user = requireLogin();
+$canManageEquipment = in_array($user['role'], ['admin', 'trainer'], true);
 
 $loadError  = false;
 $equipment  = [];
@@ -41,9 +42,16 @@ require INCLUDES_PATH . '/nav.php';
 
 ?>
 <main class="equipment-page">
-    <header class="equipment-header">
-        <h1>Disponibilidade de <span>Equipamentos</span></h1>
-        <p class="equipment-subtitle">Área principal de treino — estado em tempo real</p>
+    <header class="equipment-header equipment-header--with-action">
+        <div>
+            <h1>Disponibilidade de <span>Equipamentos</span></h1>
+            <p class="equipment-subtitle">Área principal de treino — estado em tempo real</p>
+        </div>
+        <?php if ($canManageEquipment): ?>
+            <a href="<?= e(pageUrl('manage_equipment.php')) ?>" class="btn-secondary equipment-manage-link">
+                Gerir equipamentos
+            </a>
+        <?php endif; ?>
     </header>
 
     <?php if ($loadError): ?>

@@ -1,0 +1,60 @@
+/* Equipment management (admin / trainer) */
+
+.equipment-manage-main .equipment-subtitle {
+    margin-top: 0.35rem;
+}
+
+.equipment-manage-subtitle {
+    text-align: left;
+}
+
+.equipment-manage-view-link {
+    flex-shrink: 0;
+}
+
+.equipment-form-grid {
+    margin-bottom: 0;
+}
+
+.equipment-manage-table .equipment-manage-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 280px;
+}
+
+.equipment-status-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.equipment-profile-empty {
+    margin: 0;
+    color: #aaa;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .equipment-manage-table .equipment-manage-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .equipment-status-form,
+    .equipment-delete-form {
+        width: 100%;
+    }
+
+    .equipment-status-form .select-inline {
+        flex: 1;
+        min-width: 0;
+    }
+}
