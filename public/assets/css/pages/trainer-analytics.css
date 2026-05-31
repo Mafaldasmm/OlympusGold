@@ -1,0 +1,204 @@
+/* Trainer analytics page */
+
+.trainer-analytics-main .trainer-analytics-header {
+    margin-bottom: 1.5rem;
+}
+
+.trainer-analytics-back {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+}
+
+.trainer-analytics-back a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.trainer-analytics-back a:hover {
+    text-decoration: underline;
+}
+
+.trainer-analytics-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.trainer-analytics-summary .stat-box {
+    flex: 1 1 120px;
+}
+
+.trainer-analytics-alert p {
+    margin: 0;
+    color: #e8a0a0;
+    text-align: center;
+}
+
+.trainer-analytics-details {
+    margin-bottom: 1.5rem;
+}
+
+.trainer-analytics-details.admin-details .admin-details__summary {
+    font-size: 1.15rem;
+}
+
+.trainer-analytics-chart-note {
+    margin: 0 0 1.25rem;
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.trainer-analytics-chart {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.trainer-analytics-chart__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(120px, 200px);
+    gap: 1rem;
+    align-items: center;
+}
+
+.trainer-analytics-chart__label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.trainer-analytics-chart__title {
+    font-weight: 600;
+    color: var(--text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trainer-analytics-chart__meta {
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+.trainer-analytics-chart__bar {
+    height: 10px;
+    background: #444;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.trainer-analytics-chart__fill {
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+}
+
+.trainer-analytics-chart__fill.is-full {
+    background: #e06060;
+}
+
+.trainer-analytics-table .tag {
+    display: inline-block;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+}
+
+.trainer-analytics-operations {
+    padding: 0;
+}
+
+.trainer-analytics-class-details {
+    margin-bottom: 1rem;
+    border: 1px solid #555;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.trainer-analytics-class-details__summary {
+    font-size: 1rem;
+    padding: 1rem 1.25rem;
+}
+
+.trainer-analytics-class-details__summary.admin-details__summary::after {
+    align-self: flex-start;
+    margin-top: 0.35rem;
+}
+
+.trainer-analytics-class-details__title {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.trainer-analytics-class-details__name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+.trainer-analytics-class-details__title .class-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    font-weight: 400;
+}
+
+.trainer-analytics-class-details__body {
+    padding-top: 0;
+}
+
+.trainer-analytics-class-details .members-section h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.trainer-analytics-class-details .members-section + .members-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #444;
+}
+
+.trainer-waitlist-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.trainer-waitlist-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #3a3a3a;
+}
+
+.waitlist-position {
+    display: inline-block;
+    min-width: 2rem;
+    font-weight: 700;
+    color: var(--primary-color, #d4af37);
+}
+
+@media (max-width: 768px) {
+    .trainer-analytics-chart__row {
+        grid-template-columns: 1fr;
+    }
+
+    .trainer-analytics-chart__bar {
+        width: 100%;
+    }
+}
