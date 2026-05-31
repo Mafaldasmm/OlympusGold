@@ -3,70 +3,58 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/init.php';
-require_once __DIR__ . '/includes/auth.php';
+require_once INCLUDES_PATH . '/auth.php';
+require_once INCLUDES_PATH . '/schedule_enrollment.php';
 
-// Só aceita POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ' . pageUrl('schedule.php'));
-    exit;
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+    redirect(pageUrl('schedule.php'));
 }
 
-// Utilizador tem de estar autenticado
-requireLogin();
+$user = requireLogin();
 
-// Validar CSRF
+if ($user['role'] !== 'member') {
+    respondScheduleEnrollment(false, 'Apenas membros podem inscrever-se em aulas.', null, 403);
+}
+
 verifyCsrf();
 
-$classId = isset($_POST['class_id']) ? (int)$_POST['class_id'] : 0;
-$userId  = (int)$_SESSION['user_id'];
+$classId = isset($_POST['class_id']) ? (int) $_POST['class_id'] : 0;
+$userId = (int) $_SESSION['user_id'];
 
 if ($classId <= 0) {
-    $_SESSION['flash_error'] = 'Aula inválida.';
-    header('Location: ' . pageUrl('schedule.php'));
-    exit;
+    respondScheduleEnrollment(false, 'Aula inválida.', null, 422);
 }
 
-$pdo = getDatabase();
-
-// Verificar se a aula existe
 $class = dbQuery('SELECT id, capacity FROM classes WHERE id = :id', ['id' => $classId])->fetch();
 
 if (!$class) {
-    $_SESSION['flash_error'] = 'Aula não encontrada.';
-    header('Location: ' . pageUrl('schedule.php'));
-    exit;
+    respondScheduleEnrollment(false, 'Aula não encontrada.', null, 422);
 }
 
-// Verificar inscrição duplicada
 $alreadyEnrolled = dbQuery(
     'SELECT id FROM enrollments WHERE user_id = :uid AND class_id = :cid',
     ['uid' => $userId, 'cid' => $classId]
 )->fetch();
 
 if ($alreadyEnrolled) {
-    $_SESSION['flash_error'] = 'Já está inscrito nesta aula.';
-    header('Location: ' . pageUrl('schedule.php'));
-    exit;
+    $state = classEnrollmentState($classId, $userId);
+    respondScheduleEnrollment(false, 'Já está inscrito nesta aula.', $state, 422);
 }
 
-// Verificar capacidade disponível
-$enrolled = (int)dbQuery(
+$enrolled = (int) dbQuery(
     'SELECT COUNT(*) FROM enrollments WHERE class_id = :cid',
     ['cid' => $classId]
 )->fetchColumn();
 
-if ($enrolled >= $class['capacity']) {
-    $_SESSION['flash_error'] = 'Esta aula já não tem vagas disponíveis.';
-    header('Location: ' . pageUrl('schedule.php'));
-    exit;
+if ($enrolled >= (int) $class['capacity']) {
+    $state = classEnrollmentState($classId, $userId);
+    respondScheduleEnrollment(false, 'Esta aula já não tem vagas disponíveis.', $state, 422);
 }
 
-// Inscrever o utilizador
 dbQuery(
     'INSERT INTO enrollments (user_id, class_id) VALUES (:uid, :cid)',
     ['uid' => $userId, 'cid' => $classId]
 );
 
-$_SESSION['flash_success'] = 'Inscrição realizada com sucesso!';
-header('Location: ' . pageUrl('schedule.php'));
-exit;
+$state = classEnrollmentState($classId, $userId);
+respondScheduleEnrollment(true, 'Inscrição realizada com sucesso!', $state);

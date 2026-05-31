@@ -218,7 +218,7 @@ require INCLUDES_PATH . '/nav.php';
                 });
 
                 if (firstInvalid) {
-                    showAlert('error', getValidationMessage(firstInvalid), { autoDismiss: false });
+                    showAlert('error', getValidationMessage(firstInvalid));
                     firstInvalid.focus({ preventScroll: false });
                     return false;
                 }
@@ -236,7 +236,7 @@ require INCLUDES_PATH . '/nav.php';
             function showAlert(type, message, options) {
                 const opts = options || {};
                 const autoDismiss = opts.autoDismiss !== false
-                    && (type === 'success' || type === 'info');
+                    && (type === 'success' || type === 'info' || type === 'error');
 
                 if (alertDismissTimer) {
                     clearTimeout(alertDismissTimer);
@@ -263,7 +263,7 @@ require INCLUDES_PATH . '/nav.php';
                     return;
                 }
 
-                const existing = alerts.querySelector('.alert-success, .alert-info');
+                const existing = alerts.querySelector('.alert-success, .alert-info, .alert-error');
                 if (!existing) {
                     return;
                 }

@@ -152,12 +152,44 @@ body:has(.schedule-section) .footer {
     max-width: 100%;
 }
 
+/* Lista de aulas: feedback fixo acima da grelha (não empurra o layout) */
+.schedule-list-wrap {
+    position: relative;
+    width: 100%;
+    max-width: min(1200px, 100%);
+    margin: 0 auto;
+    padding-top: 4.25rem;
+    box-sizing: border-box;
+}
+
+.schedule-feedback-slot {
+    position: absolute;
+    top: 0;
+    left: clamp(1rem, 4vw, 2.5rem);
+    right: clamp(1rem, 4vw, 2.5rem);
+    height: 4.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 2;
+}
+
+.schedule-feedback-slot.is-visible {
+    opacity: 1;
+}
+
+.schedule-feedback-slot .flash {
+    width: 100%;
+    margin: 0;
+    pointer-events: auto;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
 /* --- Flash Messages --- */
 .flash {
-    margin: 1rem clamp(1rem, 4vw, 2.5rem);
-    max-width: min(1200px, calc(100% - 2rem));
-    margin-left: auto;
-    margin-right: auto;
     padding: 0.9rem 1.2rem;
     box-sizing: border-box;
     border-radius: 6px;
@@ -211,5 +243,13 @@ body:has(.schedule-section) .footer {
     .filters-bar .btn-primary {
         width: 100%;
         max-width: 100%;
+    }
+
+    .schedule-list-wrap {
+        padding-top: 5rem;
+    }
+
+    .schedule-feedback-slot {
+        height: 4.75rem;
     }
 }
