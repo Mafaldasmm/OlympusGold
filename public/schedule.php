@@ -138,6 +138,8 @@ require INCLUDES_PATH . '/nav.php';
             <h2><span class="highlight">HORÁRIOS</span> DAS AULAS</h2>
             <p>Filtre por modalidade, treinador ou dia para encontrar o seu treino ideal.</p>
 
+            <details class="schedule-filters-panel" data-mobile-collapse data-open-desktop="true">
+                <summary class="schedule-filters-panel__summary">Filtros de pesquisa</summary>
             <form class="filters-bar" method="GET" action="<?= e(pageUrl('schedule.php')) ?>">
                 <select name="type" aria-label="Filtrar por Modalidade">
                     <option value="">Todas as Modalidades</option>
@@ -171,23 +173,13 @@ require INCLUDES_PATH . '/nav.php';
                     <a href="<?= e(pageUrl('schedule.php')) ?>" class="btn-clear">Limpar</a>
                 <?php endif; ?>
             </form>
+            </details>
         </div>
 
         <?php if (empty($classes)): ?>
             <p class="empty-schedule">Nenhuma aula encontrada para os filtros selecionados.</p>
         <?php else: ?>
         <div class="schedule-list-wrap">
-            <div id="schedule-feedback"
-                 class="schedule-feedback-slot<?= $hasScheduleFlash ? ' is-visible' : '' ?>"
-                 aria-live="polite">
-<?php if ($flashSuccess !== ''): ?>
-                <p class="flash flash-success"><?= e($flashSuccess) ?></p>
-<?php endif; ?>
-<?php if ($flashError !== ''): ?>
-                <p class="flash flash-error"><?= e($flashError) ?></p>
-<?php endif; ?>
-            </div>
-
         <div class="card-grid">
             <?php foreach ($classes as $class):
                 $spots      = (int) $class['capacity'] - (int) $class['enrolled_count'];
@@ -298,219 +290,29 @@ require INCLUDES_PATH . '/nav.php';
     </section>
 </main>
 
+<?php if ($flashSuccess !== ''): ?>
+    <span class="visually-hidden" data-toast-on-load data-toast-type="success"><?= e($flashSuccess) ?></span>
+<?php endif; ?>
+<?php if ($flashError !== ''): ?>
+    <span class="visually-hidden" data-toast-on-load data-toast-type="error"><?= e($flashError) ?></span>
+<?php endif; ?>
+
 <?php if ($isScheduleMember): ?>
 <script>
-(function () {
-    const bookUrl = <?= json_encode(pageUrl('action_book.php'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
-    const cancelUrl = <?= json_encode(pageUrl('action_cancel.php'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
-    const waitlistJoinUrl = <?= json_encode($waitlistJoinUrl, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
-    const waitlistLeaveUrl = <?= json_encode($waitlistLeaveUrl, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
-    const feedback = document.getElementById('schedule-feedback');
-    const AUTO_DISMISS_MS = 2000;
-    let dismissTimer = null;
-
-    function escapeHtml(value) {
-        return String(value)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-    }
-
-    function showFeedback(type, message) {
-        if (!feedback) {
-            return;
-        }
-
-        if (dismissTimer) {
-            clearTimeout(dismissTimer);
-            dismissTimer = null;
-        }
-
-        feedback.innerHTML = '<p class="flash flash-' + type + '">' + escapeHtml(message) + '</p>';
-        feedback.classList.add('is-visible');
-
-        dismissTimer = setTimeout(function () {
-            feedback.innerHTML = '';
-            feedback.classList.remove('is-visible');
-            dismissTimer = null;
-        }, AUTO_DISMISS_MS);
-    }
-
-    function scheduleDismissExisting() {
-        if (!feedback || !feedback.querySelector('.flash-success, .flash-error')) {
-            return;
-        }
-
-        feedback.classList.add('is-visible');
-        dismissTimer = setTimeout(function () {
-            feedback.innerHTML = '';
-            feedback.classList.remove('is-visible');
-            dismissTimer = null;
-        }, AUTO_DISMISS_MS);
-    }
-
-    function updateAllCsrfTokens(token) {
-        if (!token) {
-            return;
-        }
-        if (typeof window.refreshCsrfToken === 'function') {
-            window.refreshCsrfToken(token);
-            return;
-        }
-        document.querySelectorAll('.enrollment-csrf').forEach(function (input) {
-            input.value = token;
-        });
-    }
-
-    function buildEnrollmentHtml(state, csrfToken) {
-        const classId = state.classId;
-        const csrf = escapeHtml(csrfToken);
-
-        const redirectField = '<input type="hidden" name="redirect" value="schedule.php">';
-
-        if (state.isEnrolled) {
-            return '<form class="enrollment-form" method="POST" action="' + escapeHtml(cancelUrl) + '" data-enrollment-action="cancel">' +
-                '<input type="hidden" name="csrf_token" class="enrollment-csrf" value="' + csrf + '">' +
-                '<input type="hidden" name="class_id" value="' + classId + '">' +
-                redirectField +
-                '<button type="submit" class="btn-primary btn-cancel">Cancelar Inscrição</button>' +
-                '</form>';
-        }
-
-        if (state.isOnWaitlist) {
-            const pos = state.waitlistPosition || '?';
-            return '<p class="waitlist-status">Lista de espera — posição <strong>' + escapeHtml(String(pos)) + '</strong></p>' +
-                '<form class="enrollment-form" method="POST" action="' + escapeHtml(waitlistLeaveUrl) + '" data-enrollment-action="waitlist-leave">' +
-                '<input type="hidden" name="csrf_token" class="enrollment-csrf" value="' + csrf + '">' +
-                '<input type="hidden" name="class_id" value="' + classId + '">' +
-                redirectField +
-                '<button type="submit" class="btn-primary btn-cancel">Sair da lista de espera</button>' +
-                '</form>';
-        }
-
-        if (state.isFull) {
-            return '<form class="enrollment-form" method="POST" action="' + escapeHtml(waitlistJoinUrl) + '" data-enrollment-action="waitlist-join">' +
-                '<input type="hidden" name="csrf_token" class="enrollment-csrf" value="' + csrf + '">' +
-                '<input type="hidden" name="class_id" value="' + classId + '">' +
-                redirectField +
-                '<button type="submit" class="btn-primary btn-waitlist">Entrar na lista de espera</button>' +
-                '</form>';
-        }
-
-        return '<form class="enrollment-form" method="POST" action="' + escapeHtml(bookUrl) + '" data-enrollment-action="book">' +
-            '<input type="hidden" name="csrf_token" class="enrollment-csrf" value="' + csrf + '">' +
-            '<input type="hidden" name="class_id" value="' + classId + '">' +
-            redirectField +
-            '<button type="submit" class="btn-primary">Inscrever</button>' +
-            '</form>';
-    }
-
-    function updateSpots(card, state) {
-        const spotsValue = card.querySelector('.class-spots-value');
-        if (!spotsValue) {
-            return;
-        }
-
-        if (state.isFull) {
-            spotsValue.innerHTML = '<span class="full">CHEIO</span>';
-        } else {
-            spotsValue.textContent = state.spots + ' / ' + state.capacity;
-        }
-    }
-
-    function updateCard(card, state, csrfToken) {
-        card.dataset.capacity = String(state.capacity);
-        card.dataset.enrolled = String(state.enrolledCount);
-
-        updateSpots(card, state);
-
-        const actions = card.querySelector('.class-enrollment-actions');
-        if (actions) {
-            actions.innerHTML = buildEnrollmentHtml(state, csrfToken);
-            bindEnrollmentForms(actions);
-        }
-    }
-
-    let submitting = false;
-
-    async function handleEnrollmentSubmit(event) {
-        event.preventDefault();
-
-        if (submitting) {
-            return;
-        }
-
-        const form = event.currentTarget;
-        const card = form.closest('.class-card');
-        if (!card) {
-            return;
-        }
-
-        submitting = true;
-        const button = form.querySelector('button[type="submit"]');
-        if (button) {
-            button.disabled = true;
-        }
-
-        try {
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
-                credentials: 'same-origin',
-            });
-
-            const contentType = response.headers.get('content-type') || '';
-            if (!contentType.includes('application/json')) {
-                showFeedback('error', 'Resposta inesperada do servidor. Recarrega a página e tenta novamente.');
-                return;
-            }
-
-            const payload = await response.json();
-
-            if (payload.csrfToken) {
-                updateAllCsrfTokens(payload.csrfToken);
-            }
-
-            if (!response.ok || !payload.success) {
-                showFeedback('error', payload.message || 'Não foi possível concluir a operação.');
-                if (
-                    payload.classId
-                    && card.dataset.classId === String(payload.classId)
-                    && typeof payload.capacity !== 'undefined'
-                ) {
-                    updateCard(card, payload, payload.csrfToken || '');
-                }
-                return;
-            }
-
-            showFeedback('success', payload.message);
-            updateCard(card, payload, payload.csrfToken || '');
-        } catch (error) {
-            showFeedback('error', 'Erro de ligação. Verifica a rede e tenta novamente.');
-        } finally {
-            submitting = false;
-            if (button) {
-                button.disabled = false;
-            }
-        }
-    }
-
-    function bindEnrollmentForms(root) {
-        root.querySelectorAll('.enrollment-form').forEach(function (form) {
-            form.addEventListener('submit', handleEnrollmentSubmit);
-        });
-    }
-
-    document.querySelectorAll('.class-enrollment-actions').forEach(bindEnrollmentForms);
-    scheduleDismissExisting();
-})();
+window.__ENROLLMENT_CONFIG = {
+    bookUrl: <?= json_encode(pageUrl('action_book.php'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+    cancelUrl: <?= json_encode(pageUrl('action_cancel.php'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+    waitlistJoinUrl: <?= json_encode($waitlistJoinUrl, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+    waitlistLeaveUrl: <?= json_encode($waitlistLeaveUrl, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+    redirect: 'schedule.php',
+    cardSelector: '.class-card',
+    actionsSelector: '.class-enrollment-actions',
+    spotsSelector: '.class-spots-value'
+};
 </script>
-<?php endif; ?>
+<?php
+    $extraScripts = ['enrollment-actions.js'];
+endif;
+?>
 
 <?php require INCLUDES_PATH . '/footer.php'; ?>

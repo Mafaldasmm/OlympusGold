@@ -156,12 +156,28 @@ require INCLUDES_PATH . '/nav.php';
         </section>
 
         <?php if ($user !== null && $user['role'] === 'member' && $memberEnrollmentState !== null): ?>
-        <section class="class-details card class-enrollment-section">
+        <section class="class-details card class-enrollment-section"
+                 data-class-id="<?= $classId ?>"
+                 data-capacity="<?= (int) $memberEnrollmentState['capacity'] ?>"
+                 data-enrolled="<?= (int) $memberEnrollmentState['enrolledCount'] ?>">
             <h2>Inscrição</h2>
+            <p class="class-enrollment-spots">
+                <strong>Vagas:</strong>
+                <span class="class-spots-value">
+<?php if ($memberEnrollmentState['isFull']): ?>
+                    <span class="full">CHEIO</span>
+<?php else: ?>
+                    <?= (int) $memberEnrollmentState['spots'] ?> / <?= (int) $memberEnrollmentState['capacity'] ?>
+<?php endif; ?>
+                </span>
+            </p>
             <div class="class-enrollment-actions">
                 <?php if ($memberEnrollmentState['isEnrolled']): ?>
-                    <form method="POST" action="<?= e(pageUrl('action_cancel.php')) ?>">
-                        <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
+                    <form class="enrollment-form"
+                          method="POST"
+                          action="<?= e(pageUrl('action_cancel.php')) ?>"
+                          data-enrollment-action="cancel">
+                        <input type="hidden" name="csrf_token" class="enrollment-csrf" value="<?= e($csrfToken) ?>">
                         <input type="hidden" name="class_id" value="<?= $classId ?>">
                         <input type="hidden" name="redirect" value="<?= e($classRedirect) ?>">
                         <button type="submit" class="btn-primary btn-cancel">Cancelar Inscrição</button>
@@ -170,22 +186,31 @@ require INCLUDES_PATH . '/nav.php';
                     <p class="waitlist-status">
                         Está na lista de espera — posição <strong><?= (int) $memberEnrollmentState['waitlistPosition'] ?></strong>
                     </p>
-                    <form method="POST" action="<?= e(pageUrl('action_waitlist_leave.php')) ?>">
-                        <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
+                    <form class="enrollment-form"
+                          method="POST"
+                          action="<?= e(pageUrl('action_waitlist_leave.php')) ?>"
+                          data-enrollment-action="waitlist-leave">
+                        <input type="hidden" name="csrf_token" class="enrollment-csrf" value="<?= e($csrfToken) ?>">
                         <input type="hidden" name="class_id" value="<?= $classId ?>">
                         <input type="hidden" name="redirect" value="<?= e($classRedirect) ?>">
                         <button type="submit" class="btn-primary btn-cancel">Sair da lista de espera</button>
                     </form>
                 <?php elseif ($memberEnrollmentState['isFull']): ?>
-                    <form method="POST" action="<?= e(pageUrl('action_waitlist_join.php')) ?>">
-                        <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
+                    <form class="enrollment-form"
+                          method="POST"
+                          action="<?= e(pageUrl('action_waitlist_join.php')) ?>"
+                          data-enrollment-action="waitlist-join">
+                        <input type="hidden" name="csrf_token" class="enrollment-csrf" value="<?= e($csrfToken) ?>">
                         <input type="hidden" name="class_id" value="<?= $classId ?>">
                         <input type="hidden" name="redirect" value="<?= e($classRedirect) ?>">
                         <button type="submit" class="btn-primary btn-waitlist">Entrar na lista de espera</button>
                     </form>
                 <?php else: ?>
-                    <form method="POST" action="<?= e(pageUrl('action_book.php')) ?>">
-                        <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
+                    <form class="enrollment-form"
+                          method="POST"
+                          action="<?= e(pageUrl('action_book.php')) ?>"
+                          data-enrollment-action="book">
+                        <input type="hidden" name="csrf_token" class="enrollment-csrf" value="<?= e($csrfToken) ?>">
                         <input type="hidden" name="class_id" value="<?= $classId ?>">
                         <input type="hidden" name="redirect" value="<?= e($classRedirect) ?>">
                         <button type="submit" class="btn-primary">Inscrever nesta aula</button>
@@ -213,19 +238,11 @@ require INCLUDES_PATH . '/nav.php';
         </section>
         <?php endif; ?>
 
-        <!-- Flash messages -->
-        <?php if ($flashSuccess !== ''): ?>
-            <p class="flash flash-success"><?= e($flashSuccess) ?></p>
-        <?php endif; ?>
-        <?php if ($flashError !== ''): ?>
-            <p class="flash flash-error"><?= e($flashError) ?></p>
-        <?php endif; ?>
-
         <!-- Formulário de review -->
         <?php if ($user !== null && $isEnrolled && !$hasUserReview && $canLeaveReview): ?>
         <section class="review-form-section card">
             <h2>Deixar Avaliação</h2>
-            <form method="POST" action="<?= e(pageUrl('action_review.php')) ?>">
+            <form id="class-review-form" method="POST" action="<?= e(pageUrl('action_review.php')) ?>">
                 <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
                 <input type="hidden" name="class_id"   value="<?= $classId ?>">
 
@@ -298,5 +315,37 @@ require INCLUDES_PATH . '/nav.php';
 
     </div>
 </main>
+
+<?php if ($flashSuccess !== ''): ?>
+    <span class="visually-hidden" data-toast-on-load data-toast-type="success"><?= e($flashSuccess) ?></span>
+<?php endif; ?>
+<?php if ($flashError !== ''): ?>
+    <span class="visually-hidden" data-toast-on-load data-toast-type="error"><?= e($flashError) ?></span>
+<?php endif; ?>
+
+<?php
+$extraScripts = [];
+if ($user !== null && $user['role'] === 'member' && $memberEnrollmentState !== null):
+?>
+<script>
+window.__ENROLLMENT_CONFIG = {
+    bookUrl: <?= json_encode(pageUrl('action_book.php'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+    cancelUrl: <?= json_encode(pageUrl('action_cancel.php'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+    waitlistJoinUrl: <?= json_encode(pageUrl('action_waitlist_join.php'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+    waitlistLeaveUrl: <?= json_encode(pageUrl('action_waitlist_leave.php'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+    redirect: <?= json_encode($classRedirect, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+    bookButtonLabel: 'Inscrever nesta aula',
+    cardSelector: '.class-enrollment-section',
+    actionsSelector: '.class-enrollment-actions',
+    spotsSelector: '.class-spots-value'
+};
+</script>
+<?php
+    $extraScripts[] = 'enrollment-actions.js';
+endif;
+if ($user !== null && $isEnrolled && !$hasUserReview && $canLeaveReview):
+    $extraScripts[] = 'review-form.js';
+endif;
+?>
 
 <?php require INCLUDES_PATH . '/footer.php'; ?>

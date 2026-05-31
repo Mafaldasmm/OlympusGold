@@ -1,7 +1,7 @@
 /* --- Navbar --- */
 header.navbar {
     background-color: rgba(51, 51, 51, 0.95);
-    padding: 20px 5%;
+    padding: 16px 5%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -18,18 +18,96 @@ header.navbar .logo {
     font-size: 1.5rem;
     font-weight: bold;
     letter-spacing: 2px;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+header.navbar .logo:hover {
+    color: #ffffff;
+    opacity: 0.92;
 }
 
 header.navbar .logo span {
     color: var(--primary-color);
 }
 
+header.navbar .nav-links .nav-user {
+    display: flex;
+    align-items: center;
+}
+
+/* Especificidade acima de .nav-links li a { display: block } para manter avatar + texto em linha */
+header.navbar .nav-links li a.nav-user__profile {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.3s;
+    max-width: none;
+    line-height: 1.2;
+    height: auto;
+    min-height: 0;
+    box-sizing: border-box;
+    vertical-align: middle;
+}
+
+header.navbar .nav-links li a.nav-user__profile:hover {
+    background: rgba(212, 175, 55, 0.12);
+    color: var(--primary-color);
+}
+
+header.navbar .nav-links li a.nav-user__profile:hover .nav-user__greeting,
+header.navbar .nav-links li a.nav-user__profile.active .nav-user__greeting {
+    color: var(--primary-color);
+}
+
+header.navbar .nav-links li a.nav-user__profile.active {
+    color: var(--primary-color);
+}
+
+header.navbar .nav-avatar {
+    display: block;
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(212, 175, 55, 0.65);
+    flex: 0 0 28px;
+    background: #444;
+}
+
+header.navbar .nav-user__greeting {
+    color: #b0b1b1;
+    font-size: 0.85rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 9rem;
+    padding: 0;
+    margin: 0;
+    align-self: center;
+}
+
 header.navbar .nav-links {
     display: flex;
+    align-items: center;
     list-style: none;
     margin: 0;
     padding: 0;
     gap: 0.5rem;
+}
+
+header.navbar .nav-links > li {
+    display: flex;
+    align-items: center;
 }
 
 header.navbar .nav-links li a {
@@ -141,12 +219,30 @@ header.navbar .nav-links .nav-button:hover {
     }
 
     header.navbar .nav-links .nav-button,
-    header.navbar .nav-links .nav-label {
+    header.navbar .nav-links .nav-label,
+    header.navbar .nav-links li a.nav-user__profile {
         padding: 1rem 0;
         font-size: 1.1rem;
         border-bottom: 1px solid #333;
         width: 100%;
         text-align: left;
+        border-radius: 0;
+        display: inline-flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    header.navbar .nav-user__greeting {
+        max-width: none;
+        font-size: 1.1rem;
+    }
+
+    header.navbar .nav-avatar {
+        width: 32px;
+        height: 32px;
+        flex: 0 0 32px;
     }
 
     header.navbar .nav-links li:last-child a,

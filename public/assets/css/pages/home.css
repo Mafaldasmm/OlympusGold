@@ -1,7 +1,7 @@
 /* HERO SECTION */
 .hero {
     height: 100vh;
-    background: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+    background: url('../../img/backgrounds/hero-gym.jpg') no-repeat center center/cover;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -193,42 +193,68 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0.35) 0%, rgba(80, 80, 80, 0.9) 100%);
+    background-color: #2a2a2a;
+    background-image:
+        linear-gradient(135deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.72) 100%),
+        url('../../img/backgrounds/gym-interior.jpg');
+    background-size: cover;
+    background-position: center;
 }
 
 .home-promo-card__visual--trainer {
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0.5) 0%, #4a4030 55%, #333 100%);
+    background-image:
+        linear-gradient(135deg, rgba(212, 175, 55, 0.35) 0%, rgba(0, 0, 0, 0.75) 100%),
+        url('../../img/backgrounds/hero-gym.jpg');
 }
 
 .home-promo-card--yoga .home-promo-card__visual {
-    background: linear-gradient(135deg, rgba(152, 201, 186, 0.55) 0%, #2d3d38 100%);
+    background-image:
+        linear-gradient(135deg, rgba(80, 120, 100, 0.65) 0%, rgba(0, 0, 0, 0.7) 100%),
+        url('../../img/backgrounds/gym-interior.jpg');
 }
 
 .home-promo-card--pilates .home-promo-card__visual {
-    background: linear-gradient(135deg, rgba(180, 152, 201, 0.55) 0%, #3a3348 100%);
+    background-image:
+        linear-gradient(135deg, rgba(100, 80, 120, 0.6) 0%, rgba(0, 0, 0, 0.7) 100%),
+        url('../../img/backgrounds/gym-interior.jpg');
 }
 
 .home-promo-card--hiit .home-promo-card__visual {
-    background: linear-gradient(135deg, rgba(224, 112, 96, 0.55) 0%, #4a3028 100%);
+    background-image:
+        linear-gradient(135deg, rgba(180, 70, 50, 0.55) 0%, rgba(0, 0, 0, 0.72) 100%),
+        url('../../img/backgrounds/hero-gym.jpg');
 }
 
 .home-promo-card--zumba .home-promo-card__visual {
-    background: linear-gradient(135deg, rgba(222, 184, 79, 0.6) 0%, #4a4228 100%);
+    background-image:
+        linear-gradient(135deg, rgba(180, 140, 40, 0.5) 0%, rgba(0, 0, 0, 0.72) 100%),
+        url('../../img/backgrounds/gym-interior.jpg');
 }
 
 .home-promo-card--cycling .home-promo-card__visual {
-    background: linear-gradient(135deg, rgba(80, 160, 220, 0.55) 0%, #283848 100%);
+    background-image:
+        linear-gradient(135deg, rgba(50, 100, 150, 0.55) 0%, rgba(0, 0, 0, 0.72) 100%),
+        url('../../img/backgrounds/hero-gym.jpg');
 }
 
 .home-promo-card--boxing .home-promo-card__visual {
-    background: linear-gradient(135deg, rgba(220, 120, 60, 0.55) 0%, #4a3520 100%);
+    background-image:
+        linear-gradient(135deg, rgba(160, 80, 40, 0.55) 0%, rgba(0, 0, 0, 0.72) 100%),
+        url('../../img/backgrounds/gym-interior.jpg');
 }
 
-.home-promo-card__icon {
-    font-size: 3.5rem;
-    line-height: 1;
-    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
+.home-promo-card__type-mark {
     z-index: 1;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.92);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+    padding: 0.35rem 0.85rem;
+    border: 1px solid rgba(212, 175, 55, 0.45);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.35);
 }
 
 .home-promo-card__avatar {
@@ -403,9 +429,28 @@
     border-color: #D4AF37;
 }
 
-.feature-card .icon {
-    font-size: 3rem;
-    margin-bottom: 15px;
+.feature-card__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    font-size: 1.65rem;
+    line-height: 1;
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    filter: grayscale(15%) saturate(0.85);
+    opacity: 0.92;
+}
+
+.feature-card:hover .feature-card__icon {
+    filter: grayscale(0) saturate(1);
+    opacity: 1;
+    border-color: rgba(212, 175, 55, 0.65);
+    background: rgba(212, 175, 55, 0.2);
 }
 
 .feature-card h3 {

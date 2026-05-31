@@ -20,6 +20,43 @@ body {
     line-height: 1.6;
     scroll-behavior: smooth;
     padding-top: 80px;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+body:has(.auth-main) {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+body:has(.auth-main) main.auth-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+body:has(.auth-main) .footer {
+    margin-top: auto;
+    flex-shrink: 0;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
 }
 
 ul { list-style: none; }

@@ -26,6 +26,27 @@ function utf8Length(string $value): int
 }
 
 /**
+ * UTF-8 safe substring when mbstring is unavailable.
+ */
+function utf8Substr(string $value, int $start, ?int $length = null): string
+{
+    if (function_exists('mb_substr')) {
+        return $length === null
+            ? mb_substr($value, $start)
+            : mb_substr($value, $start, $length);
+    }
+
+    return $length === null
+        ? substr($value, $start)
+        : substr($value, $start, $length);
+}
+
+function utf8Strtoupper(string $value): string
+{
+    return function_exists('mb_strtoupper') ? mb_strtoupper($value) : strtoupper($value);
+}
+
+/**
  * Relative URL prefix from the executing script back to public/.
  */
 function publicBasePath(): string
