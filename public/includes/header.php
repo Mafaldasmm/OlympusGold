@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 $pageTitle        ??= 'Olympus Gold Gym';
 $extraStylesheets ??= [];
+$bodyClass        ??= '';
 
 ?>
 <!DOCTYPE html>
@@ -28,7 +29,7 @@ $extraStylesheets ??= [];
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
-<body>
+<body<?= $bodyClass !== '' ? ' class="' . e($bodyClass) . '"' : '' ?>>
 
     <header class="navbar">
         <a href="<?= e(pageUrl('home.php')) ?>" class="logo" aria-label="Olympus Gold Gym — página inicial">OLYMPUS<span>GOLD</span></a>

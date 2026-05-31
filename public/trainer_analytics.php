@@ -196,7 +196,7 @@ require INCLUDES_PATH . '/nav.php';
                                 <div class="trainer-analytics-chart__bar" role="img"
                                      aria-label="<?= e($class['title']) ?>: <?= (int) $class['utilization_pct'] ?>% de ocupação">
                                     <div class="trainer-analytics-chart__fill <?= $class['utilization_pct'] >= 100 ? 'is-full' : '' ?>"
-                                         style="width: <?= (int) $class['utilization_pct'] ?>%"></div>
+                                         data-utilization="<?= (int) $class['utilization_pct'] ?>"></div>
                                 </div>
                             </li>
                         <?php endforeach; ?>
@@ -291,4 +291,7 @@ require INCLUDES_PATH . '/nav.php';
     </div>
 </main>
 
-<?php require INCLUDES_PATH . '/footer.php'; ?>
+<?php
+$extraScripts = ['chart-bars.js'];
+require INCLUDES_PATH . '/footer.php';
+?>

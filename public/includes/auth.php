@@ -176,7 +176,7 @@ function profilePhotoUrl(?array $user, int $initialsSize = 150): string
         }
     }
 
-    return profileInitialsAvatarDataUri($user, $initialsSize);
+    return pageUrl('assets/img/default-avatar.svg');
 }
 
 /**

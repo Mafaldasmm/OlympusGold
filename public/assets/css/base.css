@@ -70,7 +70,7 @@ a { text-decoration: none; color: inherit; transition: 0.3s; }
 
 .btn-cta-small {
     background-color: #D4AF37;
-    color: #333333 !important;
+    color: #333333;
     padding: 8px 20px;
     border-radius: 5px;
     font-weight: 700;
@@ -78,6 +78,50 @@ a { text-decoration: none; color: inherit; transition: 0.3s; }
 
 .btn-cta-small:hover {
     background-color: #FFFFFF;
+}
+
+/* Página de erro (renderErrorPage) */
+.error-page {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.error-page__card {
+    max-width: 42rem;
+    width: 100%;
+}
+
+.error-page__card .btn-primary {
+    display: inline-block;
+    width: auto;
+}
+
+/* Utilitários — evitar estilos inline nas templates */
+.btn-primary--auto {
+    width: auto;
+}
+
+.btn-primary--fit {
+    width: auto;
+    display: inline-block;
+}
+
+.filters-bar .btn-primary {
+    width: auto;
+    margin-top: 0;
+}
+
+.btn-secondary--block-center {
+    display: block;
+    text-align: center;
+}
+
+.review-form-section .btn-primary {
+    width: auto;
 }
 
 /* FOOTER */

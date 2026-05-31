@@ -31,6 +31,13 @@ header.navbar .logo span {
     color: var(--primary-color);
 }
 
+header.navbar .site-nav {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: flex-end;
+}
+
 header.navbar .nav-links .nav-user {
     display: flex;
     align-items: center;
@@ -187,8 +194,21 @@ header.navbar .nav-links .nav-button:hover {
 
 /* --- Mobile Menu --- */
 @media (max-width: 768px) {
+    header.navbar {
+        justify-content: flex-start;
+    }
+
+    header.navbar .site-nav {
+        flex: 0 0 0;
+        width: 0;
+        min-width: 0;
+        overflow: visible;
+    }
+
     .hamburger {
         display: flex;
+        margin-left: auto;
+        flex-shrink: 0;
     }
 
     header.navbar .nav-links {
@@ -412,7 +432,7 @@ body.site-confirm-open {
 }
 
 .site-confirm[hidden] {
-    display: none !important;
+    display: none;
 }
 
 .site-confirm__backdrop {

@@ -43,11 +43,22 @@ require INCLUDES_PATH . '/nav.php';
 
 ?>
 <main class="equipment-page">
-    <header class="equipment-header">
-        <h1>Disponibilidade de <span>Equipamentos</span></h1>
-        <p class="equipment-subtitle">Área principal de treino — estado em tempo real</p>
+    <header class="equipment-hero" aria-labelledby="equipment-page-title">
+        <img class="equipment-hero__image"
+             src="<?= e(asset('img/backgrounds/gym-interior.jpg')) ?>"
+             alt="Área principal do ginásio com equipamentos de musculação e cardio"
+             width="1024"
+             height="683"
+             decoding="async"
+             fetchpriority="high">
+        <div class="equipment-hero__overlay" aria-hidden="true"></div>
+        <div class="equipment-hero__text">
+            <h1 id="equipment-page-title">Disponibilidade de <span>Equipamentos</span></h1>
+            <p class="equipment-subtitle">Área principal de treino — estado em tempo real</p>
+        </div>
     </header>
 
+    <div class="equipment-page__content">
     <?php if ($loadError): ?>
         <section class="card equipment-message equipment-message--error" role="alert">
             <h2>Informação temporariamente indisponível</h2>
@@ -146,6 +157,7 @@ require INCLUDES_PATH . '/nav.php';
             </div>
         </details>
     <?php endif; ?>
+    </div>
 </main>
 
 <script src="<?= e(asset('js/equipment-filters.js')) ?>"></script>

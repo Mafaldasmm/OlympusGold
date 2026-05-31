@@ -1,9 +1,5 @@
-/* Evita scroll horizontal e fundo estranho ao fazer zoom out */
-html:has(.profile-container) {
-    overflow-x: clip;
-}
-
-body:has(.profile-container) {
+/* Layout perfil — sem :has() para melhor suporte mobile */
+body.profile-page {
     display: flex;
     flex-direction: column;
     overflow-x: clip;
@@ -28,7 +24,7 @@ body:has(.profile-container) {
     box-sizing: border-box;
 }
 
-body:has(.profile-container) .footer {
+body.profile-page .footer {
     flex-shrink: 0;
     width: 100%;
     max-width: 100%;
@@ -116,7 +112,7 @@ body:has(.profile-container) .footer {
 .form-actions-wrap {
     position: relative;
     margin-top: 2rem;
-    padding-top: 4.75rem;
+    padding-top: 0;
     width: 100%;
     max-width: 100%;
 }
@@ -288,14 +284,6 @@ body:has(.profile-container) .footer {
     .profile-container .btn-cancel {
         width: 100%;
         max-width: 100%;
-    }
-
-    .form-actions-wrap {
-        padding-top: 5.25rem;
-    }
-
-    .profile-feedback-slot {
-        height: 4.75rem;
     }
 
     .form-actions {

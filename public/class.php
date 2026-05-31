@@ -262,7 +262,7 @@ require INCLUDES_PATH . '/nav.php';
                               placeholder="Partilha a tua experiência (máx. 300 caracteres)…"></textarea>
                 </div>
 
-                <button type="submit" class="btn-primary" style="width:auto;">Enviar Avaliação</button>
+                <button type="submit" class="btn-primary">Enviar Avaliação</button>
             </form>
         </section>
 

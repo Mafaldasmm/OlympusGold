@@ -209,10 +209,17 @@ textarea:focus {
     color: #e8b84a;
 }
 
-.btn-waitlist {
-    background: rgba(232, 184, 74, 0.25) !important;
-    border: 1px solid #e8b84a !important;
-    color: #fff !important;
+.btn-primary.btn-waitlist,
+button.btn-primary.btn-waitlist {
+    background: rgba(232, 184, 74, 0.25);
+    border: 1px solid #e8b84a;
+    color: #fff;
+}
+
+.btn-primary.btn-waitlist:hover,
+button.btn-primary.btn-waitlist:hover {
+    background: rgba(232, 184, 74, 0.4);
+    color: #fff;
 }
 
 .class-enrollment-actions {
