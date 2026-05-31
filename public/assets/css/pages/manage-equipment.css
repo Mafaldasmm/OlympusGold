@@ -1,6 +1,7 @@
 /* Equipment management (admin / trainer) */
 
-.equipment-manage-main .equipment-subtitle {
+.equipment-manage-main .equipment-subtitle,
+.equipment-manage-main .trainer-sub {
     margin-top: 0.35rem;
 }
 
@@ -8,8 +9,29 @@
     text-align: left;
 }
 
-.equipment-manage-view-link {
-    flex-shrink: 0;
+.equipment-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.equipment-page-header__text {
+    flex: 1;
+    min-width: 220px;
+}
+
+.equipment-page-header__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.equipment-header-btn {
+    white-space: nowrap;
 }
 
 .equipment-form-grid {
@@ -37,10 +59,26 @@
     font-style: italic;
 }
 
+.equipment-filter-empty {
+    margin-top: 1rem;
+}
+
 @media (max-width: 768px) {
-    .admin-header {
+    .equipment-page-header {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
+    }
+
+    .equipment-page-header__actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .equipment-page-header__actions .btn-admin-primary,
+    .equipment-page-header__actions .btn-admin-secondary {
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .equipment-manage-table .equipment-manage-actions {

@@ -219,7 +219,10 @@ require INCLUDES_PATH . '/nav.php';
 
         <div class="admin-header">
             <h1 class="admin-title">Gestão de <span>Utilizadores</span></h1>
-            <a href="<?= e(pageUrl('admin_classes.php')) ?>" class="btn-admin-secondary">Gerir Aulas</a>
+            <div class="admin-header-links">
+                <a href="<?= e(pageUrl('admin_classes.php')) ?>" class="btn-admin-secondary">Gerir Aulas</a>
+                <a href="<?= e(pageUrl('admin_equipment.php')) ?>" class="btn-admin-secondary">Gerir Equipamentos</a>
+            </div>
         </div>
 
         <?php if ($success): ?>

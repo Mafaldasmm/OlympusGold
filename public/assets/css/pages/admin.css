@@ -24,6 +24,13 @@
     flex-wrap: wrap;
     gap: 1rem;
 }
+
+.admin-header-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+}
  
 .admin-title {
     font-size: 2rem;

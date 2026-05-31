@@ -9,7 +9,15 @@ declare(strict_types=1);
 const EQUIPMENT_AREA_MAIN = 'main';
 
 /** @var list<string> */
-const EQUIPMENT_STATUSES = ['available', 'in_use', 'unavailable'];
+const EQUIPMENT_STATUSES = ['available', 'in_use', 'maintenance'];
+
+/**
+ * Maps legacy DB values to the current status vocabulary.
+ */
+function equipmentNormalizeStatus(string $status): string
+{
+    return $status === 'unavailable' ? 'maintenance' : $status;
+}
 
 /**
  * @return list<array<string, mixed>>
@@ -27,25 +35,27 @@ function fetchMainAreaEquipment(): array
 
 function equipmentStatusIsValid(string $status): bool
 {
+    $status = equipmentNormalizeStatus($status);
+
     return in_array($status, EQUIPMENT_STATUSES, true);
 }
 
 function equipmentStatusLabel(string $status): string
 {
-    return match ($status) {
+    return match (equipmentNormalizeStatus($status)) {
         'available'   => 'Disponível',
         'in_use'      => 'Em uso',
-        'unavailable' => 'Indisponível',
+        'maintenance' => 'Em manutenção',
         default       => 'Desconhecido',
     };
 }
 
 function equipmentStatusCssClass(string $status): string
 {
-    return match ($status) {
+    return match (equipmentNormalizeStatus($status)) {
         'available'   => 'equipment-status--available',
         'in_use'      => 'equipment-status--in-use',
-        'unavailable' => 'equipment-status--unavailable',
+        'maintenance' => 'equipment-status--maintenance',
         default       => 'equipment-status--unknown',
     };
 }
@@ -120,8 +130,10 @@ function validateEquipmentInput(array $input, array &$errors, ?int $excludeId = 
         $status = 'available';
     }
 
+    $status = equipmentNormalizeStatus($status);
+
     if (!equipmentStatusIsValid($status)) {
-        $errors[] = 'O estado de disponibilidade selecionado não é válido.';
+        $errors[] = 'O estado selecionado não é válido.';
     }
 
     if ($excludeId !== null) {

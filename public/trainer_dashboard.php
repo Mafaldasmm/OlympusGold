@@ -99,6 +99,16 @@ require INCLUDES_PATH . '/nav.php';
             </div>
         </div>
 
+        <section class="trainer-card trainer-equipment-card">
+            <div class="trainer-equipment-card__content">
+                <h2>Equipamentos</h2>
+                <p>Atualiza o estado dos equipamentos na área principal de treino.</p>
+            </div>
+            <a href="<?= e(pageUrl('manage_equipment.php')) ?>" class="trainer-equipment-btn">
+                Gerir equipamentos
+            </a>
+        </section>
+
         <?php if (empty($classes)): ?>
             <div class="trainer-card">
                 <p class="empty-state">Ainda não tens aulas atribuídas. Contacta um administrador.</p>

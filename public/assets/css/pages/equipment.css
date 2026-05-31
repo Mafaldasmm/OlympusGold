@@ -14,34 +14,23 @@
     text-align: center;
 }
 
-.equipment-header--with-action {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-    text-align: left;
+.equipment-availability-details {
+    margin-top: 0;
 }
 
-.equipment-header--with-action > div {
-    flex: 1;
-    min-width: 200px;
+.equipment-availability-details .admin-details__body {
+    padding-top: 1rem;
 }
 
-.equipment-manage-link {
-    flex-shrink: 0;
+.equipment-filters {
+    margin-bottom: 1.25rem;
 }
 
-@media (max-width: 600px) {
-    .equipment-header--with-action {
-        flex-direction: column;
-        align-items: stretch;
-        text-align: center;
-    }
-
-    .equipment-manage-link {
-        text-align: center;
-    }
+.equipment-filter-empty {
+    margin-top: 1rem;
+    text-align: center;
+    color: #aaa;
+    font-style: italic;
 }
 
 .equipment-header h1 {
@@ -126,7 +115,7 @@
     color: #e8b84a;
 }
 
-.equipment-summary__item--unavailable .equipment-summary__count {
+.equipment-summary__item--maintenance .equipment-summary__count {
     color: #e06060;
 }
 
@@ -183,6 +172,7 @@
     border: 1px solid #e8b84a;
 }
 
+.equipment-status--maintenance,
 .equipment-status--unavailable {
     background: rgba(220, 50, 50, 0.15);
     color: #e06060;
