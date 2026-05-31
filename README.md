@@ -29,6 +29,7 @@
 **Extra:**
 - [x] Class waitlist when a class is full (join, leave, automatic promotion on cancellation).
 - [x] Trainer analytics for assigned classes (enrollments, capacity utilization, review averages, waitlist and enrolled members).
+- [x] Admin gym-wide analytics (popular classes, capacity utilization, review summaries, equipment status, member activity; searchable class overview).
 
 ## Running
 

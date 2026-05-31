@@ -211,6 +211,7 @@ require INCLUDES_PATH . '/nav.php';
         <div class="admin-header">
             <h1 class="admin-title">Gestão de <span>Aulas</span></h1>
             <div class="admin-header-links">
+                <a href="<?= e(pageUrl('admin_analytics.php')) ?>" class="btn-admin-secondary">Analytics</a>
                 <a href="<?= e(pageUrl('admin_users.php')) ?>" class="btn-admin-secondary">Gerir Utilizadores</a>
                 <a href="<?= e(pageUrl('admin_equipment.php')) ?>" class="btn-admin-secondary">Gerir Equipamentos</a>
             </div>
