@@ -1,38 +1,45 @@
+[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=23299966&assignment_repo_type=AssignmentRepo)
+
 # ltw10g02
 
+## Features
 
-## First Delivery
+**All users:**
+- [x] Register a new account.
+- [x] Log in and out.
+- [ ] Edit their profile, including name, username, password, and profile photo.
 
-The three pages chosen by our group were:
+**Members:**
+- [x] Browse the schedule of available fitness classes, filtering by type, trainer, day, or time.
+- [x] Enroll in and cancel enrollment from upcoming classes, subject to capacity limits.
+- [ ] View trainer profiles, including their specializations and the classes they teach.
+- [ ] Check the current availability of equipment in the main training area.
+- [x] Leave ratings and reviews for classes they have attended.
 
-- `home.html`
-- `schedule.html`
-- `profile.html`
+**Trainers:**
+- [ ] Manage their public profile, including bio, specializations, and certifications.
+- [x] View the roster of members enrolled in their classes.
+- [x] Track and manage their assigned class schedule.
 
-**These pages can be found inside the `public` directory.**
+**Admins:**
+- [x] Manage members and trainers (create, update, and deactivate accounts).
+- [x] Manage the class catalog (create, edit, and remove classes) and assign trainers to them.
+- [ ] Manage equipment in the main training area (add, update availability status, and remove items).
+- [x] Elevate a user to admin status.
+- [x] Oversee and ensure the smooth operation of the entire system.
 
----
+**Extra:**
+- [ ] Something extra (e.g., personal training bookings, membership plans, waitlist, ...).
 
-## Final Delivery
+## Running
 
-### How to Run
-
-1. Initialize the database:
 ```bash
 php reset_db.php
-```
-
-2. Start the server:
-```bash
 php -S localhost:8000 -t public/
 ```
 
-3. Open in browser: `http://localhost:8000`
+## Credentials
 
-### Demo Credentials
-
-| Role    | Username      | Password  |
-|---------|---------------|-----------|
-| Admin   | `admin`       | `demo123` |
-| Trainer | `ana.silva`   | `demo123` |
-| Member  | `joao.membro` | `demo123` |
+- admin / demo123
+- joao.membro / demo123
+- ana.silva / demo123
