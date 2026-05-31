@@ -20,6 +20,7 @@ $extraStylesheets ??= [];
     <title><?= e($pageTitle) ?></title>
     <link rel="stylesheet" href="<?= e(asset('css/base.css')) ?>">
     <link rel="stylesheet" href="<?= e(asset('css/components.css')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('css/toast.css')) ?>">
 <?php foreach ($extraStylesheets as $stylesheet): ?>
     <link rel="stylesheet" href="<?= e(asset('css/' . $stylesheet)) ?>">
 <?php endforeach; ?>
@@ -30,7 +31,7 @@ $extraStylesheets ??= [];
 <body>
 
     <header class="navbar">
-        <div class="logo">OLYMPUS<span>GOLD</span></div>
+        <a href="<?= e(pageUrl('home.php')) ?>" class="logo" aria-label="Olympus Gold Gym — página inicial">OLYMPUS<span>GOLD</span></a>
 
         <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
             <span></span>

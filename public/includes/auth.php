@@ -112,11 +112,61 @@ function userDisplayName(array $user): string
 }
 
 /**
- * Returns the public URL for a user's profile photo.
+ * Two-letter initials for avatar fallback (e.g. "Ana Silva" → AS).
  *
  * @param array<string, mixed>|null $user
  */
-function profilePhotoUrl(?array $user): string
+function userProfileInitials(?array $user): string
+{
+    if ($user === null) {
+        return 'U';
+    }
+
+    $name = userDisplayName($user);
+    $parts = preg_split('/\s+/u', trim($name), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+
+    if (count($parts) >= 2) {
+        $first = utf8Substr($parts[0], 0, 1);
+        $last  = utf8Substr($parts[count($parts) - 1], 0, 1);
+
+        return utf8Strtoupper($first . $last);
+    }
+
+    $compact = preg_replace('/\s+/u', '', $name);
+
+    return utf8Strtoupper(utf8Substr($compact !== '' ? $compact : 'User', 0, 2));
+}
+
+/**
+ * Data URI SVG avatar with initials (local, no external service).
+ *
+ * @param array<string, mixed>|null $user
+ */
+function profileInitialsAvatarDataUri(?array $user, int $size = 150): string
+{
+    $initials = userProfileInitials($user);
+    $fontSize = max(12, (int) round($size * 0.38));
+
+    $svg = sprintf(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="%1$d" height="%1$d" viewBox="0 0 %1$d %1$d">'
+        . '<rect width="%1$d" height="%1$d" fill="#D4AF37"/>'
+        . '<text x="50%%" y="52%%" dominant-baseline="middle" text-anchor="middle" '
+        . 'font-family="Montserrat,Arial,sans-serif" font-size="%2$d" font-weight="700" fill="#333333">%3$s</text>'
+        . '</svg>',
+        $size,
+        $fontSize,
+        htmlspecialchars($initials, ENT_XML1 | ENT_QUOTES, 'UTF-8')
+    );
+
+    return 'data:image/svg+xml,' . rawurlencode($svg);
+}
+
+/**
+ * Returns the public URL for a user's profile photo (uploaded file or initials avatar).
+ *
+ * @param array<string, mixed>|null $user
+ */
+function profilePhotoUrl(?array $user, int $initialsSize = 150): string
 {
     if ($user !== null) {
         $path = trim((string) ($user['profile_photo'] ?? ''));
@@ -126,8 +176,7 @@ function profilePhotoUrl(?array $user): string
         }
     }
 
-    return 'https://ui-avatars.com/api/?background=D4AF37&color=333333&size=150&name='
-        . rawurlencode($user !== null ? userDisplayName($user) : 'User');
+    return profileInitialsAvatarDataUri($user, $initialsSize);
 }
 
 /**

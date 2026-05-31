@@ -1,13 +1,9 @@
 /* Auth pages (login + register) */
 
 .auth-main {
-    min-height: calc(100vh - 80px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 100%;
     padding: 2rem 1rem;
-
-    background: url('https://static.vecteezy.com/ti/vetor-gratis/p1/1631060-moderno-prata-metalico-fundo-gratis-vetor.jpg') no-repeat center center/cover;
+    background: url('../../img/backgrounds/auth-bg.jpg') no-repeat center center/cover;
     position: relative;
 }
 

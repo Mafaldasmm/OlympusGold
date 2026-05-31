@@ -10,8 +10,9 @@ body:has(.profile-container) {
     min-height: 100vh;
     min-height: 100dvh;
     background-color: #1a1a1a;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.7)),
-        url('https://images.hdqwalls.com/download/triangle-solid-black-gold-4k-wk-1440x2960.jpg');
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.75)),
+        url('../../img/backgrounds/profile-bg.jpg');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;

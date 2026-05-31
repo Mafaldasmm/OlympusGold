@@ -28,7 +28,7 @@ $canEditPublicProfile = $currentUser !== null
     && userCanManageTrainerProfile($currentUser, $trainerId);
 
 $displayName = userDisplayName($trainer);
-$photoUrl    = profilePhotoUrl($trainer);
+$photoUrl    = profilePhotoUrl($trainer, 160);
 $bio         = trim((string) ($trainer['bio'] ?? ''));
 
 $dayLabels = [
@@ -51,7 +51,7 @@ $typeLabels = [
     'other'   => 'Outro',
 ];
 
-$currentPage      = 'schedule';
+$currentPage      = 'trainer-profile';
 $pageTitle        = e($displayName) . ' | Treinador | Olympus Gold Gym';
 $extraStylesheets = ['pages/trainer-profile.css', 'pages/admin.css'];
 

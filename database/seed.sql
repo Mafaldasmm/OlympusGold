@@ -10,6 +10,9 @@ INSERT INTO users (username, password, email, name, role) VALUES
     ('marco.rebelo',    '$2y$10$XYZAki5zRfK3p1JMxH5J.OFdfY7.W.QTVTdso2iFzbSmDH5OlGm.G', 'marco@olympusgold.pt',   'Marco Rebelo',   'trainer'),
     ('ricardo.pereira', '$2y$10$XYZAki5zRfK3p1JMxH5J.OFdfY7.W.QTVTdso2iFzbSmDH5OlGm.G', 'ricardo@olympusgold.pt', 'Ricardo Pereira','trainer'),
     ('joao.membro',     '$2y$10$XYZAki5zRfK3p1JMxH5J.OFdfY7.W.QTVTdso2iFzbSmDH5OlGm.G', 'joao@olympusgold.pt',    'João Santos',    'member'),
+    ('marta.ferreira',  '$2y$10$XYZAki5zRfK3p1JMxH5J.OFdfY7.W.QTVTdso2iFzbSmDH5OlGm.G', 'marta@olympusgold.pt',   'Marta Ferreira', 'member'),
+    ('tiago.alves',     '$2y$10$XYZAki5zRfK3p1JMxH5J.OFdfY7.W.QTVTdso2iFzbSmDH5OlGm.G', 'tiago@olympusgold.pt',   'Tiago Alves',    'member'),
+    ('ines.martins',    '$2y$10$XYZAki5zRfK3p1JMxH5J.OFdfY7.W.QTVTdso2iFzbSmDH5OlGm.G', 'ines@olympusgold.pt',    'Inês Martins',   'member'),
     ('admin',           '$2y$10$XYZAki5zRfK3p1JMxH5J.OFdfY7.W.QTVTdso2iFzbSmDH5OlGm.G', 'admin@olympusgold.pt',   'Administrador',  'admin');
 
 UPDATE users SET bio = 'Instrutora de yoga e bem-estar com mais de 8 anos de experiência. Foca em mobilidade, respiração consciente e aulas acessíveis a todos os níveis.'
@@ -48,14 +51,14 @@ INSERT INTO trainer_certifications (trainer_id, name) VALUES
     (4, 'Cycling Indoor Instructor');
 
 INSERT INTO classes (title, description, type, trainer_id, day_of_week, start_time, end_time, capacity) VALUES
-    ('Yoga Matinal',  'Sessão de yoga suave para começar o dia com energia e foco.',                                                          'yoga',    1, 'monday',    '08:00', '09:00', 15),
-    ('Vibe Cycle',    'Treino de ciclismo indoor em grupo, feito ao ritmo de música motivadora.',                                             'cycling', 4, 'monday',    '17:00', '18:00', 15),
-    ('Pilates Core',  'Fortalecimento do core com exercícios de pilates no chão.',                                                            'pilates', 2, 'tuesday',   '10:00', '11:00', 12),
-    ('The Ring',      'Treino estruturado de alta intensidade que combina condicionamento físico com técnicas de combate.',                    'boxing',  1, 'tuesday',   '17:00', '18:00', 15),
-    ('Zumba Energy',  'Aula dinâmica de dança fitness com música latina.',                                                                    'zumba',   3, 'wednesday', '18:30', '19:30', 20),
-    ('Aero',          'Aula que combina música, coordenação motora e exercícios cardiovasculares focados na queima de calorias.',              'hiit',    4, 'thursday',  '17:30', '18:30', 15),
-    ('HIIT Intenso',  'Treino intervalado de alta intensidade para queima máxima.',                                                           'hiit',    4, 'friday',    '07:00', '07:45', 10),
-    ('Zumba Party',   'Treino aeróbico de alta energia que transforma o exercício numa verdadeira festa de dança.',                           'zumba',   3, 'friday',    '19:00', '20:00', 18);
+    ('Yoga Matinal',  'Sessão de yoga suave para começar o dia com energia e foco. Ideal para quem procura mobilidade e relaxamento antes do trabalho.', 'yoga',    1, 'monday',    '08:00', '09:00', 15),
+    ('Vibe Cycle',    'Treino de ciclismo indoor em grupo, feito ao ritmo de música motivadora. Intervalos variados para melhorar resistência.', 'cycling', 4, 'monday',    '17:00', '18:00', 15),
+    ('Pilates Core',  'Fortalecimento do core com exercícios de pilates no chão. Trabalho de estabilidade, respiração e controlo lombar.', 'pilates', 2, 'tuesday',   '10:00', '11:00', 12),
+    ('The Ring',      'Treino estruturado de alta intensidade que combina condicionamento físico com técnicas de combate. Luvas e wraps recomendados.', 'boxing',  1, 'tuesday',   '17:00', '18:00', 15),
+    ('Zumba Energy',  'Aula dinâmica de dança fitness com música latina. Ambiente descontraído, sem necessidade de experiência prévia.', 'zumba',   3, 'wednesday', '18:30', '19:30', 20),
+    ('Aero',          'Aula que combina música, coordenação motora e exercícios cardiovasculares focados na queima de calorias.', 'hiit',    4, 'thursday',  '17:30', '18:30', 15),
+    ('HIIT Intenso',  'Treino intervalado de alta intensidade para queima máxima. Blocos curtos com recuperação ativa — nível intermédio/avançado.', 'hiit',    4, 'friday',    '07:00', '07:45', 10),
+    ('Zumba Party',   'Treino aeróbico de alta energia que transforma o exercício numa verdadeira festa de dança.', 'zumba',   3, 'friday',    '19:00', '20:00', 18);
 
 INSERT INTO equipment (name, type, area, status) VALUES
     ('Banco de supino',        'strength', 'main', 'available'),
@@ -72,10 +75,31 @@ INSERT INTO equipment (name, type, area, status) VALUES
 UPDATE classes SET featured = 1 WHERE title IN ('Yoga Matinal', 'Zumba Energy');
 UPDATE users SET featured = 1 WHERE username IN ('ana.silva', 'ricardo.pereira');
 
+-- Inscrições (joão=5, marta=6, tiago=7, inês=8 após inserts acima)
 INSERT INTO enrollments (user_id, class_id) VALUES
     (5, 1),
-    (5, 5);
+    (5, 5),
+    (6, 3),
+    (6, 4),
+    (7, 2),
+    (7, 6),
+    (8, 5),
+    (8, 7),
+    (8, 8);
+
+-- HIIT Intenso (id 7) quase cheio — lista de espera
+INSERT INTO enrollments (user_id, class_id) VALUES
+    (6, 7);
+
+INSERT INTO class_waitlist (user_id, class_id) VALUES
+    (5, 7);
 
 INSERT INTO reviews (user_id, class_id, rating, comment) VALUES
-    (5, 1, 5, 'Excelente aula, ambiente calmo e treinadora muito atenta.'),
-    (5, 5, 4, 'Muita energia! Recomendo para quem gosta de dançar.');
+    (5, 1, 5, 'Excelente aula, ambiente calmo e treinadora muito atenta. Voltarei na próxima semana.'),
+    (5, 5, 4, 'Muita energia! Recomendo para quem gosta de dançar. Só faltou mais espaço na sala.'),
+    (6, 3, 5, 'Pilates muito bem explicado. Senti melhorias na postura ao fim de três semanas.'),
+    (6, 4, 3, 'Treino exigente — bom para quem já tem base. Para iniciantes pode ser intenso demais.'),
+    (7, 2, 4, 'Ciclismo indoor divertido, música fixe. Bicicletas confortáveis.'),
+    (7, 6, 2, 'Gostei da ideia mas o ar condicionado estava fraco e a sala ficou muito quente.'),
+    (8, 5, 5, 'A melhor Zumba em que já estive no Porto. Professor super motivador!'),
+    (8, 8, 4, 'Festa garantida às sextas. Cheguei 10 minutos tarde e ainda assim entrei bem na aula.');

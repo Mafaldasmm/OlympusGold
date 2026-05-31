@@ -18,7 +18,6 @@ $formName = (string) ($old['name'] ?? $user['name'] ?? '');
 $formUsername = (string) ($old['username'] ?? $user['username']);
 $photoUrl = profilePhotoUrl($user);
 $navDisplayName = userDisplayName($user);
-$hasInitialFeedback = $success !== '' || $info !== '' || $cancelled || $errors !== [];
 
 $currentPage = 'profile';
 $pageTitle = 'Perfil do Utilizador - Olympus Gold Gym';
@@ -111,34 +110,6 @@ require INCLUDES_PATH . '/nav.php';
             </div>
 
             <div class="form-actions-wrap">
-                <div id="profile-alerts" class="profile-feedback-slot<?= $hasInitialFeedback ? ' is-visible' : '' ?>" aria-live="polite">
-<?php if ($success !== ''): ?>
-                    <div class="alert alert-success">
-                        <p><?= e($success) ?></p>
-                    </div>
-<?php endif; ?>
-
-<?php if ($info !== ''): ?>
-                    <div class="alert alert-info">
-                        <p><?= e($info) ?></p>
-                    </div>
-<?php endif; ?>
-
-<?php if ($cancelled): ?>
-                    <div class="alert alert-info">
-                        <p>Alterações canceladas. Os dados guardados foram restaurados.</p>
-                    </div>
-<?php endif; ?>
-
-<?php if ($errors !== []): ?>
-                    <div class="alert alert-error">
-<?php foreach ($errors as $error): ?>
-                        <p><?= e($error) ?></p>
-<?php endforeach; ?>
-                    </div>
-<?php endif; ?>
-                </div>
-
                 <div class="form-actions">
                     <button type="submit" class="btn-save" id="profile-save">Guardar Alterações</button>
                     <button type="button" class="btn-cancel is-hidden" id="profile-cancel">Cancelar</button>
@@ -151,7 +122,6 @@ require INCLUDES_PATH . '/nav.php';
     <script>
         (function () {
             const form = document.getElementById('profile-form');
-            const alerts = document.getElementById('profile-alerts');
             const greeting = document.getElementById('nav-user-greeting');
             const photoPreview = document.getElementById('profile-photo-preview');
             const photoInput = document.getElementById('profile_photo');
@@ -173,8 +143,6 @@ require INCLUDES_PATH . '/nav.php';
 
             let isSubmitting = false;
             let photoPreviewObjectUrl = null;
-            let alertDismissTimer = null;
-            const AUTO_DISMISS_MS = 2000;
 
             function setGreeting(name) {
                 if (!greeting || !name) {
@@ -226,59 +194,14 @@ require INCLUDES_PATH . '/nav.php';
                 return true;
             }
 
-            function scrollFeedbackIntoView() {
-                if (!alerts || !saveButton) {
-                    return;
-                }
-                saveButton.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-
             function showAlert(type, message, options) {
                 const opts = options || {};
-                const autoDismiss = opts.autoDismiss !== false
-                    && (type === 'success' || type === 'info' || type === 'error');
+                const durationMs = opts.autoDismiss === false ? 5000 : undefined;
 
-                if (alertDismissTimer) {
-                    clearTimeout(alertDismissTimer);
-                    alertDismissTimer = null;
+                if (typeof window.showSiteToast === 'function') {
+                    const toastType = type === 'error' ? 'error' : (type === 'success' ? 'success' : 'info');
+                    window.showSiteToast(toastType, message, durationMs);
                 }
-
-                alerts.innerHTML = '<div class="alert alert-' + type + '"><p>' + escapeHtml(message) + '</p></div>';
-                alerts.classList.add('is-visible');
-                scrollFeedbackIntoView();
-
-                if (autoDismiss) {
-                    alertDismissTimer = setTimeout(function () {
-                        if (alerts) {
-                            alerts.innerHTML = '';
-                            alerts.classList.remove('is-visible');
-                        }
-                        alertDismissTimer = null;
-                    }, AUTO_DISMISS_MS);
-                }
-            }
-
-            function scheduleDismissForExistingAlerts() {
-                if (!alerts) {
-                    return;
-                }
-
-                const existing = alerts.querySelector('.alert-success, .alert-info, .alert-error');
-                if (!existing) {
-                    return;
-                }
-
-                alerts.classList.add('is-visible');
-
-                if (alertDismissTimer) {
-                    clearTimeout(alertDismissTimer);
-                }
-
-                alertDismissTimer = setTimeout(function () {
-                    alerts.innerHTML = '';
-                    alerts.classList.remove('is-visible');
-                    alertDismissTimer = null;
-                }, AUTO_DISMISS_MS);
             }
 
             function updateCsrfToken(token) {
@@ -382,7 +305,6 @@ require INCLUDES_PATH . '/nav.php';
                 setGreeting(flashDisplayName);
             }
 
-            scheduleDismissForExistingAlerts();
             updateCancelVisibility();
 
             [nameInput, usernameInput, passwordInput].forEach(function (input) {

@@ -30,9 +30,14 @@ require INCLUDES_PATH . '/nav.php';
                 <h2>Perfil público</h2>
                 <p>Edita a tua biografia, especializações e certificações visíveis no teu perfil.</p>
             </div>
-            <a href="<?= e(pageUrl('trainer_manage_profile.php')) ?>" class="trainer-dashboard-btn">
-                Gerir perfil público
-            </a>
+            <div class="trainer-dashboard-action-card__buttons">
+                <a href="<?= e(pageUrl('trainer.php?id=' . (int) $trainer['id'])) ?>" class="trainer-dashboard-btn trainer-dashboard-btn--secondary">
+                    Ver perfil público
+                </a>
+                <a href="<?= e(pageUrl('trainer_manage_profile.php')) ?>" class="trainer-dashboard-btn">
+                    Gerir perfil público
+                </a>
+            </div>
         </section>
 
         <section class="trainer-card trainer-dashboard-action-card">

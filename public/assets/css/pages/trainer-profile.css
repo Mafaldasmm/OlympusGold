@@ -10,8 +10,9 @@
     text-align: center;
     padding: 3rem 5% 2.5rem;
     color: #fff;
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-        url('https://www.fitness4all.pt/wp-content/uploads/2025/01/element-matosinhos-p2-1024x683.jpeg');
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+        url('../../img/backgrounds/gym-interior.jpg');
     background-size: cover;
     background-position: center;
 }

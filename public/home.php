@@ -56,7 +56,7 @@ require INCLUDES_PATH . '/nav.php';
             <p>Treino de elite, equipamentos de última geração e acompanhamento personalizado num ambiente exclusivo.</p>
             <div class="hero-btns">
                 <a href="#planos" class="btn-primary">Ver Planos</a>
-                <a href="#" class="btn-secondary">Aula Experimental</a>
+                <a href="<?= e(pageUrl('schedule.php')) ?>" class="btn-secondary">Aula Experimental</a>
             </div>
         </div>
     </section>
@@ -97,7 +97,7 @@ require INCLUDES_PATH . '/nav.php';
                                     <a href="<?= e($classUrl) ?>"
                                        class="home-promo-card home-promo-card--class home-promo-card--<?= e($visual['accent']) ?>">
                                         <div class="home-promo-card__visual">
-                                            <span class="home-promo-card__icon" aria-hidden="true"><?= $visual['icon'] ?></span>
+                                            <span class="home-promo-card__type-mark" aria-hidden="true"><?= e($typeLabel) ?></span>
                                             <span class="home-promo-card__shine" aria-hidden="true"></span>
                                             <span class="home-promo-card__pill">Destaque</span>
                                         </div>
@@ -161,22 +161,22 @@ require INCLUDES_PATH . '/nav.php';
             <h2 class="section-title">As Nossas Modalidades</h2>
             <div class="feature-grid">
                 <div class="feature-card">
-                    <div class="icon">🏋️</div>
+                    <span class="feature-card__icon" aria-hidden="true">🏋️</span>
                     <h3>Musculação</h3>
                     <p>Equipamentos premium para hipertrofia e força máxima.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="icon">🥊</div>
+                    <span class="feature-card__icon" aria-hidden="true">🥊</span>
                     <h3>Boxe & Artes Marciais</h3>
                     <p>Liberte o stress e melhore a sua agilidade e reflexos.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="icon">🧘</div>
+                    <span class="feature-card__icon" aria-hidden="true">🧘</span>
                     <h3>Yoga & Pilates</h3>
                     <p>Equilíbrio entre corpo e mente num ambiente sereno.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="icon">🚴</div>
+                    <span class="feature-card__icon" aria-hidden="true">🚴</span>
                     <h3>Cycling</h3>
                     <p>Sessões de alta intensidade com os melhores instrutores.</p>
                 </div>

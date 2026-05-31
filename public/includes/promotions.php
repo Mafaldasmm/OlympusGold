@@ -152,18 +152,18 @@ function setTrainerFeatured(PDO $pdo, int $trainerId, bool $featured): array
 }
 
 /**
- * @return array{accent: string, icon: string}
+ * @return array{accent: string}
  */
 function promotionClassVisual(string $type): array
 {
     $map = [
-        'yoga'    => ['accent' => 'yoga', 'icon' => '🧘'],
-        'pilates' => ['accent' => 'pilates', 'icon' => '🤸'],
-        'hiit'    => ['accent' => 'hiit', 'icon' => '⚡'],
-        'zumba'   => ['accent' => 'zumba', 'icon' => '💃'],
-        'cycling' => ['accent' => 'cycling', 'icon' => '🚴'],
-        'boxing'  => ['accent' => 'boxing', 'icon' => '🥊'],
-        'other'   => ['accent' => 'other', 'icon' => '✨'],
+        'yoga'    => ['accent' => 'yoga'],
+        'pilates' => ['accent' => 'pilates'],
+        'hiit'    => ['accent' => 'hiit'],
+        'zumba'   => ['accent' => 'zumba'],
+        'cycling' => ['accent' => 'cycling'],
+        'boxing'  => ['accent' => 'boxing'],
+        'other'   => ['accent' => 'other'],
     ];
 
     return $map[$type] ?? $map['other'];

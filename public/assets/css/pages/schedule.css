@@ -39,12 +39,49 @@ body:has(.schedule-section) .footer {
     max-width: 100%;
     box-sizing: border-box;
     background-color: #1f1f1f;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-        url('https://www.fitness4all.pt/wp-content/uploads/2025/01/element-matosinhos-p2-1024x683.jpeg');
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)),
+        url('../../img/backgrounds/gym-interior.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
     background-attachment: scroll;
+}
+
+.schedule-filters-panel {
+    margin-top: 1.5rem;
+    text-align: left;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+.schedule-filters-panel__summary {
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--primary-color);
+    list-style: none;
+}
+
+.schedule-filters-panel__summary::-webkit-details-marker {
+    display: none;
+}
+
+.schedule-filters-panel[open] .schedule-filters-panel__summary {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.schedule-filters-panel .filters-bar {
+    padding: 1rem;
+    margin: 0;
+}
+
+@media (min-width: 769px) {
+    .schedule-filters-panel__summary {
+        pointer-events: none;
+    }
 }
 
 .schedule-header h2 {
@@ -158,34 +195,7 @@ body:has(.schedule-section) .footer {
     width: 100%;
     max-width: min(1200px, 100%);
     margin: 0 auto;
-    padding-top: 4.25rem;
     box-sizing: border-box;
-}
-
-.schedule-feedback-slot {
-    position: absolute;
-    top: 0;
-    left: clamp(1rem, 4vw, 2.5rem);
-    right: clamp(1rem, 4vw, 2.5rem);
-    height: 4.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    z-index: 2;
-}
-
-.schedule-feedback-slot.is-visible {
-    opacity: 1;
-}
-
-.schedule-feedback-slot .flash {
-    width: 100%;
-    margin: 0;
-    pointer-events: auto;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
 }
 
 /* --- Flash Messages --- */
@@ -245,11 +255,4 @@ body:has(.schedule-section) .footer {
         max-width: 100%;
     }
 
-    .schedule-list-wrap {
-        padding-top: 5rem;
-    }
-
-    .schedule-feedback-slot {
-        height: 4.75rem;
-    }
 }

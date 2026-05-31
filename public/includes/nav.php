@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Expected variable: $currentPage — one of: home, schedule, equipment, profile, login, register, admin, trainer
+ * Expected variable: $currentPage — one of: home, schedule, equipment, profile, login, register, admin, trainer, trainer-profile
  */
 
 require_once __DIR__ . '/auth.php';
@@ -18,7 +18,6 @@ $navItems = [
 
 if ($user !== null) {
     $navItems['equipment'] = ['label' => 'Equipamentos', 'file' => 'equipment.php'];
-    $navItems['profile'] = ['label' => 'Perfil', 'file' => 'profile.php'];
 } else {
     $navItems['login'] = ['label' => 'Login', 'file' => 'login.php'];
     $navItems['register'] = ['label' => 'Registar', 'file' => 'register.php'];
@@ -44,8 +43,18 @@ if ($user !== null) {
 
 <?php if ($user !== null):
     $navCsrfToken = csrfToken();
+    $navAvatarUrl  = profilePhotoUrl($user, 32);
 ?>
-            <li><span class="nav-label" id="nav-user-greeting">Olá, <?= e(userDisplayName($user)) ?></span></li>
+            <li class="nav-user">
+                <a href="<?= e(pageUrl('profile.php')) ?>"
+                   class="nav-user__profile<?= $currentPage === 'profile' ? ' active' : '' ?>"
+                   id="nav-user-profile"
+                   title="Perfil"
+                   <?= $currentPage === 'profile' ? ' aria-current="page"' : '' ?>>
+                    <img src="<?= e($navAvatarUrl) ?>" alt="" class="nav-avatar" width="28" height="28" id="nav-user-avatar">
+                    <span class="nav-user__greeting" id="nav-user-greeting">Olá, <?= e(userDisplayName($user)) ?></span>
+                </a>
+            </li>
             <li>
                 <form class="nav-form" method="POST" action="<?= e(pageUrl('actions/logout.php')) ?>">
                     <input type="hidden" name="csrf_token" value="<?= e($navCsrfToken) ?>">
