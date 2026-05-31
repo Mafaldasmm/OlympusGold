@@ -116,7 +116,7 @@ function validateEquipmentInput(array $input, array &$errors, ?int $excludeId = 
 
     if ($name === '') {
         $errors[] = 'O nome do equipamento é obrigatório.';
-    } elseif (mb_strlen($name) > 100) {
+    } elseif (utf8Length($name) > 100) {
         $errors[] = 'O nome não pode ter mais de 100 caracteres.';
     }
 

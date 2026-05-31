@@ -1,0 +1,73 @@
+/* Trainer public profile management */
+
+.trainer-manage-profile-main .field-hint {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.trainer-profile-manage-empty {
+    margin: 1rem 0 0;
+    color: #aaa;
+    font-style: italic;
+}
+
+.trainer-inline-add-form {
+    margin-bottom: 1.25rem;
+}
+
+.trainer-inline-add-form__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem;
+}
+
+.trainer-inline-add-form__field {
+    flex: 1;
+    min-width: 220px;
+    margin-bottom: 0;
+}
+
+.trainer-inline-add-form__btn {
+    flex-shrink: 0;
+    margin-bottom: 0;
+}
+
+.trainer-manage-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.trainer-manage-list__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid #555;
+    border-radius: 8px;
+}
+
+.trainer-manage-list__item span {
+    font-weight: 600;
+    color: var(--text-light, #eee);
+}
+
+@media (max-width: 640px) {
+    .trainer-inline-add-form__row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .trainer-inline-add-form__btn {
+        width: 100%;
+    }
+}

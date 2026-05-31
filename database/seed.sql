@@ -38,6 +38,15 @@ INSERT INTO trainer_specializations (trainer_id, name) VALUES
     (4, 'Ciclismo indoor'),
     (4, 'Condicionamento físico');
 
+INSERT INTO trainer_certifications (trainer_id, name) VALUES
+    (1, 'Instrutora de Yoga RYT-200'),
+    (1, 'Primeiros Socorros Desportivos'),
+    (2, 'Pilates Mat — Nível Avançado'),
+    (3, 'Zumba Basic 1 License'),
+    (3, 'Aeróbica em Grupo'),
+    (4, 'Personal Trainer Certificado'),
+    (4, 'Cycling Indoor Instructor');
+
 INSERT INTO classes (title, description, type, trainer_id, day_of_week, start_time, end_time, capacity) VALUES
     ('Yoga Matinal',  'Sessão de yoga suave para começar o dia com energia e foco.',                                                          'yoga',    1, 'monday',    '08:00', '09:00', 15),
     ('Vibe Cycle',    'Treino de ciclismo indoor em grupo, feito ao ritmo de música motivadora.',                                             'cycling', 4, 'monday',    '17:00', '18:00', 15),

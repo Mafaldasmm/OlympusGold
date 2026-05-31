@@ -369,7 +369,12 @@ require INCLUDES_PATH . '/nav.php';
                                     <?php else: ?>
                                         <span class="text-muted">—</span>
                                     <?php endif; ?>
-                                    <?php if ($u['role'] === 'member'): ?>
+                                    <?php if ($u['role'] === 'trainer'): ?>
+                                        <a href="<?= e(pageUrl('trainer_manage_profile.php?trainer_id=' . (int) $u['id'])) ?>"
+                                           class="filter-user-link">
+                                            Editar perfil público
+                                        </a>
+                                    <?php elseif ($u['role'] === 'member'): ?>
                                         <form method="POST" action="<?= e(pageUrl('admin_users.php')) ?>" class="inline-form review-block-form">
                                             <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
                                             <input type="hidden" name="action" value="toggle_reviews_blocked">

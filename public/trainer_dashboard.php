@@ -99,12 +99,22 @@ require INCLUDES_PATH . '/nav.php';
             </div>
         </div>
 
-        <section class="trainer-card trainer-equipment-card">
-            <div class="trainer-equipment-card__content">
+        <section class="trainer-card trainer-dashboard-action-card">
+            <div class="trainer-dashboard-action-card__content">
+                <h2>Perfil público</h2>
+                <p>Edita a tua biografia, especializações e certificações visíveis no teu perfil.</p>
+            </div>
+            <a href="<?= e(pageUrl('trainer_manage_profile.php')) ?>" class="trainer-dashboard-btn">
+                Gerir perfil público
+            </a>
+        </section>
+
+        <section class="trainer-card trainer-dashboard-action-card">
+            <div class="trainer-dashboard-action-card__content">
                 <h2>Equipamentos</h2>
                 <p>Atualiza o estado dos equipamentos na área principal de treino.</p>
             </div>
-            <a href="<?= e(pageUrl('manage_equipment.php')) ?>" class="trainer-equipment-btn">
+            <a href="<?= e(pageUrl('manage_equipment.php')) ?>" class="trainer-dashboard-btn">
                 Gerir equipamentos
             </a>
         </section>

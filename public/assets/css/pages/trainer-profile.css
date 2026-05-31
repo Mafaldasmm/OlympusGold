@@ -96,6 +96,22 @@
     font-weight: 600;
 }
 
+.trainer-cert-tag {
+    background: rgba(80, 160, 220, 0.12);
+    border-color: rgba(80, 160, 220, 0.45);
+    color: #7eb8e8;
+}
+
+.trainer-profile-edit-link {
+    text-align: center;
+    margin: 0 0 1.5rem;
+}
+
+.trainer-profile-edit-link .btn-admin-primary {
+    display: inline-block;
+    text-decoration: none;
+}
+
 .trainer-class-list {
     list-style: none;
     margin: 0;

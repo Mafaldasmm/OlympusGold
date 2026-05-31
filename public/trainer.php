@@ -20,8 +20,12 @@ if ($trainer === null) {
     renderErrorPage(404, 'Treinador não encontrado', 'Este treinador não existe ou não está disponível.');
 }
 
-$specializations = fetchTrainerSpecializations($trainerId);
-$classes         = fetchTrainerClasses($trainerId);
+$specializations  = fetchTrainerSpecializations($trainerId);
+$certifications   = fetchTrainerCertifications($trainerId);
+$classes          = fetchTrainerClasses($trainerId);
+$currentUser      = currentUser();
+$canEditPublicProfile = $currentUser !== null
+    && userCanManageTrainerProfile($currentUser, $trainerId);
 
 $displayName = userDisplayName($trainer);
 $photoUrl    = profilePhotoUrl($trainer);
@@ -49,7 +53,7 @@ $typeLabels = [
 
 $currentPage      = 'schedule';
 $pageTitle        = e($displayName) . ' | Treinador | Olympus Gold Gym';
-$extraStylesheets = ['pages/trainer-profile.css'];
+$extraStylesheets = ['pages/trainer-profile.css', 'pages/admin.css'];
 
 require INCLUDES_PATH . '/header.php';
 require INCLUDES_PATH . '/nav.php';
@@ -92,6 +96,28 @@ require INCLUDES_PATH . '/nav.php';
                 <p class="trainer-profile-empty">Este treinador ainda não tem especializações registadas.</p>
             <?php endif; ?>
         </section>
+
+        <section class="card trainer-profile-section">
+            <h2>Certificações</h2>
+            <?php if ($certifications !== []): ?>
+                <ul class="trainer-spec-list">
+                    <?php foreach ($certifications as $cert): ?>
+                        <li class="trainer-spec-tag trainer-cert-tag"><?= e((string) $cert['name']) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <p class="trainer-profile-empty">Este treinador ainda não tem certificações registadas.</p>
+            <?php endif; ?>
+        </section>
+
+        <?php if ($canEditPublicProfile): ?>
+            <p class="trainer-profile-edit-link">
+                <a href="<?= e(pageUrl('trainer_manage_profile.php?trainer_id=' . $trainerId)) ?>"
+                   class="btn-admin-primary">
+                    Editar perfil público
+                </a>
+            </p>
+        <?php endif; ?>
 
         <section class="card trainer-profile-section">
             <h2>Aulas</h2>

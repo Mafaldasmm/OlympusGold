@@ -18,6 +18,14 @@ function e(string $value): string
 }
 
 /**
+ * String length safe when the mbstring extension is not loaded.
+ */
+function utf8Length(string $value): int
+{
+    return function_exists('mb_strlen') ? mb_strlen($value) : strlen($value);
+}
+
+/**
  * Relative URL prefix from the executing script back to public/.
  */
 function publicBasePath(): string

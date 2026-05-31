@@ -81,7 +81,7 @@
     box-shadow: var(--shadow);
 }
 
-.trainer-equipment-card {
+.trainer-dashboard-action-card {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -91,14 +91,14 @@
     background: rgba(212, 175, 55, 0.06);
 }
 
-.trainer-equipment-card h2 {
+.trainer-dashboard-action-card h2 {
     margin: 0 0 0.5rem;
     font-size: 1.2rem;
     font-weight: 700;
     color: var(--primary-color);
 }
 
-.trainer-equipment-card p {
+.trainer-dashboard-action-card p {
     margin: 0;
     color: #bbb;
     font-size: 0.92rem;
@@ -106,7 +106,7 @@
     max-width: 36rem;
 }
 
-.trainer-equipment-btn {
+.trainer-dashboard-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -125,25 +125,25 @@
     transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.trainer-equipment-btn:hover {
+.trainer-dashboard-btn:hover {
     filter: brightness(1.12);
     transform: translateY(-2px);
     box-shadow: 0 6px 18px rgba(212, 175, 55, 0.35);
     color: #111;
 }
 
-.trainer-equipment-btn:focus-visible {
+.trainer-dashboard-btn:focus-visible {
     outline: 2px solid #fff;
     outline-offset: 3px;
 }
 
 @media (max-width: 640px) {
-    .trainer-equipment-card {
+    .trainer-dashboard-action-card {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .trainer-equipment-btn {
+    .trainer-dashboard-btn {
         width: 100%;
         box-sizing: border-box;
     }
