@@ -41,14 +41,17 @@ if ($user !== null) {
             <li><a href="<?= e(pageUrl('admin_classes.php')) ?>"<?= $currentPage === 'admin' ? ' class="active"' : '' ?>>Admin</a></li>
 <?php endif; ?>
 
-<?php if ($user !== null): ?>
+<?php if ($user !== null):
+    $navCsrfToken = csrfToken();
+?>
             <li><span class="nav-label" id="nav-user-greeting">Olá, <?= e(userDisplayName($user)) ?></span></li>
             <li>
                 <form class="nav-form" method="POST" action="<?= e(pageUrl('actions/logout.php')) ?>">
-                    <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
+                    <input type="hidden" name="csrf_token" value="<?= e($navCsrfToken) ?>">
                     <button type="submit" class="nav-button">Logout</button>
                 </form>
             </li>
+            <script>window.__CSRF_TOKEN = <?= json_encode($navCsrfToken, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;</script>
 <?php endif; ?>
         </ul>
     </header>

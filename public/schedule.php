@@ -311,6 +311,10 @@ require INCLUDES_PATH . '/nav.php';
         if (!token) {
             return;
         }
+        if (typeof window.refreshCsrfToken === 'function') {
+            window.refreshCsrfToken(token);
+            return;
+        }
         document.querySelectorAll('.enrollment-csrf').forEach(function (input) {
             input.value = token;
         });

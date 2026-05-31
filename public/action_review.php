@@ -3,7 +3,8 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/init.php';
-require_once __DIR__ . '/includes/auth.php';
+require_once INCLUDES_PATH . '/auth.php';
+require_once INCLUDES_PATH . '/reviews.php';
 
 // Só aceita POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -14,6 +15,18 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Utilizador tem de estar autenticado
 $user = requireLogin();
 $userId = (int) $user['id'];
+
+if ($user['role'] !== 'member') {
+    $_SESSION['flash_error'] = 'Apenas membros podem deixar avaliações.';
+    header('Location: ' . pageUrl('schedule.php'));
+    exit;
+}
+
+if (!userCanLeaveReviews($userId)) {
+    $_SESSION['flash_error'] = 'Não tens permissão para deixar avaliações.';
+    header('Location: ' . pageUrl('schedule.php'));
+    exit;
+}
 
 // Validar CSRF
 verifyCsrf();
@@ -35,7 +48,7 @@ if ($rating < 1 || $rating > 5) {
     exit;
 }
 
-if (mb_strlen($comment) > 300) {
+if (strlen($comment) > 300) {
     $_SESSION['flash_error'] = 'O comentário não pode ter mais de 300 caracteres.';
     header('Location: ' . pageUrl('class.php?id=' . $classId));
     exit;
@@ -53,25 +66,13 @@ if (!$class) {
     exit;
 }
 
-// Verificar se o utilizador está inscrito na aula
-$isEnrolled = dbQuery(
-    'SELECT id FROM enrollments WHERE user_id = :uid AND class_id = :cid',
-    ['uid' => $userId, 'cid' => $classId]
-)->fetch();
-
-if (!$isEnrolled) {
+if (!userIsEnrolledInClass($userId, $classId)) {
     $_SESSION['flash_error'] = 'Só podes avaliar aulas em que estejas inscrito.';
     header('Location: ' . pageUrl('class.php?id=' . $classId));
     exit;
 }
 
-// Verificar review duplicada
-$alreadyReviewed = dbQuery(
-    'SELECT id FROM reviews WHERE user_id = :uid AND class_id = :cid',
-    ['uid' => $userId, 'cid' => $classId]
-)->fetch();
-
-if ($alreadyReviewed) {
+if (userHasClassReview($userId, $classId)) {
     $_SESSION['flash_error'] = 'Já avaliaste esta aula.';
     header('Location: ' . pageUrl('class.php?id=' . $classId));
     exit;

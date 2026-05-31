@@ -3,7 +3,8 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/init.php';
-require_once __DIR__ . '/includes/auth.php';
+require_once INCLUDES_PATH . '/auth.php';
+require_once INCLUDES_PATH . '/reviews.php';
 
 // Validar o id da aula
 $classId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
@@ -51,20 +52,17 @@ if (count($reviews) > 0) {
 }
 
 // Verificar se o utilizador já deixou review e se está inscrito
-$userReview    = null;
+$hasUserReview = false;
 $isEnrolled    = false;
+$canLeaveReview = false;
 $user          = currentUser();
 
 if ($user !== null) {
-    $userReview = dbQuery(
-        'SELECT id FROM reviews WHERE user_id = :uid AND class_id = :cid',
-        ['uid' => $user['id'], 'cid' => $classId]
-    )->fetch();
+    $userId = (int) $user['id'];
 
-    $isEnrolled = (bool) dbQuery(
-        'SELECT id FROM enrollments WHERE user_id = :uid AND class_id = :cid',
-        ['uid' => $user['id'], 'cid' => $classId]
-    )->fetch();
+    $hasUserReview = userHasClassReview($userId, $classId);
+    $isEnrolled = userIsEnrolledInClass($userId, $classId);
+    $canLeaveReview = userCanLeaveReviews($userId);
 }
 
 // Flash messages
@@ -139,7 +137,7 @@ require INCLUDES_PATH . '/nav.php';
         <?php endif; ?>
 
         <!-- Formulário de review -->
-        <?php if ($user !== null && $isEnrolled && $userReview === null): ?>
+        <?php if ($user !== null && $isEnrolled && !$hasUserReview && $canLeaveReview): ?>
         <section class="review-form-section card">
             <h2>Deixar Avaliação</h2>
             <form method="POST" action="<?= e(pageUrl('action_review.php')) ?>">
@@ -166,9 +164,14 @@ require INCLUDES_PATH . '/nav.php';
             </form>
         </section>
 
-        <?php elseif ($user !== null && $isEnrolled && $userReview !== null): ?>
+        <?php elseif ($user !== null && $isEnrolled && $hasUserReview): ?>
         <section class="review-form-section card">
             <p class="already-reviewed">✓ Já avaliaste esta aula. Obrigado pelo teu feedback!</p>
+        </section>
+
+        <?php elseif ($user !== null && $isEnrolled && !$hasUserReview && !$canLeaveReview): ?>
+        <section class="review-form-section card">
+            <p class="review-notice">Não tens permissão para deixar avaliações. Contacta um administrador se achares que isto é um erro.</p>
         </section>
 
         <?php elseif ($user !== null && !$isEnrolled): ?>

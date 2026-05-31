@@ -69,7 +69,7 @@ function currentUser(bool $forceRefresh = false): ?array
     }
 
     $user = dbQuery(
-        'SELECT id, username, name, email, role, active, profile_photo
+        'SELECT id, username, name, email, role, active, profile_photo, reviews_blocked
          FROM users WHERE id = :id',
         ['id' => $userId]
     )->fetch();

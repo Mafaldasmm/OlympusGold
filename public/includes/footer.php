@@ -5,10 +5,15 @@
         </div>
     </footer>
 
+<?php require INCLUDES_PATH . '/confirm-dialog.php'; ?>
+
+    <script src="<?= e(asset('js/csrf-sync.js')) ?>"></script>
+    <script src="<?= e(asset('js/confirm-dialog.js')) ?>"></script>
     <script>
         const hamburger = document.getElementById('hamburger');
         const navLinks = document.getElementById('nav-links');
 
+        if (hamburger && navLinks) {
         hamburger.addEventListener('click', () => {
             const isOpen = navLinks.classList.toggle('open');
             hamburger.classList.toggle('active');
@@ -22,6 +27,7 @@
                 hamburger.setAttribute('aria-expanded', false);
             });
         });
+        }
     </script>
 
 </body>

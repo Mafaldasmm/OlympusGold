@@ -15,8 +15,9 @@ CREATE TABLE IF NOT EXISTS users (
     profile_photo TEXT,
     role       TEXT    NOT NULL DEFAULT 'member'
                        CHECK (role IN ('member', 'trainer', 'admin')),
-    active     INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0, 1)),
-    created_at TEXT    NOT NULL DEFAULT (datetime('now'))
+    active          INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0, 1)),
+    reviews_blocked INTEGER NOT NULL DEFAULT 0 CHECK (reviews_blocked IN (0, 1)),
+    created_at      TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 
 -- ---------------------------------------------------------------------------
