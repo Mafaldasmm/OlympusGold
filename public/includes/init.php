@@ -112,11 +112,11 @@ function renderErrorPage(int $statusCode, string $title, string $message): never
     <link rel="stylesheet" href="<?= e(asset('css/components.css')) ?>">
 </head>
 <body>
-    <main class="profile-container" style="min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: center; padding: 2rem;">
-        <section class="card" style="max-width: 42rem; width: 100%;">
+    <main class="error-page">
+        <section class="card error-page__card">
             <h1><?= e($title) ?></h1>
             <p><?= e($message) ?></p>
-            <p><a class="btn-primary" href="<?= e(pageUrl('home.php')) ?>" style="display: inline-block; width: auto;">Voltar ao site</a></p>
+            <p><a class="btn-primary" href="<?= e(pageUrl('home.php')) ?>">Voltar ao site</a></p>
         </section>
     </main>
 </body>

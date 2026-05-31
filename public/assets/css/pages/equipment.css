@@ -4,14 +4,52 @@
 
 .equipment-page {
     min-height: calc(100vh - 80px);
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 2rem 20px 4rem;
+    margin: 0;
+    padding: 0 0 4rem;
 }
 
-.equipment-header {
+.equipment-page__content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.equipment-hero {
+    position: relative;
+    overflow: hidden;
     margin-bottom: 2rem;
+    min-height: clamp(200px, 32vw, 280px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1f1f1f;
+}
+
+.equipment-hero__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.equipment-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.5),
+        rgba(0, 0, 0, 0.72)
+    );
+}
+
+.equipment-hero__text {
+    position: relative;
+    z-index: 1;
     text-align: center;
+    padding: clamp(2rem, 5vw, 3rem) 20px;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
 .equipment-availability-details {
@@ -33,21 +71,23 @@
     font-style: italic;
 }
 
-.equipment-header h1 {
-    font-size: 2rem;
+.equipment-hero h1 {
+    font-size: clamp(1.6rem, 4vw, 2rem);
     font-weight: 800;
     color: var(--text-light, #eee);
     margin: 0 0 0.5rem;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
 }
 
-.equipment-header h1 span {
+.equipment-hero h1 span {
     color: var(--primary-color, #d4af37);
 }
 
 .equipment-subtitle {
     margin: 0;
-    color: #aaa;
+    color: #ddd;
     font-size: 0.95rem;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
 }
 
 .equipment-message {

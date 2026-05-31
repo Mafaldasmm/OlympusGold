@@ -24,6 +24,7 @@ if ($user !== null) {
 }
 
 ?>
+        <nav class="site-nav" aria-label="Navegação principal">
         <ul class="nav-links" id="nav-links">
 <?php foreach ($navItems as $key => $item):
     $isActive = $currentPage === $key;
@@ -38,7 +39,7 @@ if ($user !== null) {
 <?php endif; ?>
 
 <?php if ($user !== null && $user['role'] === 'admin'): ?>
-            <li><a href="<?= e(pageUrl('admin_classes.php')) ?>"<?= $currentPage === 'admin' ? ' class="active"' : '' ?>>Admin</a></li>
+            <li><a href="<?= e(pageUrl('admin_analytics.php')) ?>"<?= $currentPage === 'admin' ? ' class="active"' : '' ?>>Admin</a></li>
 <?php endif; ?>
 
 <?php if ($user !== null):
@@ -64,4 +65,5 @@ if ($user !== null) {
             <script>window.__CSRF_TOKEN = <?= json_encode($navCsrfToken, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;</script>
 <?php endif; ?>
         </ul>
+        </nav>
     </header>

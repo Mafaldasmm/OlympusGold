@@ -29,18 +29,25 @@ sqlite3 olympus.sqlite < schema.sql
 sqlite3 olympus.sqlite < seed.sql
 ```
 
+## Regenerar seed
+
+O ficheiro `seed.sql` pode ser regenerado com:
+
+```bash
+php database/generate_seed.php > database/seed.sql
+```
+
 ## Utilizadores de demonstração
 
-Password para todas as contas de seed: **demo123**
+**53 utilizadores:** 10 treinadores, 40 membros, 3 administradores.
 
-| Username | Role |
-|----------|------|
-| `joao.membro` | member |
-| `ana.silva` | trainer |
-| `sofia.costa` | trainer |
-| `marco.rebelo` | trainer |
-| `ricardo.pereira` | trainer |
-| `admin` | admin |
+| Conta demo | Password | Role |
+|------------|----------|------|
+| `admin` | `demo123` | admin |
+| `ana.silva` | `demo123` | trainer |
+| `joao.membro` | `demo123` | member |
+
+Todas as outras contas de seed usam a password **`OgGym2026!`** (nomes e emails realistas).
 
 ## Ligação PDO na aplicação
 

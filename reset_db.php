@@ -81,10 +81,13 @@ if (!file_exists($seedFile)) {
 }
  
 say('');
-say('=== Reset complete! Demo credentials ===');
-say('  Admin  :  admin / demo123');
-say('  Trainer:  ana.silva / demo123');
-say('  Member :  joao.membro / demo123');
+say('=== Reset complete! Demo credentials (demo123) ===');
+say('  Admin  :  admin');
+say('  Trainer:  ana.silva');
+say('  Member :  joao.membro');
+say('');
+say('Other seed users password: OgGym2026!');
+say('Totals: 10 trainers, 40 members, 3 admins');
 say('');
 say('Run server: php -S localhost:8000 -t public/');
  

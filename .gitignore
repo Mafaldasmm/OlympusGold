@@ -7,6 +7,9 @@ storage/sessions/
 public/uploads/profiles/*
 !public/uploads/profiles/.gitkeep
 
+# Reference project (local only, not part of this repo)
+chinook/
+
 # OS / editor
 .DS_Store
 Thumbs.db

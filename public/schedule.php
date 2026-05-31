@@ -168,7 +168,7 @@ require INCLUDES_PATH . '/nav.php';
                     <?php endforeach; ?>
                 </select>
 
-                <button type="submit" class="btn-primary" style="width: auto; margin-top: 0;">Filtrar</button>
+                <button type="submit" class="btn-primary">Filtrar</button>
                 <?php if ($filterType !== '' || $filterDay !== '' || $filterTrainer > 0): ?>
                     <a href="<?= e(pageUrl('schedule.php')) ?>" class="btn-clear">Limpar</a>
                 <?php endif; ?>
@@ -278,7 +278,7 @@ require INCLUDES_PATH . '/nav.php';
                             </div>
                         <?php endif; ?>
 
-                        <a href="<?= e(pageUrl('class.php?id=' . (int) $class['id'])) ?>" class="btn-secondary" style="display:block; text-align:center;">
+                        <a href="<?= e(pageUrl('class.php?id=' . (int) $class['id'])) ?>" class="btn-secondary btn-secondary--block-center">
                             Ver Detalhes
                         </a>
                     </div>

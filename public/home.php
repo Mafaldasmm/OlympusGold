@@ -49,6 +49,7 @@ require INCLUDES_PATH . '/header.php';
 require INCLUDES_PATH . '/nav.php';
 
 ?>
+<main class="home-page" id="conteudo-principal">
     <section class="hero">
         <div class="hero-overlay"></div>
         <div class="hero-content">
@@ -224,5 +225,6 @@ require INCLUDES_PATH . '/nav.php';
             </div>
         </div>
     </section>
+</main>
 
 <?php require INCLUDES_PATH . '/footer.php'; ?>

@@ -19,9 +19,10 @@ $formUsername = (string) ($old['username'] ?? $user['username']);
 $photoUrl = profilePhotoUrl($user);
 $navDisplayName = userDisplayName($user);
 
-$currentPage = 'profile';
-$pageTitle = 'Perfil do Utilizador - Olympus Gold Gym';
+$currentPage      = 'profile';
+$pageTitle        = 'Perfil do Utilizador - Olympus Gold Gym';
 $extraStylesheets = ['pages/profile.css'];
+$bodyClass        = 'profile-page';
 
 require INCLUDES_PATH . '/header.php';
 require INCLUDES_PATH . '/nav.php';
