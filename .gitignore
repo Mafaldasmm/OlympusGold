@@ -15,5 +15,4 @@ public/uploads/profiles/*
 !public/uploads/profiles/.gitkeep
 context/
 router.php
-README.md
 docs
