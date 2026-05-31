@@ -35,7 +35,7 @@ if ($rating < 1 || $rating > 5) {
     exit;
 }
 
-if (mb_strlen($comment) > 300) {
+if (strlen($comment) > 300) {
     $_SESSION['flash_error'] = 'O comentário não pode ter mais de 300 caracteres.';
     header('Location: ' . pageUrl('class.php?id=' . $classId));
     exit;
