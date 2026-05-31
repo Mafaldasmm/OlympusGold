@@ -13,7 +13,9 @@ Thumbs.db
 *.swp
 *~
 
-context
+storage/sessions/
+public/uploads/profiles/*
+!public/uploads/profiles/.gitkeep
+context/
 router.php
 docs
-README.md
