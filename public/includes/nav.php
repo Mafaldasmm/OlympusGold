@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Expected variable: $currentPage — one of: home, schedule, profile, login, register, admin, trainer
+ * Expected variable: $currentPage — one of: home, schedule, equipment, profile, login, register, admin, trainer
  */
 
 require_once __DIR__ . '/auth.php';
@@ -17,6 +17,7 @@ $navItems = [
 ];
 
 if ($user !== null) {
+    $navItems['equipment'] = ['label' => 'Equipamentos', 'file' => 'equipment.php'];
     $navItems['profile'] = ['label' => 'Perfil', 'file' => 'profile.php'];
 } else {
     $navItems['login'] = ['label' => 'Login', 'file' => 'login.php'];

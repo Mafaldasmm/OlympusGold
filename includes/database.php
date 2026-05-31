@@ -46,6 +46,7 @@ function getDatabase(): PDO
     ensureUsersReviewsBlockedColumn($pdo);
     ensureUsersBioColumn($pdo);
     ensureTrainerSpecializationsTable($pdo);
+    ensureEquipmentTable($pdo);
 
     return $pdo;
 }
@@ -147,6 +148,35 @@ function ensureTrainerSpecializationsTable(PDO $pdo): void
         'CREATE INDEX IF NOT EXISTS idx_trainer_specializations_trainer
          ON trainer_specializations (trainer_id)'
     );
+}
+
+/**
+ * Creates equipment table on databases created before it existed.
+ */
+function ensureEquipmentTable(PDO $pdo): void
+{
+    static $checked = false;
+
+    if ($checked) {
+        return;
+    }
+
+    $checked = true;
+
+    $pdo->exec(
+        'CREATE TABLE IF NOT EXISTS equipment (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            name       TEXT    NOT NULL,
+            type       TEXT    NOT NULL,
+            area       TEXT    NOT NULL DEFAULT \'main\'
+                       CHECK (area IN (\'main\')),
+            status     TEXT    NOT NULL DEFAULT \'available\'
+                       CHECK (status IN (\'available\', \'in_use\', \'unavailable\')),
+            updated_at TEXT    NOT NULL DEFAULT (datetime(\'now\'))
+        )'
+    );
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_equipment_area ON equipment (area)');
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_equipment_status ON equipment (status)');
 }
 
 /**
