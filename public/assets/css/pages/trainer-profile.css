@@ -1,0 +1,148 @@
+/* =========================================================
+   Trainer profile page — Olympus Gold Gym
+   ========================================================= */
+
+.trainer-profile-page {
+    min-height: calc(100vh - 80px);
+}
+
+.trainer-profile-hero {
+    text-align: center;
+    padding: 3rem 5% 2.5rem;
+    color: #fff;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+        url('https://www.fitness4all.pt/wp-content/uploads/2025/01/element-matosinhos-p2-1024x683.jpeg');
+    background-size: cover;
+    background-position: center;
+}
+
+.trainer-profile-hero__inner {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.trainer-profile-photo {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-color, #d4af37);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.trainer-profile-eyebrow {
+    margin: 0 0 0.35rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--primary-color, #d4af37);
+    font-weight: 700;
+}
+
+.trainer-profile-hero h1 {
+    margin: 0;
+    font-size: 2.2rem;
+    font-weight: 800;
+}
+
+.trainer-profile-body {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 5% 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.trainer-profile-section h2 {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+    color: var(--primary-color, #d4af37);
+}
+
+.trainer-profile-bio {
+    margin: 0;
+    line-height: 1.65;
+    color: var(--text-light, #eee);
+}
+
+.trainer-profile-empty {
+    margin: 0;
+    color: #aaa;
+    font-style: italic;
+}
+
+.trainer-spec-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.trainer-spec-tag {
+    display: inline-block;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.45);
+    color: var(--primary-color, #d4af37);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.trainer-class-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.trainer-class-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 1rem 0;
+    border-bottom: 1px solid #555;
+}
+
+.trainer-class-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.trainer-class-item h3 {
+    margin: 0.35rem 0 0.25rem;
+    font-size: 1.05rem;
+}
+
+.trainer-class-schedule {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #bbb;
+}
+
+.trainer-class-link {
+    flex-shrink: 0;
+}
+
+.trainer-profile-back {
+    margin: 0.5rem 0 0;
+    text-align: center;
+}
+
+@media (min-width: 640px) {
+    .trainer-profile-hero__inner {
+        flex-direction: row;
+        text-align: left;
+    }
+}

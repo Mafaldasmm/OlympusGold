@@ -44,6 +44,8 @@ function getDatabase(): PDO
     $pdo->exec('PRAGMA foreign_keys = ON');
     ensureUsersProfilePhotoColumn($pdo);
     ensureUsersReviewsBlockedColumn($pdo);
+    ensureUsersBioColumn($pdo);
+    ensureTrainerSpecializationsTable($pdo);
 
     return $pdo;
 }
@@ -94,6 +96,57 @@ function ensureUsersReviewsBlockedColumn(PDO $pdo): void
     }
 
     $pdo->exec('ALTER TABLE users ADD COLUMN reviews_blocked INTEGER NOT NULL DEFAULT 0');
+}
+
+/**
+ * Adds bio to existing databases created before the column existed.
+ */
+function ensureUsersBioColumn(PDO $pdo): void
+{
+    static $checked = false;
+
+    if ($checked) {
+        return;
+    }
+
+    $checked = true;
+
+    $columns = $pdo->query('PRAGMA table_info(users)')->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($columns as $column) {
+        if (($column['name'] ?? '') === 'bio') {
+            return;
+        }
+    }
+
+    $pdo->exec('ALTER TABLE users ADD COLUMN bio TEXT');
+}
+
+/**
+ * Creates trainer_specializations on databases created before the table existed.
+ */
+function ensureTrainerSpecializationsTable(PDO $pdo): void
+{
+    static $checked = false;
+
+    if ($checked) {
+        return;
+    }
+
+    $checked = true;
+
+    $pdo->exec(
+        'CREATE TABLE IF NOT EXISTS trainer_specializations (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            trainer_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+            name       TEXT    NOT NULL,
+            UNIQUE (trainer_id, name)
+        )'
+    );
+    $pdo->exec(
+        'CREATE INDEX IF NOT EXISTS idx_trainer_specializations_trainer
+         ON trainer_specializations (trainer_id)'
+    );
 }
 
 /**

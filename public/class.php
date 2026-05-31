@@ -15,9 +15,9 @@ if ($classId <= 0) {
 
 // Ir buscar a aula
 $class = dbQuery(
-    'SELECT c.*, u.name AS trainer_name
+    'SELECT c.*, u.name AS trainer_name, u.id AS trainer_user_id
      FROM classes c
-     LEFT JOIN users u ON u.id = c.trainer_id
+     LEFT JOIN users u ON u.id = c.trainer_id AND u.role = \'trainer\' AND u.active = 1
      WHERE c.id = :id',
     ['id' => $classId]
 )->fetch();
@@ -105,7 +105,16 @@ require INCLUDES_PATH . '/nav.php';
         <section class="class-details card">
             <h2>Detalhes</h2>
             <ul class="detail-list">
-                <li><strong>Treinador:</strong> <?= e($class['trainer_name'] ?? 'N/D') ?></li>
+                <li><strong>Treinador:</strong>
+                    <?php if (!empty($class['trainer_user_id'])): ?>
+                        <a href="<?= e(pageUrl('trainer.php?id=' . (int) $class['trainer_user_id'])) ?>"
+                           class="trainer-profile-link">
+                            <?= e($class['trainer_name'] ?? 'N/D') ?>
+                        </a>
+                    <?php else: ?>
+                        <?= e($class['trainer_name'] ?? 'N/D') ?>
+                    <?php endif; ?>
+                </li>
                 <li><strong>Dia:</strong> <?= e($dayLabels[$class['day_of_week']] ?? $class['day_of_week']) ?></li>
                 <li><strong>Horário:</strong> <?= e($class['start_time']) ?> – <?= e($class['end_time']) ?></li>
                 <li><strong>Vagas:</strong>

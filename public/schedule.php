@@ -196,7 +196,16 @@ require INCLUDES_PATH . '/nav.php';
                         <h3><?= e($class['title']) ?></h3>
                     </div>
                     <div class="card-body">
-                        <p><strong>Treinador:</strong> <?= e($class['trainer_name'] ?? 'N/D') ?></p>
+                        <p><strong>Treinador:</strong>
+                            <?php if (!empty($class['trainer_user_id'])): ?>
+                                <a href="<?= e(pageUrl('trainer.php?id=' . (int) $class['trainer_user_id'])) ?>"
+                                   class="trainer-profile-link">
+                                    <?= e($class['trainer_name'] ?? 'N/D') ?>
+                                </a>
+                            <?php else: ?>
+                                <?= e($class['trainer_name'] ?? 'N/D') ?>
+                            <?php endif; ?>
+                        </p>
                         <p><strong>Horário:</strong>
                             <?= e($day) ?> | <?= e($class['start_time']) ?> - <?= e($class['end_time']) ?>
                         </p>
