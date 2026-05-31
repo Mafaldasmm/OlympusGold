@@ -201,6 +201,60 @@ textarea:focus {
     font-style: italic;
 }
 
+/* Waitlist */
+.waitlist-status {
+    margin: 0 0 0.75rem;
+    font-size: 0.9rem;
+    color: #e8b84a;
+}
+
+.btn-waitlist {
+    background: rgba(232, 184, 74, 0.25) !important;
+    border: 1px solid #e8b84a !important;
+    color: #fff !important;
+}
+
+.class-enrollment-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.class-waitlist-admin-list,
+.trainer-waitlist-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.class-waitlist-admin-list li,
+.trainer-waitlist-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #555;
+}
+
+.waitlist-position {
+    display: inline-block;
+    min-width: 2rem;
+    font-weight: 700;
+    color: var(--primary-color, #d4af37);
+}
+
+.admin-waitlist-panel {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #555;
+}
+
+.admin-waitlist-panel h3 {
+    margin: 0 0 1rem;
+    color: var(--primary-color, #d4af37);
+    font-size: 1.1rem;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
     .class-hero h1 {

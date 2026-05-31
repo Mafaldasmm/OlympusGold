@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/includes/init.php';
 require_once INCLUDES_PATH . '/auth.php';
+require_once INCLUDES_PATH . '/class_waitlist.php';
 
 $admin = requireRole('admin');
 
@@ -142,7 +143,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  * Fetch data for display
  * ---------------------------------------------------------------------- */
 $classes = $pdo->query('
-    SELECT c.*, u.name AS trainer_name
+    SELECT c.*, u.name AS trainer_name,
+           (SELECT COUNT(*) FROM class_waitlist w
+            INNER JOIN users u ON u.id = w.user_id AND u.role = \'member\' AND u.active = 1
+            WHERE w.class_id = c.id) AS waitlist_count
     FROM classes c
     LEFT JOIN users u ON u.id = c.trainer_id
     ORDER BY
@@ -166,6 +170,11 @@ if (isset($_GET['edit'])) {
     $editStmt = $pdo->prepare('SELECT * FROM classes WHERE id = :id');
     $editStmt->execute(['id' => $editId]);
     $editClass = $editStmt->fetch() ?: null;
+}
+
+$editClassWaitlist = [];
+if ($editClass) {
+    $editClassWaitlist = annotateWaitlistPositions(fetchClassWaitlist((int) $editClass['id']));
 }
 
 $dayLabels = [
@@ -311,6 +320,24 @@ require INCLUDES_PATH . '/nav.php';
                     <?php endif; ?>
                 </div>
             </form>
+
+            <?php if ($editClass): ?>
+            <div class="admin-waitlist-panel">
+                <h3>Lista de espera <span class="badge-count"><?= count($editClassWaitlist) ?></span></h3>
+                <?php if ($editClassWaitlist === []): ?>
+                    <p class="empty-state">Ninguém na lista de espera desta aula.</p>
+                <?php else: ?>
+                    <ol class="class-waitlist-admin-list">
+                        <?php foreach ($editClassWaitlist as $entry): ?>
+                            <li>
+                                <span class="waitlist-position">#<?= (int) $entry['position'] ?></span>
+                                <?= e((string) ($entry['member_name'] ?? $entry['username'])) ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ol>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
         </section>
 
         <!-- ===== TABLE: CLASS LIST ===== -->
@@ -330,6 +357,7 @@ require INCLUDES_PATH . '/nav.php';
                                 <th>Dia</th>
                                 <th>Horário</th>
                                 <th>Cap.</th>
+                                <th>Espera</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -346,6 +374,7 @@ require INCLUDES_PATH . '/nav.php';
                                     <td><?= e($dayLabels[$class['day_of_week']] ?? $class['day_of_week']) ?></td>
                                     <td><?= e($class['start_time']) ?>–<?= e($class['end_time']) ?></td>
                                     <td><?= (int) $class['capacity'] ?></td>
+                                    <td><?= (int) ($class['waitlist_count'] ?? 0) ?></td>
                                     <td class="table-actions">
                                         <a href="<?= e(pageUrl('admin_classes.php') . '?edit=' . (int) $class['id']) ?>"
                                            class="btn-table-edit">✏️ Editar</a>

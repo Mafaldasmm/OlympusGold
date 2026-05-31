@@ -49,6 +49,7 @@ function getDatabase(): PDO
     ensureTrainerCertificationsTable($pdo);
     ensureEquipmentTable($pdo);
     migrateEquipmentMaintenanceStatus($pdo);
+    ensureClassWaitlistTable($pdo);
 
     return $pdo;
 }
@@ -222,6 +223,39 @@ function migrateEquipmentMaintenanceStatus(PDO $pdo): void
     $checked = true;
 
     $pdo->exec("UPDATE equipment SET status = 'maintenance' WHERE status = 'unavailable'");
+}
+
+/**
+ * Creates class_waitlist on databases created before the table existed.
+ */
+function ensureClassWaitlistTable(PDO $pdo): void
+{
+    static $checked = false;
+
+    if ($checked) {
+        return;
+    }
+
+    $checked = true;
+
+    $pdo->exec(
+        'CREATE TABLE IF NOT EXISTS class_waitlist (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id    INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+            class_id   INTEGER NOT NULL REFERENCES classes (id) ON DELETE CASCADE,
+            created_at TEXT    NOT NULL DEFAULT (datetime(\'now\')),
+            UNIQUE (user_id, class_id)
+        )'
+    );
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_class_waitlist_class ON class_waitlist (class_id)');
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_class_waitlist_user ON class_waitlist (user_id)');
+
+    $pdo->exec(
+        'DELETE FROM class_waitlist
+         WHERE user_id IN (
+             SELECT id FROM users WHERE role != \'member\' OR active != 1
+         )'
+    );
 }
 
 /**

@@ -13,22 +13,23 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
 $user = requireLogin();
 
 if ($user['role'] !== 'member') {
-    respondScheduleEnrollment(false, 'Apenas membros podem inscrever-se em aulas.', null, 403);
+    respondScheduleEnrollment(false, 'Apenas membros podem inscrever-se em aulas.', null, 403, scheduleEnrollmentRedirectTarget());
 }
 
 verifyCsrf();
 
 $classId = isset($_POST['class_id']) ? (int) $_POST['class_id'] : 0;
 $userId = (int) $_SESSION['user_id'];
+$redirect = scheduleEnrollmentRedirectTarget();
 
 if ($classId <= 0) {
-    respondScheduleEnrollment(false, 'Aula inválida.', null, 422);
+    respondScheduleEnrollment(false, 'Aula inválida.', null, 422, $redirect);
 }
 
 $class = dbQuery('SELECT id, capacity FROM classes WHERE id = :id', ['id' => $classId])->fetch();
 
 if (!$class) {
-    respondScheduleEnrollment(false, 'Aula não encontrada.', null, 422);
+    respondScheduleEnrollment(false, 'Aula não encontrada.', null, 422, $redirect);
 }
 
 $alreadyEnrolled = dbQuery(
@@ -38,7 +39,12 @@ $alreadyEnrolled = dbQuery(
 
 if ($alreadyEnrolled) {
     $state = classEnrollmentState($classId, $userId);
-    respondScheduleEnrollment(false, 'Já está inscrito nesta aula.', $state, 422);
+    respondScheduleEnrollment(false, 'Já está inscrito nesta aula.', $state, 422, $redirect);
+}
+
+if (isMemberOnClassWaitlist($classId, $userId)) {
+    $state = classEnrollmentState($classId, $userId);
+    respondScheduleEnrollment(false, 'Já está na lista de espera desta aula.', $state, 422, $redirect);
 }
 
 $enrolled = (int) dbQuery(
@@ -48,7 +54,7 @@ $enrolled = (int) dbQuery(
 
 if ($enrolled >= (int) $class['capacity']) {
     $state = classEnrollmentState($classId, $userId);
-    respondScheduleEnrollment(false, 'Esta aula já não tem vagas disponíveis.', $state, 422);
+    respondScheduleEnrollment(false, 'Esta aula já não tem vagas disponíveis.', $state, 422, $redirect);
 }
 
 dbQuery(
@@ -57,4 +63,4 @@ dbQuery(
 );
 
 $state = classEnrollmentState($classId, $userId);
-respondScheduleEnrollment(true, 'Inscrição realizada com sucesso!', $state);
+respondScheduleEnrollment(true, 'Inscrição realizada com sucesso!', $state, 200, $redirect);
