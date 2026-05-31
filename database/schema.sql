@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS equipment (
     area       TEXT    NOT NULL DEFAULT 'main'
                        CHECK (area IN ('main')),
     status     TEXT    NOT NULL DEFAULT 'available'
-                       CHECK (status IN ('available', 'in_use', 'unavailable')),
+                       CHECK (status IN ('available', 'in_use', 'maintenance')),
     updated_at TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 

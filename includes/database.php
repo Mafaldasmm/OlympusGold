@@ -47,6 +47,7 @@ function getDatabase(): PDO
     ensureUsersBioColumn($pdo);
     ensureTrainerSpecializationsTable($pdo);
     ensureEquipmentTable($pdo);
+    migrateEquipmentMaintenanceStatus($pdo);
 
     return $pdo;
 }
@@ -171,12 +172,28 @@ function ensureEquipmentTable(PDO $pdo): void
             area       TEXT    NOT NULL DEFAULT \'main\'
                        CHECK (area IN (\'main\')),
             status     TEXT    NOT NULL DEFAULT \'available\'
-                       CHECK (status IN (\'available\', \'in_use\', \'unavailable\')),
+                       CHECK (status IN (\'available\', \'in_use\', \'maintenance\')),
             updated_at TEXT    NOT NULL DEFAULT (datetime(\'now\'))
         )'
     );
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_equipment_area ON equipment (area)');
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_equipment_status ON equipment (status)');
+}
+
+/**
+ * Renames legacy unavailable status to maintenance.
+ */
+function migrateEquipmentMaintenanceStatus(PDO $pdo): void
+{
+    static $checked = false;
+
+    if ($checked) {
+        return;
+    }
+
+    $checked = true;
+
+    $pdo->exec("UPDATE equipment SET status = 'maintenance' WHERE status = 'unavailable'");
 }
 
 /**

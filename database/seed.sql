@@ -54,11 +54,11 @@ INSERT INTO equipment (name, type, area, status) VALUES
     ('Passadeira elétrica 1',  'cardio',   'main', 'in_use'),
     ('Passadeira elétrica 2',  'cardio',   'main', 'available'),
     ('Bicicleta estática A',   'cardio',   'main', 'available'),
-    ('Bicicleta estática B',   'cardio',   'main', 'unavailable'),
+    ('Bicicleta estática B',   'cardio',   'main', 'maintenance'),
     ('Leg press',              'strength', 'main', 'in_use'),
     ('Cabos crossover',        'functional','main', 'available'),
     ('Rack de agachamento',    'strength', 'main', 'available'),
-    ('Elíptica',               'cardio',   'main', 'unavailable');
+    ('Elíptica',               'cardio',   'main', 'maintenance');
 
 INSERT INTO enrollments (user_id, class_id) VALUES
     (5, 1),

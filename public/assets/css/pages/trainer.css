@@ -80,6 +80,74 @@
     margin-bottom: 1.5rem;
     box-shadow: var(--shadow);
 }
+
+.trainer-equipment-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    border-color: rgba(212, 175, 55, 0.35);
+    background: rgba(212, 175, 55, 0.06);
+}
+
+.trainer-equipment-card h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.trainer-equipment-card p {
+    margin: 0;
+    color: #bbb;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    max-width: 36rem;
+}
+
+.trainer-equipment-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    border: none;
+    background: var(--primary-color, #d4af37);
+    color: #111;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    box-shadow: 0 4px 14px rgba(212, 175, 55, 0.25);
+    transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.trainer-equipment-btn:hover {
+    filter: brightness(1.12);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(212, 175, 55, 0.35);
+    color: #111;
+}
+
+.trainer-equipment-btn:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+    .trainer-equipment-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .trainer-equipment-btn {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
  
 /* ---- Class Header ---- */
 .class-header {
