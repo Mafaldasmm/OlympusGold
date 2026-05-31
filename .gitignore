@@ -3,6 +3,9 @@ database/*.sqlite
 database/*.sqlite-journal
 database/*.sqlite-wal
 database/*.sqlite-shm
+storage/sessions/
+public/uploads/profiles/*
+!public/uploads/profiles/.gitkeep
 
 # OS / editor
 .DS_Store

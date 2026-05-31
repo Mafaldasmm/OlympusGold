@@ -34,6 +34,17 @@ function csrfToken(): string
 }
 
 /**
+ * Returns true when the client expects a JSON response (e.g. fetch/XHR).
+ */
+function requestWantsJson(): bool
+{
+    return str_contains(
+        strtolower((string) ($_SERVER['HTTP_ACCEPT'] ?? '')),
+        'application/json'
+    ) || strtolower((string) ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '')) === 'xmlhttprequest';
+}
+
+/**
  * Validates the submitted CSRF token and rotates it after a valid POST.
  */
 function verifyCsrf(): void
@@ -42,6 +53,18 @@ function verifyCsrf(): void
     $currentToken = csrfToken();
 
     if ($submitted === '' || !hash_equals($currentToken, $submitted)) {
+        if (requestWantsJson()) {
+            http_response_code(403);
+            header('Content-Type: application/json; charset=UTF-8');
+            echo json_encode([
+                'success' => false,
+                'message' => 'O pedido expirou. Recarrega a página e tenta novamente.',
+                'csrfInvalid' => true,
+                'csrfToken' => $currentToken,
+            ], JSON_THROW_ON_ERROR);
+            exit;
+        }
+
         renderErrorPage(
             403,
             'Pedido inválido',

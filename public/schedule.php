@@ -89,6 +89,8 @@ $flashError   = $_SESSION['flash_error']   ?? '';
 unset($_SESSION['flash_success'], $_SESSION['flash_error']);
 
 $csrfToken = csrfToken();
+$isScheduleMember = $user !== null && $user['role'] === 'member';
+$hasScheduleFlash = $flashSuccess !== '' || $flashError !== '';
 
 /* -------------------------------------------------------------------------
  * Labels
@@ -161,16 +163,21 @@ require INCLUDES_PATH . '/nav.php';
             </form>
         </div>
 
-        <?php if ($flashSuccess !== ''): ?>
-            <p class="flash flash-success"><?= e($flashSuccess) ?></p>
-        <?php endif; ?>
-        <?php if ($flashError !== ''): ?>
-            <p class="flash flash-error"><?= e($flashError) ?></p>
-        <?php endif; ?>
-
         <?php if (empty($classes)): ?>
             <p class="empty-schedule">Nenhuma aula encontrada para os filtros selecionados.</p>
         <?php else: ?>
+        <div class="schedule-list-wrap">
+            <div id="schedule-feedback"
+                 class="schedule-feedback-slot<?= $hasScheduleFlash ? ' is-visible' : '' ?>"
+                 aria-live="polite">
+<?php if ($flashSuccess !== ''): ?>
+                <p class="flash flash-success"><?= e($flashSuccess) ?></p>
+<?php endif; ?>
+<?php if ($flashError !== ''): ?>
+                <p class="flash flash-error"><?= e($flashError) ?></p>
+<?php endif; ?>
+            </div>
+
         <div class="card-grid">
             <?php foreach ($classes as $class):
                 $spots      = (int) $class['capacity'] - (int) $class['enrolled_count'];
@@ -178,7 +185,10 @@ require INCLUDES_PATH . '/nav.php';
                 $isEnrolled = in_array($class['id'], $myEnrollments, true);
                 $day        = $dayLabels[$class['day_of_week']] ?? $class['day_of_week'];
             ?>
-                <article class="card">
+                <article class="card class-card"
+                         data-class-id="<?= (int) $class['id'] ?>"
+                         data-capacity="<?= (int) $class['capacity'] ?>"
+                         data-enrolled="<?= (int) $class['enrolled_count'] ?>">
                     <div class="card-header">
                         <span class="tag <?= e($class['type'] ?? 'other') ?>">
                             <?= e($typeLabels[$class['type']] ?? $class['type']) ?>
@@ -190,12 +200,15 @@ require INCLUDES_PATH . '/nav.php';
                         <p><strong>Horário:</strong>
                             <?= e($day) ?> | <?= e($class['start_time']) ?> - <?= e($class['end_time']) ?>
                         </p>
-                        <p><strong>Vagas:</strong>
-                            <?php if ($isFull): ?>
+                        <p class="class-spots">
+                            <strong>Vagas:</strong>
+                            <span class="class-spots-value">
+<?php if ($isFull): ?>
                                 <span class="full">CHEIO</span>
-                            <?php else: ?>
+<?php else: ?>
                                 <?= $spots ?> / <?= (int) $class['capacity'] ?>
-                            <?php endif; ?>
+<?php endif; ?>
+                            </span>
                         </p>
 
                     </div>
@@ -206,22 +219,29 @@ require INCLUDES_PATH . '/nav.php';
                             </a>
 
                         <?php elseif ($user['role'] === 'member'): ?>
+                            <div class="class-enrollment-actions">
                             <?php if ($isEnrolled): ?>
-                                <form method="POST" action="<?= e(pageUrl('action_cancel.php')) ?>">
-                                    <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
-                                    <input type="hidden" name="class_id"   value="<?= (int) $class['id'] ?>">
+                                <form class="enrollment-form"
+                                      method="POST"
+                                      action="<?= e(pageUrl('action_cancel.php')) ?>"
+                                      data-enrollment-action="cancel">
+                                    <input type="hidden" name="csrf_token" class="enrollment-csrf" value="<?= e($csrfToken) ?>">
+                                    <input type="hidden" name="class_id" value="<?= (int) $class['id'] ?>">
                                     <button type="submit" class="btn-primary btn-cancel">Cancelar Inscrição</button>
                                 </form>
                             <?php elseif ($isFull): ?>
-                                <button class="btn-primary disabled" disabled>Aula Cheia</button>
+                                <button type="button" class="btn-primary disabled" disabled>Aula Cheia</button>
                             <?php else: ?>
-                                <form method="POST" action="<?= e(pageUrl('action_book.php')) ?>">
-                                    <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
-                                    <input type="hidden" name="class_id"   value="<?= (int) $class['id'] ?>">
+                                <form class="enrollment-form"
+                                      method="POST"
+                                      action="<?= e(pageUrl('action_book.php')) ?>"
+                                      data-enrollment-action="book">
+                                    <input type="hidden" name="csrf_token" class="enrollment-csrf" value="<?= e($csrfToken) ?>">
+                                    <input type="hidden" name="class_id" value="<?= (int) $class['id'] ?>">
                                     <button type="submit" class="btn-primary">Inscrever</button>
                                 </form>
                             <?php endif; ?>
-
+                            </div>
                         <?php endif; ?>
 
                         <a href="<?= e(pageUrl('class.php?id=' . (int) $class['id'])) ?>" class="btn-secondary" style="display:block; text-align:center;">
@@ -231,8 +251,198 @@ require INCLUDES_PATH . '/nav.php';
                 </article>
             <?php endforeach; ?>
         </div>
+        </div>
         <?php endif; ?>
     </section>
 </main>
+
+<?php if ($isScheduleMember): ?>
+<script>
+(function () {
+    const bookUrl = <?= json_encode(pageUrl('action_book.php'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+    const cancelUrl = <?= json_encode(pageUrl('action_cancel.php'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+    const feedback = document.getElementById('schedule-feedback');
+    const AUTO_DISMISS_MS = 2000;
+    let dismissTimer = null;
+
+    function escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function showFeedback(type, message) {
+        if (!feedback) {
+            return;
+        }
+
+        if (dismissTimer) {
+            clearTimeout(dismissTimer);
+            dismissTimer = null;
+        }
+
+        feedback.innerHTML = '<p class="flash flash-' + type + '">' + escapeHtml(message) + '</p>';
+        feedback.classList.add('is-visible');
+
+        dismissTimer = setTimeout(function () {
+            feedback.innerHTML = '';
+            feedback.classList.remove('is-visible');
+            dismissTimer = null;
+        }, AUTO_DISMISS_MS);
+    }
+
+    function scheduleDismissExisting() {
+        if (!feedback || !feedback.querySelector('.flash-success, .flash-error')) {
+            return;
+        }
+
+        feedback.classList.add('is-visible');
+        dismissTimer = setTimeout(function () {
+            feedback.innerHTML = '';
+            feedback.classList.remove('is-visible');
+            dismissTimer = null;
+        }, AUTO_DISMISS_MS);
+    }
+
+    function updateAllCsrfTokens(token) {
+        if (!token) {
+            return;
+        }
+        document.querySelectorAll('.enrollment-csrf').forEach(function (input) {
+            input.value = token;
+        });
+    }
+
+    function buildEnrollmentHtml(state, csrfToken) {
+        const classId = state.classId;
+        const csrf = escapeHtml(csrfToken);
+
+        if (state.isEnrolled) {
+            return '<form class="enrollment-form" method="POST" action="' + escapeHtml(cancelUrl) + '" data-enrollment-action="cancel">' +
+                '<input type="hidden" name="csrf_token" class="enrollment-csrf" value="' + csrf + '">' +
+                '<input type="hidden" name="class_id" value="' + classId + '">' +
+                '<button type="submit" class="btn-primary btn-cancel">Cancelar Inscrição</button>' +
+                '</form>';
+        }
+
+        if (state.isFull) {
+            return '<button type="button" class="btn-primary disabled" disabled>Aula Cheia</button>';
+        }
+
+        return '<form class="enrollment-form" method="POST" action="' + escapeHtml(bookUrl) + '" data-enrollment-action="book">' +
+            '<input type="hidden" name="csrf_token" class="enrollment-csrf" value="' + csrf + '">' +
+            '<input type="hidden" name="class_id" value="' + classId + '">' +
+            '<button type="submit" class="btn-primary">Inscrever</button>' +
+            '</form>';
+    }
+
+    function updateSpots(card, state) {
+        const spotsValue = card.querySelector('.class-spots-value');
+        if (!spotsValue) {
+            return;
+        }
+
+        if (state.isFull) {
+            spotsValue.innerHTML = '<span class="full">CHEIO</span>';
+        } else {
+            spotsValue.textContent = state.spots + ' / ' + state.capacity;
+        }
+    }
+
+    function updateCard(card, state, csrfToken) {
+        card.dataset.capacity = String(state.capacity);
+        card.dataset.enrolled = String(state.enrolledCount);
+
+        updateSpots(card, state);
+
+        const actions = card.querySelector('.class-enrollment-actions');
+        if (actions) {
+            actions.innerHTML = buildEnrollmentHtml(state, csrfToken);
+            bindEnrollmentForms(actions);
+        }
+    }
+
+    let submitting = false;
+
+    async function handleEnrollmentSubmit(event) {
+        event.preventDefault();
+
+        if (submitting) {
+            return;
+        }
+
+        const form = event.currentTarget;
+        const card = form.closest('.class-card');
+        if (!card) {
+            return;
+        }
+
+        submitting = true;
+        const button = form.querySelector('button[type="submit"]');
+        if (button) {
+            button.disabled = true;
+        }
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                credentials: 'same-origin',
+            });
+
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.includes('application/json')) {
+                showFeedback('error', 'Resposta inesperada do servidor. Recarrega a página e tenta novamente.');
+                return;
+            }
+
+            const payload = await response.json();
+
+            if (payload.csrfToken) {
+                updateAllCsrfTokens(payload.csrfToken);
+            }
+
+            if (!response.ok || !payload.success) {
+                showFeedback('error', payload.message || 'Não foi possível concluir a operação.');
+                if (
+                    payload.classId
+                    && card.dataset.classId === String(payload.classId)
+                    && typeof payload.capacity !== 'undefined'
+                ) {
+                    updateCard(card, payload, payload.csrfToken || '');
+                }
+                return;
+            }
+
+            showFeedback('success', payload.message);
+            updateCard(card, payload, payload.csrfToken || '');
+        } catch (error) {
+            showFeedback('error', 'Erro de ligação. Verifica a rede e tenta novamente.');
+        } finally {
+            submitting = false;
+            if (button) {
+                button.disabled = false;
+            }
+        }
+    }
+
+    function bindEnrollmentForms(root) {
+        root.querySelectorAll('.enrollment-form').forEach(function (form) {
+            form.addEventListener('submit', handleEnrollmentSubmit);
+        });
+    }
+
+    document.querySelectorAll('.class-enrollment-actions').forEach(bindEnrollmentForms);
+    scheduleDismissExisting();
+})();
+</script>
+<?php endif; ?>
 
 <?php require INCLUDES_PATH . '/footer.php'; ?>

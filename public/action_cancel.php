@@ -3,47 +3,42 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/init.php';
-require_once __DIR__ . '/includes/auth.php';
+require_once INCLUDES_PATH . '/auth.php';
+require_once INCLUDES_PATH . '/schedule_enrollment.php';
 
-// Só aceita POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ' . pageUrl('schedule.php'));
-    exit;
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+    redirect(pageUrl('schedule.php'));
 }
 
-// Utilizador tem de estar autenticado
-requireLogin();
+$user = requireLogin();
 
-// Validar CSRF
+if ($user['role'] !== 'member') {
+    respondScheduleEnrollment(false, 'Apenas membros podem cancelar inscrições.', null, 403);
+}
+
 verifyCsrf();
 
-$classId = isset($_POST['class_id']) ? (int)$_POST['class_id'] : 0;
-$userId  = (int)$_SESSION['user_id'];
+$classId = isset($_POST['class_id']) ? (int) $_POST['class_id'] : 0;
+$userId = (int) $_SESSION['user_id'];
 
 if ($classId <= 0) {
-    $_SESSION['flash_error'] = 'Aula inválida.';
-    header('Location: ' . pageUrl('schedule.php'));
-    exit;
+    respondScheduleEnrollment(false, 'Aula inválida.', null, 422);
 }
 
-// Verificar se a inscrição existe antes de apagar
 $enrollment = dbQuery(
     'SELECT id FROM enrollments WHERE user_id = :uid AND class_id = :cid',
     ['uid' => $userId, 'cid' => $classId]
 )->fetch();
 
 if (!$enrollment) {
-    $_SESSION['flash_error'] = 'Não tem inscrição nesta aula.';
-    header('Location: ' . pageUrl('schedule.php'));
-    exit;
+    $state = classEnrollmentState($classId, $userId);
+    respondScheduleEnrollment(false, 'Não tem inscrição nesta aula.', $state, 422);
 }
 
-// Cancelar inscrição
 dbQuery(
     'DELETE FROM enrollments WHERE user_id = :uid AND class_id = :cid',
     ['uid' => $userId, 'cid' => $classId]
 );
 
-$_SESSION['flash_success'] = 'Inscrição cancelada com sucesso.';
-header('Location: ' . pageUrl('schedule.php'));
-exit;
+$state = classEnrollmentState($classId, $userId);
+respondScheduleEnrollment(true, 'Inscrição cancelada com sucesso.', $state);

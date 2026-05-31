@@ -42,7 +42,7 @@ if ($user !== null) {
 <?php endif; ?>
 
 <?php if ($user !== null): ?>
-            <li><span class="nav-label">Olá, <?= e((string) ($user['name'] ?: $user['username'])) ?></span></li>
+            <li><span class="nav-label" id="nav-user-greeting">Olá, <?= e(userDisplayName($user)) ?></span></li>
             <li>
                 <form class="nav-form" method="POST" action="<?= e(pageUrl('actions/logout.php')) ?>">
                     <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">

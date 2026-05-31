@@ -1,20 +1,94 @@
+/* Evita scroll horizontal e fundo estranho ao fazer zoom out */
+html:has(.profile-container) {
+    overflow-x: clip;
+}
+
+body:has(.profile-container) {
+    display: flex;
+    flex-direction: column;
+    overflow-x: clip;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background-color: #1a1a1a;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.7)),
+        url('https://images.hdqwalls.com/download/triangle-solid-black-gold-4k-wk-1440x2960.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    background-attachment: scroll;
+}
+
 .profile-container {
-    max-width: 1000px;
+    flex: 1 0 auto;
+    width: 100%;
+    max-width: min(1000px, 100%);
     margin: 2rem auto;
-    padding: 0 5%;
+    padding: 0 clamp(1rem, 4vw, 2.5rem);
+    box-sizing: border-box;
+}
+
+body:has(.profile-container) .footer {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.profile-container #profile-form {
+    width: 100%;
+    max-width: 100%;
 }
 
 .profile-header {
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
     text-align: center;
-    color: var(--text-light); /* Para destacar sobre o fundo escuro */
-    text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+    color: var(--text-light);
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 100%;
 }
 
 .profile-header h1 {
-    font-size: 2.5rem;
+    font-size: clamp(1.6rem, 6vw, 2.5rem);
     font-weight: 800;
     margin-bottom: 0.5rem;
+    line-height: 1.15;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.profile-header p {
+    font-size: clamp(0.9rem, 3.5vw, 1rem);
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+/* Grelha do perfil: larguras iguais, sem padding extra que desalinha no mobile */
+.profile-container .card-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+.profile-container .card-grid .card {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Uma coluna até desktop: evita cartão isolado com largura diferente em tablet */
+@media (min-width: 1024px) {
+    .profile-container .card-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: stretch;
+    }
 }
 
 .highlight {
@@ -23,7 +97,9 @@
 
 .profile-photo-section {
     text-align: center;
-    padding: 1rem;
+    padding: 1rem 0.5rem;
+    width: 100%;
+    max-width: 100%;
 }
 
 .profile-img {
@@ -36,25 +112,200 @@
     box-shadow: var(--shadow);
 }
 
+.form-actions-wrap {
+    position: relative;
+    margin-top: 2rem;
+    padding-top: 4.75rem;
+    width: 100%;
+    max-width: 100%;
+}
+
+.profile-feedback-slot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.profile-feedback-slot.is-visible {
+    opacity: 1;
+}
+
+.profile-feedback-slot .alert {
+    width: 100%;
+    margin: 0;
+    pointer-events: auto;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
 .form-actions {
     display: flex;
     justify-content: center;
-    margin-top: 2rem;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.file-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.file-upload-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.file-upload-button {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: #000;
+    padding: 0.65rem 1.25rem;
+    border-radius: 5px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.file-upload-button:hover {
+    filter: brightness(1.1);
+}
+
+.file-upload-name {
+    color: #B0B1B1;
+    font-size: 0.85rem;
+    max-width: 100%;
+    width: 100%;
+    padding: 0 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.btn-cancel {
+    display: inline-block;
+    border: 2px solid #D4AF37;
+    color: #D4AF37;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.3s;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.btn-cancel:hover {
+    background-color: #D4AF37;
+    color: #333333;
+}
+
+.btn-cancel.is-hidden {
+    display: none;
+}
+
+.alert {
+    padding: 0.85rem 1rem;
+    border-radius: 7px;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    text-align: left;
+}
+
+.alert-success {
+    background: rgba(111, 207, 151, 0.15);
+    border: 1px solid rgba(111, 207, 151, 0.4);
+    color: #6fcf97;
+}
+
+.alert-error {
+    background: rgba(220, 80, 80, 0.12);
+    border: 1px solid rgba(220, 80, 80, 0.4);
+    color: #e07070;
+}
+
+.alert-info {
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    color: #e8d28b;
+}
+
+.alert p {
+    margin: 0 0 0.25rem;
+}
+
+.alert p:last-child {
+    margin-bottom: 0;
 }
 
 .card.featured {
     border: 1px solid #D4AF37;
 }
 
-/* Ajuste específico para o botão de guardar no mobile */
-@media (max-width: 768px) {
-    .btn-save { width: 100%; }
+.profile-container .input-group input {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
-/* Background Picture */
-body {
-    background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.7)), 
-                url('https://images.hdqwalls.com/download/triangle-solid-black-gold-4k-wk-1440x2960.jpg') no-repeat center center / cover;
-    background-attachment: fixed;
+/* Ajustes mobile */
+@media (max-width: 768px) {
+    .profile-container {
+        margin-top: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .profile-container .card-grid .card {
+        padding: 1.25rem 1rem;
+    }
+
+    .profile-container .card h2 {
+        font-size: 1.1rem;
+        text-align: center;
+    }
+
+    .profile-container .btn-save,
+    .profile-container .btn-cancel {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .form-actions-wrap {
+        padding-top: 5.25rem;
+    }
+
+    .profile-feedback-slot {
+        height: 4.75rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+}
+
+@media (min-width: 769px) {
+    .profile-container .card-grid .card {
+        min-height: 100%;
+    }
 }
 
