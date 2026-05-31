@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS users (
     email      TEXT    UNIQUE,
     name          TEXT,
     profile_photo TEXT,
+    bio           TEXT,
     role       TEXT    NOT NULL DEFAULT 'member'
                        CHECK (role IN ('member', 'trainer', 'admin')),
     active          INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0, 1)),
@@ -34,6 +35,16 @@ CREATE TABLE IF NOT EXISTS classes (
     end_time    TEXT,
     capacity    INTEGER NOT NULL DEFAULT 15 CHECK (capacity > 0),
     created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
+);
+
+-- ---------------------------------------------------------------------------
+-- trainer_specializations
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS trainer_specializations (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    trainer_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    name       TEXT    NOT NULL,
+    UNIQUE (trainer_id, name)
 );
 
 -- ---------------------------------------------------------------------------
@@ -64,6 +75,9 @@ CREATE TABLE IF NOT EXISTS reviews (
 -- indexes
 -- ---------------------------------------------------------------------------
 CREATE INDEX IF NOT EXISTS idx_users_role ON users (role);
+
+CREATE INDEX IF NOT EXISTS idx_trainer_specializations_trainer
+    ON trainer_specializations (trainer_id);
 
 CREATE INDEX IF NOT EXISTS idx_classes_trainer ON classes (trainer_id);
 CREATE INDEX IF NOT EXISTS idx_classes_type ON classes (type);
