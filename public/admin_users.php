@@ -7,6 +7,11 @@ require_once INCLUDES_PATH . '/auth.php';
 
 $admin = requireRole('admin');
 
+$filterUserId = isset($_GET['user']) ? (int) $_GET['user'] : 0;
+if ($filterUserId < 0) {
+    $filterUserId = 0;
+}
+
 $pdo     = getDatabase();
 $errors  = [];
 $success = '';
@@ -77,6 +82,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    /* ---------- DELETE REVIEW ---------- */
+    if ($action === 'delete_review') {
+        $reviewId = (int) ($_POST['review_id'] ?? 0);
+
+        if ($reviewId <= 0) {
+            $errors[] = 'Avaliação inválida.';
+        } else {
+            $reviewStmt = $pdo->prepare(
+                'SELECT r.id, u.name AS member_name, c.title AS class_title
+                 FROM reviews r
+                 JOIN users u ON u.id = r.user_id
+                 JOIN classes c ON c.id = r.class_id
+                 WHERE r.id = :id'
+            );
+            $reviewStmt->execute(['id' => $reviewId]);
+            $reviewRow = $reviewStmt->fetch();
+
+            if (!$reviewRow) {
+                $errors[] = 'Avaliação não encontrada.';
+            } else {
+                $pdo->prepare('DELETE FROM reviews WHERE id = :id')->execute(['id' => $reviewId]);
+                $success = "Avaliação de '{$reviewRow['member_name']}' na aula '{$reviewRow['class_title']}' foi removida.";
+            }
+        }
+    }
+
+    /* ---------- TOGGLE REVIEW PERMISSION ---------- */
+    if ($action === 'toggle_reviews_blocked') {
+        $userId = (int) ($_POST['user_id'] ?? 0);
+
+        if ($userId <= 0) {
+            $errors[] = 'Utilizador inválido.';
+        } else {
+            $userStmt = $pdo->prepare('SELECT id, name, role, reviews_blocked FROM users WHERE id = :id');
+            $userStmt->execute(['id' => $userId]);
+            $targetUser = $userStmt->fetch();
+
+            if (!$targetUser) {
+                $errors[] = 'Utilizador não encontrado.';
+            } elseif ($targetUser['role'] !== 'member') {
+                $errors[] = 'Só é possível bloquear avaliações de membros.';
+            } else {
+                $newBlocked = (int) $targetUser['reviews_blocked'] === 1 ? 0 : 1;
+                $pdo->prepare('UPDATE users SET reviews_blocked = :blocked WHERE id = :id')
+                    ->execute(['blocked' => $newBlocked, 'id' => $userId]);
+
+                if ($newBlocked === 1) {
+                    $success = "Avaliações bloqueadas para '{$targetUser['name']}'.";
+                } else {
+                    $success = "Avaliações permitidas novamente para '{$targetUser['name']}'.";
+                }
+            }
+        }
+    }
+
     /* ---------- TOGGLE ACTIVE ---------- */
     if ($action === 'toggle_active') {
         $userId = (int) ($_POST['user_id'] ?? 0);
@@ -103,10 +163,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  * Fetch users
  * ---------------------------------------------------------------------- */
 $users = $pdo->query('
-    SELECT id, username, name, email, role, active, created_at
-    FROM users
-    ORDER BY role, name
+    SELECT u.id, u.username, u.name, u.email, u.role, u.active, u.created_at,
+           u.reviews_blocked,
+           (SELECT COUNT(*) FROM reviews r WHERE r.user_id = u.id) AS review_count
+    FROM users u
+    ORDER BY u.role, u.name
 ')->fetchAll();
+
+$reviewsSql = '
+    SELECT r.id, r.rating, r.comment, r.created_at,
+           u.id AS user_id, u.name AS member_name, u.username, u.reviews_blocked,
+           c.id AS class_id, c.title AS class_title
+    FROM reviews r
+    JOIN users u ON u.id = r.user_id
+    JOIN classes c ON c.id = r.class_id
+';
+$reviewsParams = [];
+
+if ($filterUserId > 0) {
+    $reviewsSql .= ' WHERE u.id = :user_id';
+    $reviewsParams['user_id'] = $filterUserId;
+}
+
+$reviewsSql .= ' ORDER BY r.created_at DESC';
+
+$reviewsStmt = $pdo->prepare($reviewsSql);
+$reviewsStmt->execute($reviewsParams);
+$allReviews = $reviewsStmt->fetchAll();
+
+$filterUserName = '';
+if ($filterUserId > 0) {
+    foreach ($users as $u) {
+        if ((int) $u['id'] === $filterUserId) {
+            $filterUserName = (string) ($u['name'] ?? $u['username']);
+            break;
+        }
+    }
+}
 
 $roleLabels = [
     'admin'   => 'Admin',
@@ -201,6 +294,7 @@ require INCLUDES_PATH . '/nav.php';
                             <th>Email</th>
                             <th>Papel</th>
                             <th>Estado</th>
+                            <th>Avaliações</th>
                             <th>Promover Para</th>
                             <th>Ações</th>
                         </tr>
@@ -220,6 +314,28 @@ require INCLUDES_PATH . '/nav.php';
                                     <span class="status-dot <?= $u['active'] ? 'status-dot--on' : 'status-dot--off' ?>">
                                         <?= $u['active'] ? 'Ativo' : 'Inativo' ?>
                                     </span>
+                                </td>
+                                <td>
+                                    <?php $reviewCount = (int) ($u['review_count'] ?? 0); ?>
+                                    <span class="review-count-badge"><?= $reviewCount ?></span>
+                                    <?php if ($reviewCount > 0): ?>
+                                        <a href="<?= e(pageUrl('admin_users.php') . '?user=' . (int) $u['id'] . '#reviews-section') ?>"
+                                           class="btn-table-edit">Ver</a>
+                                    <?php else: ?>
+                                        <span class="text-muted">—</span>
+                                    <?php endif; ?>
+                                    <?php if ($u['role'] === 'member'): ?>
+                                        <form method="POST" action="<?= e(pageUrl('admin_users.php')) ?>" class="inline-form review-block-form">
+                                            <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
+                                            <input type="hidden" name="action" value="toggle_reviews_blocked">
+                                            <input type="hidden" name="user_id" value="<?= (int) $u['id'] ?>">
+                                            <button type="submit"
+                                                    class="<?= (int) $u['reviews_blocked'] === 1 ? 'btn-table-edit' : 'btn-table-delete' ?>"
+                                                    title="<?= (int) $u['reviews_blocked'] === 1 ? 'Permitir avaliações' : 'Bloquear avaliações' ?>">
+                                                <?= (int) $u['reviews_blocked'] === 1 ? '🔓 Permitir' : '🚫 Bloquear' ?>
+                                            </button>
+                                        </form>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <?php
@@ -244,8 +360,10 @@ require INCLUDES_PATH . '/nav.php';
                                     </form>
                                 </td>
                                 <td class="table-actions">
-                                    <form method="POST" action="<?= e(pageUrl('admin_users.php')) ?>"
-                                          onsubmit="return confirm('Alterar estado do utilizador?')">
+                                    <form method="POST"
+                                          action="<?= e(pageUrl('admin_users.php')) ?>"
+                                          data-confirm="Alterar o estado deste utilizador?"
+                                          data-confirm-title="Alterar estado">
                                         <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
                                         <input type="hidden" name="action"  value="toggle_active">
                                         <input type="hidden" name="user_id" value="<?= (int) $u['id'] ?>">
@@ -261,6 +379,81 @@ require INCLUDES_PATH . '/nav.php';
                     </tbody>
                 </table>
             </div>
+        </section>
+
+        <!-- ===== REVIEWS MANAGEMENT ===== -->
+        <section class="admin-card" id="reviews-section">
+            <h2>
+                Gestão de Avaliações
+                <span class="badge-count"><?= count($allReviews) ?></span>
+            </h2>
+
+            <?php if ($filterUserId > 0): ?>
+                <p class="reviews-filter-notice">
+                    A mostrar avaliações de <strong><?= e($filterUserName) ?></strong>.
+                    <a href="<?= e(pageUrl('admin_users.php') . '#reviews-section') ?>">Ver todas</a>
+                </p>
+            <?php endif; ?>
+
+            <?php if (count($allReviews) === 0): ?>
+                <p class="empty-state">Não há avaliações<?= $filterUserId > 0 ? ' para este utilizador' : '' ?>.</p>
+            <?php else: ?>
+                <div class="table-wrapper">
+                    <table class="admin-table admin-table--reviews">
+                        <thead>
+                            <tr>
+                                <th>Membro</th>
+                                <th>Aula</th>
+                                <th>Classificação</th>
+                                <th>Comentário</th>
+                                <th>Data</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($allReviews as $review): ?>
+                                <tr>
+                                    <td data-label="Membro">
+                                        <strong><?= e($review['member_name'] ?? $review['username']) ?></strong>
+                                        <br><small>@<?= e($review['username']) ?></small>
+                                        <?php if ((int) $review['reviews_blocked'] === 1): ?>
+                                            <br><span class="status-dot status-dot--off">Avaliações bloqueadas</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td data-label="Aula">
+                                        <a href="<?= e(pageUrl('class.php?id=' . (int) $review['class_id'])) ?>">
+                                            <?= e($review['class_title']) ?>
+                                        </a>
+                                    </td>
+                                    <td data-label="Classificação">
+                                        <span class="review-stars-inline">
+                                            <?= str_repeat('★', (int) $review['rating']) ?><?= str_repeat('☆', 5 - (int) $review['rating']) ?>
+                                        </span>
+                                    </td>
+                                    <td data-label="Comentário" class="review-comment-cell">
+                                        <?= $review['comment'] !== null && $review['comment'] !== ''
+                                            ? e($review['comment'])
+                                            : '—' ?>
+                                    </td>
+                                    <td data-label="Data"><?= e(substr((string) $review['created_at'], 0, 10)) ?></td>
+                                    <td data-label="Ações" class="table-actions">
+                                        <form method="POST"
+                                              action="<?= e(pageUrl('admin_users.php') . ($filterUserId > 0 ? '?user=' . $filterUserId : '') . '#reviews-section') ?>"
+                                              data-confirm="O membro poderá voltar a avaliar esta aula se tiver permissão."
+                                              data-confirm-title="Remover avaliação"
+                                              data-confirm-ok="Remover">
+                                            <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
+                                            <input type="hidden" name="action" value="delete_review">
+                                            <input type="hidden" name="review_id" value="<?= (int) $review['id'] ?>">
+                                            <button type="submit" class="btn-table-delete">🗑 Remover</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </section>
 
     </div>

@@ -282,7 +282,9 @@ require INCLUDES_PATH . '/nav.php';
             }
 
             function updateCsrfToken(token) {
-                if (csrfInput && token) {
+                if (typeof window.refreshCsrfToken === 'function') {
+                    window.refreshCsrfToken(token);
+                } else if (csrfInput && token) {
                     csrfInput.value = token;
                 }
             }

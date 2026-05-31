@@ -347,8 +347,11 @@ require INCLUDES_PATH . '/nav.php';
                                         <a href="<?= e(pageUrl('admin_classes.php') . '?edit=' . (int) $class['id']) ?>"
                                            class="btn-table-edit">✏️ Editar</a>
 
-                                        <form method="POST" action="<?= e(pageUrl('admin_classes.php')) ?>"
-                                              onsubmit="return confirm('Eliminar a aula \'<?= e(addslashes($class['title'])) ?>\'?')">
+                                        <form method="POST"
+                                              action="<?= e(pageUrl('admin_classes.php')) ?>"
+                                              data-confirm="<?= e('Eliminar a aula «' . (string) $class['title'] . '»? Esta ação não pode ser desfeita.') ?>"
+                                              data-confirm-title="Eliminar aula"
+                                              data-confirm-ok="Eliminar">
                                             <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
                                             <input type="hidden" name="action"    value="delete">
                                             <input type="hidden" name="class_id"  value="<?= (int) $class['id'] ?>">

@@ -9,7 +9,17 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
     redirect(pageUrl('home.php'));
 }
 
-verifyCsrf();
+$wasLoggedIn = isAuthenticated();
+$csrfValid = verifyCsrfToken();
+
+if (!$csrfValid && !$wasLoggedIn) {
+    renderErrorPage(
+        403,
+        'Pedido inválido',
+        'O pedido expirou ou o token de segurança é inválido. Volta atrás e tenta novamente.'
+    );
+}
+
 logoutSessionUser();
 ensureSessionStarted();
 setFlash('auth_success', 'Sessão terminada com sucesso.');

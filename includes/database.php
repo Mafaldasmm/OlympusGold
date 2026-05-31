@@ -43,6 +43,7 @@ function getDatabase(): PDO
 
     $pdo->exec('PRAGMA foreign_keys = ON');
     ensureUsersProfilePhotoColumn($pdo);
+    ensureUsersReviewsBlockedColumn($pdo);
 
     return $pdo;
 }
@@ -69,6 +70,30 @@ function ensureUsersProfilePhotoColumn(PDO $pdo): void
     }
 
     $pdo->exec('ALTER TABLE users ADD COLUMN profile_photo TEXT');
+}
+
+/**
+ * Adds reviews_blocked to existing databases created before the column existed.
+ */
+function ensureUsersReviewsBlockedColumn(PDO $pdo): void
+{
+    static $checked = false;
+
+    if ($checked) {
+        return;
+    }
+
+    $checked = true;
+
+    $columns = $pdo->query('PRAGMA table_info(users)')->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($columns as $column) {
+        if (($column['name'] ?? '') === 'reviews_blocked') {
+            return;
+        }
+    }
+
+    $pdo->exec('ALTER TABLE users ADD COLUMN reviews_blocked INTEGER NOT NULL DEFAULT 0');
 }
 
 /**
