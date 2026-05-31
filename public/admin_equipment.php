@@ -32,6 +32,7 @@ $manageHeaderTitle       = 'Gestão de <span>Equipamentos</span>';
 $manageHeaderSubtitle    = 'Área principal de treino';
 $manageHeaderLinks       = [
     ['href' => pageUrl('admin_analytics.php'), 'label' => 'Analytics'],
+    ['href' => pageUrl('admin_promotions.php'), 'label' => 'Destaques'],
     ['href' => pageUrl('admin_users.php'), 'label' => 'Gerir Utilizadores'],
     ['href' => pageUrl('admin_classes.php'), 'label' => 'Gerir Aulas'],
 ];

@@ -84,6 +84,7 @@ asort($trainerFilterOptions, SORT_NATURAL | SORT_FLAG_CASE);
 asort($typeFilterOptions, SORT_NATURAL | SORT_FLAG_CASE);
 
 $adminHubLinks = [
+    ['href' => pageUrl('admin_promotions.php'), 'label' => 'Destaques'],
     ['href' => pageUrl('admin_users.php'), 'label' => 'Utilizadores'],
     ['href' => pageUrl('admin_classes.php'), 'label' => 'Aulas'],
     ['href' => pageUrl('admin_equipment.php'), 'label' => 'Equipamentos'],

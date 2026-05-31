@@ -4,6 +4,42 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/includes/auth.php';
+require_once INCLUDES_PATH . '/promotions.php';
+
+$featuredClasses  = [];
+$featuredTrainers = [];
+$promotionsError  = false;
+
+try {
+    $pdo              = getDatabase();
+    $featuredClasses  = fetchFeaturedClassesForHomepage($pdo);
+    $featuredTrainers = fetchFeaturedTrainersForHomepage($pdo);
+} catch (Throwable) {
+    $promotionsError = true;
+}
+
+$hasPromotions = !$promotionsError
+    && ($featuredClasses !== [] || $featuredTrainers !== []);
+
+$dayLabels = [
+    'monday'    => 'Segunda-feira',
+    'tuesday'   => 'Terça-feira',
+    'wednesday' => 'Quarta-feira',
+    'thursday'  => 'Quinta-feira',
+    'friday'    => 'Sexta-feira',
+    'saturday'  => 'Sábado',
+    'sunday'    => 'Domingo',
+];
+
+$typeLabels = [
+    'yoga'    => 'Yoga',
+    'pilates' => 'Pilates',
+    'hiit'    => 'HIIT',
+    'zumba'   => 'Zumba',
+    'cycling' => 'Cycling',
+    'boxing'  => 'Boxe',
+    'other'   => 'Outro',
+];
 
 $currentPage        = 'home';
 $pageTitle          = 'Olympus Gold Gym | Excelência em Fitness';
@@ -24,6 +60,101 @@ require INCLUDES_PATH . '/nav.php';
             </div>
         </div>
     </section>
+
+    <?php if ($promotionsError): ?>
+        <section class="home-promotions home-promotions--muted container" aria-live="polite">
+            <p class="home-promotions-fallback">Os destaques estão temporariamente indisponíveis.</p>
+        </section>
+    <?php elseif ($hasPromotions): ?>
+        <section class="home-promotions" aria-labelledby="home-promotions-title">
+            <div class="home-promotions__glow" aria-hidden="true"></div>
+            <div class="container home-promotions__inner">
+                <header class="home-promotions__header">
+                    <p class="home-promotions__eyebrow">Escolhas da equipa</p>
+                    <h2 id="home-promotions-title" class="home-promotions__title">
+                        <span class="home-promotions__title-line">Vive a experiência <span class="highlight">Olympus Gold</span></span>
+                    </h2>
+                    <p class="home-promotions__lead">
+                        Aulas e treinadores selecionados para te inspirar — reserva a tua próxima sessão ou conhece quem vai guiar o teu progresso.
+                    </p>
+                </header>
+
+                <div class="home-promotions__showcase">
+                    <?php if ($featuredClasses !== []): ?>
+                        <div class="home-promotions__group">
+                            <h3 class="home-promotions__group-label">Aulas em destaque</h3>
+                            <div class="home-promotions__grid">
+                                <?php foreach ($featuredClasses as $class): ?>
+                                    <?php
+                                    $classUrl  = pageUrl('class.php?id=' . (int) $class['id']);
+                                    $typeKey   = (string) ($class['type'] ?? 'other');
+                                    $visual    = promotionClassVisual($typeKey);
+                                    $typeLabel = $typeLabels[$typeKey] ?? $typeKey;
+                                    $dayLabel  = $dayLabels[$class['day_of_week'] ?? ''] ?? '';
+                                    $desc      = trim((string) ($class['description'] ?? ''));
+                                    $descShort = $desc !== '' ? promotionBioExcerpt($desc, 110) : 'Uma experiência pensada para resultados reais no nosso ginásio.';
+                                    ?>
+                                    <a href="<?= e($classUrl) ?>"
+                                       class="home-promo-card home-promo-card--class home-promo-card--<?= e($visual['accent']) ?>">
+                                        <div class="home-promo-card__visual">
+                                            <span class="home-promo-card__icon" aria-hidden="true"><?= $visual['icon'] ?></span>
+                                            <span class="home-promo-card__shine" aria-hidden="true"></span>
+                                            <span class="home-promo-card__pill">Destaque</span>
+                                        </div>
+                                        <div class="home-promo-card__body">
+                                            <span class="home-promo-card__category"><?= e($typeLabel) ?></span>
+                                            <h4 class="home-promo-card__title"><?= e($class['title']) ?></h4>
+                                            <p class="home-promo-card__text"><?= e($descShort) ?></p>
+                                            <ul class="home-promo-card__chips">
+                                                <?php if ($dayLabel !== ''): ?>
+                                                    <li><?= e($dayLabel) ?><?= $class['start_time'] ? ' · ' . e($class['start_time']) : '' ?></li>
+                                                <?php endif; ?>
+                                                <?php if (!empty($class['trainer_name'])): ?>
+                                                    <li>Com <?= e($class['trainer_name']) ?></li>
+                                                <?php endif; ?>
+                                            </ul>
+                                            <span class="home-promo-card__cta">Explorar aula</span>
+                                        </div>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($featuredTrainers !== []): ?>
+                        <div class="home-promotions__group">
+                            <h3 class="home-promotions__group-label">Treinadores em destaque</h3>
+                            <div class="home-promotions__grid home-promotions__grid--trainers">
+                                <?php foreach ($featuredTrainers as $trainer): ?>
+                                    <?php
+                                    $trainerUrl  = pageUrl('trainer.php?id=' . (int) $trainer['id']);
+                                    $displayName = trim((string) ($trainer['name'] ?? '')) !== ''
+                                        ? (string) $trainer['name']
+                                        : (string) $trainer['username'];
+                                    $bioExcerpt  = promotionBioExcerpt((string) ($trainer['bio'] ?? ''), 120);
+                                    $initials    = promotionTrainerInitials($displayName, (string) $trainer['username']);
+                                    ?>
+                                    <a href="<?= e($trainerUrl) ?>" class="home-promo-card home-promo-card--trainer">
+                                        <div class="home-promo-card__visual home-promo-card__visual--trainer">
+                                            <span class="home-promo-card__avatar" aria-hidden="true"><?= e($initials) ?></span>
+                                            <span class="home-promo-card__shine" aria-hidden="true"></span>
+                                            <span class="home-promo-card__pill">Destaque</span>
+                                        </div>
+                                        <div class="home-promo-card__body">
+                                            <span class="home-promo-card__category">Treinador</span>
+                                            <h4 class="home-promo-card__title"><?= e($displayName) ?></h4>
+                                            <p class="home-promo-card__text"><?= e($bioExcerpt) ?></p>
+                                            <span class="home-promo-card__cta">Conhecer perfil</span>
+                                        </div>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </section>
+    <?php endif; ?>
 
     <section id="modalidades" class="features">
         <div class="container">

@@ -69,6 +69,9 @@ INSERT INTO equipment (name, type, area, status) VALUES
     ('Rack de agachamento',    'strength', 'main', 'available'),
     ('Elíptica',               'cardio',   'main', 'maintenance');
 
+UPDATE classes SET featured = 1 WHERE title IN ('Yoga Matinal', 'Zumba Energy');
+UPDATE users SET featured = 1 WHERE username IN ('ana.silva', 'ricardo.pereira');
+
 INSERT INTO enrollments (user_id, class_id) VALUES
     (5, 1),
     (5, 5);
