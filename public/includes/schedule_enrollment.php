@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/class_waitlist.php';
+
 /**
- * Helpers for schedule enrollment actions (book / cancel).
+ * Helpers for schedule enrollment actions (book / cancel / waitlist).
  */
 
 /**
@@ -30,6 +32,9 @@ function classEnrollmentState(int $classId, int $userId): ?array
         ['uid' => $userId, 'cid' => $classId]
     )->fetch();
 
+    $isOnWaitlist = isMemberOnClassWaitlist($classId, $userId);
+    $waitlistPosition = $isOnWaitlist ? memberWaitlistPosition($classId, $userId) : null;
+
     $capacity = (int) $class['capacity'];
     $spots = max(0, $capacity - $enrolledCount);
 
@@ -40,14 +45,22 @@ function classEnrollmentState(int $classId, int $userId): ?array
         'spots' => $spots,
         'isEnrolled' => $isEnrolled,
         'isFull' => $spots <= 0,
+        'isOnWaitlist' => $isOnWaitlist,
+        'waitlistPosition' => $waitlistPosition,
+        'waitlistCount' => classWaitlistCount($classId),
     ];
 }
 
 /**
  * @param array<string, mixed>|null $state
  */
-function respondScheduleEnrollment(bool $success, string $message, ?array $state = null, int $status = 200): never
-{
+function respondScheduleEnrollment(
+    bool $success,
+    string $message,
+    ?array $state = null,
+    int $status = 200,
+    ?string $redirectPage = null
+): never {
     if (requestWantsJson()) {
         if ($status !== 200) {
             http_response_code($status);
@@ -75,5 +88,28 @@ function respondScheduleEnrollment(bool $success, string $message, ?array $state
         $_SESSION['flash_error'] = $message;
     }
 
-    redirect(pageUrl('schedule.php'));
+    $target = $redirectPage ?? 'schedule.php';
+    if (!str_contains($target, '.php')) {
+        $target = 'schedule.php';
+    }
+
+    redirect(pageUrl($target));
+}
+
+/**
+ * Validates redirect target is a safe relative page under public/.
+ */
+function scheduleEnrollmentRedirectTarget(): string
+{
+    $redirect = trim((string) ($_POST['redirect'] ?? ''));
+
+    if ($redirect === '') {
+        return 'schedule.php';
+    }
+
+    if (!preg_match('/^[a-z_]+\.php(\?id=\d+)?$/', $redirect)) {
+        return 'schedule.php';
+    }
+
+    return $redirect;
 }

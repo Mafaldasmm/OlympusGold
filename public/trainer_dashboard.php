@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/includes/init.php';
 require_once INCLUDES_PATH . '/auth.php';
+require_once INCLUDES_PATH . '/class_waitlist.php';
 
 $trainer = requireRole('trainer');
 
@@ -49,6 +50,11 @@ foreach ($classes as $class) {
     ');
     $stmt->execute(['class_id' => $class['id']]);
     $enrollments[$class['id']] = $stmt->fetchAll();
+}
+
+$waitlists = [];
+foreach ($classes as $class) {
+    $waitlists[$class['id']] = annotateWaitlistPositions(fetchClassWaitlist((int) $class['id']));
 }
 
 $dayLabels = [
@@ -156,6 +162,25 @@ require INCLUDES_PATH . '/nav.php';
                                      style="width: <?= $pct ?>%"></div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="members-section">
+                        <h3>Lista de espera
+                            <span class="badge-count"><?= count($waitlists[$class['id']]) ?></span>
+                        </h3>
+
+                        <?php if (empty($waitlists[$class['id']])): ?>
+                            <p class="empty-state-small">Ninguém na lista de espera.</p>
+                        <?php else: ?>
+                            <ol class="trainer-waitlist-list">
+                                <?php foreach ($waitlists[$class['id']] as $waitlisted): ?>
+                                    <li>
+                                        <span class="waitlist-position">#<?= (int) $waitlisted['position'] ?></span>
+                                        <?= e((string) ($waitlisted['member_name'] ?? $waitlisted['username'])) ?>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ol>
+                        <?php endif; ?>
                     </div>
 
                     <div class="members-section">

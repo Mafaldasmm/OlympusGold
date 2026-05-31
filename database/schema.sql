@@ -83,6 +83,17 @@ CREATE TABLE IF NOT EXISTS enrollments (
 );
 
 -- ---------------------------------------------------------------------------
+-- class_waitlist
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS class_waitlist (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id    INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    class_id   INTEGER NOT NULL REFERENCES classes (id) ON DELETE CASCADE,
+    created_at TEXT    NOT NULL DEFAULT (datetime('now')),
+    UNIQUE (user_id, class_id)
+);
+
+-- ---------------------------------------------------------------------------
 -- reviews
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS reviews (
@@ -115,6 +126,9 @@ CREATE INDEX IF NOT EXISTS idx_classes_day ON classes (day_of_week);
 
 CREATE INDEX IF NOT EXISTS idx_enrollments_user ON enrollments (user_id);
 CREATE INDEX IF NOT EXISTS idx_enrollments_class ON enrollments (class_id);
+
+CREATE INDEX IF NOT EXISTS idx_class_waitlist_class ON class_waitlist (class_id);
+CREATE INDEX IF NOT EXISTS idx_class_waitlist_user ON class_waitlist (user_id);
 
 CREATE INDEX IF NOT EXISTS idx_reviews_user ON reviews (user_id);
 CREATE INDEX IF NOT EXISTS idx_reviews_class ON reviews (class_id);

@@ -5,6 +5,8 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/init.php';
 require_once INCLUDES_PATH . '/auth.php';
 require_once INCLUDES_PATH . '/reviews.php';
+require_once INCLUDES_PATH . '/class_waitlist.php';
+require_once INCLUDES_PATH . '/schedule_enrollment.php';
 
 // Validar o id da aula
 $classId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
@@ -57,12 +59,28 @@ $isEnrolled    = false;
 $canLeaveReview = false;
 $user          = currentUser();
 
+$waitlistRows = annotateWaitlistPositions(fetchClassWaitlist($classId));
+$canViewWaitlist = false;
+$memberEnrollmentState = null;
+$csrfToken = csrfToken();
+$classRedirect = 'class.php?id=' . $classId;
+
 if ($user !== null) {
     $userId = (int) $user['id'];
 
     $hasUserReview = userHasClassReview($userId, $classId);
     $isEnrolled = userIsEnrolledInClass($userId, $classId);
     $canLeaveReview = userCanLeaveReviews($userId);
+
+    if ($user['role'] === 'member') {
+        $memberEnrollmentState = classEnrollmentState($classId, $userId);
+    }
+
+    if ($user['role'] === 'admin') {
+        $canViewWaitlist = true;
+    } elseif ($user['role'] === 'trainer' && (int) ($class['trainer_id'] ?? 0) === $userId) {
+        $canViewWaitlist = true;
+    }
 }
 
 // Flash messages
@@ -136,6 +154,64 @@ require INCLUDES_PATH . '/nav.php';
                 <a href="<?= e(pageUrl('schedule.php')) ?>" class="btn-secondary">← Voltar ao Horário</a>
             </div>
         </section>
+
+        <?php if ($user !== null && $user['role'] === 'member' && $memberEnrollmentState !== null): ?>
+        <section class="class-details card class-enrollment-section">
+            <h2>Inscrição</h2>
+            <div class="class-enrollment-actions">
+                <?php if ($memberEnrollmentState['isEnrolled']): ?>
+                    <form method="POST" action="<?= e(pageUrl('action_cancel.php')) ?>">
+                        <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
+                        <input type="hidden" name="class_id" value="<?= $classId ?>">
+                        <input type="hidden" name="redirect" value="<?= e($classRedirect) ?>">
+                        <button type="submit" class="btn-primary btn-cancel">Cancelar Inscrição</button>
+                    </form>
+                <?php elseif ($memberEnrollmentState['isOnWaitlist']): ?>
+                    <p class="waitlist-status">
+                        Está na lista de espera — posição <strong><?= (int) $memberEnrollmentState['waitlistPosition'] ?></strong>
+                    </p>
+                    <form method="POST" action="<?= e(pageUrl('action_waitlist_leave.php')) ?>">
+                        <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
+                        <input type="hidden" name="class_id" value="<?= $classId ?>">
+                        <input type="hidden" name="redirect" value="<?= e($classRedirect) ?>">
+                        <button type="submit" class="btn-primary btn-cancel">Sair da lista de espera</button>
+                    </form>
+                <?php elseif ($memberEnrollmentState['isFull']): ?>
+                    <form method="POST" action="<?= e(pageUrl('action_waitlist_join.php')) ?>">
+                        <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
+                        <input type="hidden" name="class_id" value="<?= $classId ?>">
+                        <input type="hidden" name="redirect" value="<?= e($classRedirect) ?>">
+                        <button type="submit" class="btn-primary btn-waitlist">Entrar na lista de espera</button>
+                    </form>
+                <?php else: ?>
+                    <form method="POST" action="<?= e(pageUrl('action_book.php')) ?>">
+                        <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
+                        <input type="hidden" name="class_id" value="<?= $classId ?>">
+                        <input type="hidden" name="redirect" value="<?= e($classRedirect) ?>">
+                        <button type="submit" class="btn-primary">Inscrever nesta aula</button>
+                    </form>
+                <?php endif; ?>
+            </div>
+        </section>
+        <?php endif; ?>
+
+        <?php if ($canViewWaitlist): ?>
+        <section class="class-details card">
+            <h2>Lista de espera <span class="badge-count"><?= count($waitlistRows) ?></span></h2>
+            <?php if ($waitlistRows === []): ?>
+                <p class="trainer-profile-empty">Ninguém na lista de espera.</p>
+            <?php else: ?>
+                <ol class="class-waitlist-admin-list">
+                    <?php foreach ($waitlistRows as $entry): ?>
+                        <li>
+                            <span class="waitlist-position">#<?= (int) $entry['position'] ?></span>
+                            <?= e((string) ($entry['member_name'] ?? $entry['username'])) ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ol>
+            <?php endif; ?>
+        </section>
+        <?php endif; ?>
 
         <!-- Flash messages -->
         <?php if ($flashSuccess !== ''): ?>

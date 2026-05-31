@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/includes/init.php';
 require_once INCLUDES_PATH . '/auth.php';
+require_once INCLUDES_PATH . '/class_waitlist.php';
 
 $pdo  = getDatabase();
 $user = currentUser();
@@ -73,13 +74,22 @@ $trainers = dbQuery(
  * Fetch enrollments of current user (if logged in)
  * ---------------------------------------------------------------------- */
 $myEnrollments = [];
+$myWaitlistPositions = [];
 if (isAuthenticated()) {
+    $memberId = (int) $_SESSION['user_id'];
     $rows = dbQuery(
         'SELECT class_id FROM enrollments WHERE user_id = :uid',
-        ['uid' => $_SESSION['user_id']]
+        ['uid' => $memberId]
     )->fetchAll();
     $myEnrollments = array_column($rows, 'class_id');
+
+    if ($user !== null && $user['role'] === 'member') {
+        $myWaitlistPositions = fetchMemberWaitlistPositions($memberId);
+    }
 }
+
+$waitlistJoinUrl  = pageUrl('action_waitlist_join.php');
+$waitlistLeaveUrl = pageUrl('action_waitlist_leave.php');
 
 /* -------------------------------------------------------------------------
  * Flash messages
@@ -183,6 +193,8 @@ require INCLUDES_PATH . '/nav.php';
                 $spots      = (int) $class['capacity'] - (int) $class['enrolled_count'];
                 $isFull     = $spots <= 0;
                 $isEnrolled = in_array($class['id'], $myEnrollments, true);
+                $waitlistPosition = $myWaitlistPositions[(int) $class['id']] ?? null;
+                $isOnWaitlist = $waitlistPosition !== null;
                 $day        = $dayLabels[$class['day_of_week']] ?? $class['day_of_week'];
             ?>
                 <article class="card class-card"
@@ -236,10 +248,30 @@ require INCLUDES_PATH . '/nav.php';
                                       data-enrollment-action="cancel">
                                     <input type="hidden" name="csrf_token" class="enrollment-csrf" value="<?= e($csrfToken) ?>">
                                     <input type="hidden" name="class_id" value="<?= (int) $class['id'] ?>">
+                                    <input type="hidden" name="redirect" value="schedule.php">
                                     <button type="submit" class="btn-primary btn-cancel">Cancelar Inscrição</button>
                                 </form>
+                            <?php elseif ($isOnWaitlist): ?>
+                                <p class="waitlist-status">Lista de espera — posição <strong><?= (int) $waitlistPosition ?></strong></p>
+                                <form class="enrollment-form"
+                                      method="POST"
+                                      action="<?= e($waitlistLeaveUrl) ?>"
+                                      data-enrollment-action="waitlist-leave">
+                                    <input type="hidden" name="csrf_token" class="enrollment-csrf" value="<?= e($csrfToken) ?>">
+                                    <input type="hidden" name="class_id" value="<?= (int) $class['id'] ?>">
+                                    <input type="hidden" name="redirect" value="schedule.php">
+                                    <button type="submit" class="btn-primary btn-cancel">Sair da lista de espera</button>
+                                </form>
                             <?php elseif ($isFull): ?>
-                                <button type="button" class="btn-primary disabled" disabled>Aula Cheia</button>
+                                <form class="enrollment-form"
+                                      method="POST"
+                                      action="<?= e($waitlistJoinUrl) ?>"
+                                      data-enrollment-action="waitlist-join">
+                                    <input type="hidden" name="csrf_token" class="enrollment-csrf" value="<?= e($csrfToken) ?>">
+                                    <input type="hidden" name="class_id" value="<?= (int) $class['id'] ?>">
+                                    <input type="hidden" name="redirect" value="schedule.php">
+                                    <button type="submit" class="btn-primary btn-waitlist">Entrar na lista de espera</button>
+                                </form>
                             <?php else: ?>
                                 <form class="enrollment-form"
                                       method="POST"
@@ -247,6 +279,7 @@ require INCLUDES_PATH . '/nav.php';
                                       data-enrollment-action="book">
                                     <input type="hidden" name="csrf_token" class="enrollment-csrf" value="<?= e($csrfToken) ?>">
                                     <input type="hidden" name="class_id" value="<?= (int) $class['id'] ?>">
+                                    <input type="hidden" name="redirect" value="schedule.php">
                                     <button type="submit" class="btn-primary">Inscrever</button>
                                 </form>
                             <?php endif; ?>
@@ -270,6 +303,8 @@ require INCLUDES_PATH . '/nav.php';
 (function () {
     const bookUrl = <?= json_encode(pageUrl('action_book.php'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
     const cancelUrl = <?= json_encode(pageUrl('action_cancel.php'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+    const waitlistJoinUrl = <?= json_encode($waitlistJoinUrl, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+    const waitlistLeaveUrl = <?= json_encode($waitlistLeaveUrl, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
     const feedback = document.getElementById('schedule-feedback');
     const AUTO_DISMISS_MS = 2000;
     let dismissTimer = null;
@@ -333,21 +368,41 @@ require INCLUDES_PATH . '/nav.php';
         const classId = state.classId;
         const csrf = escapeHtml(csrfToken);
 
+        const redirectField = '<input type="hidden" name="redirect" value="schedule.php">';
+
         if (state.isEnrolled) {
             return '<form class="enrollment-form" method="POST" action="' + escapeHtml(cancelUrl) + '" data-enrollment-action="cancel">' +
                 '<input type="hidden" name="csrf_token" class="enrollment-csrf" value="' + csrf + '">' +
                 '<input type="hidden" name="class_id" value="' + classId + '">' +
+                redirectField +
                 '<button type="submit" class="btn-primary btn-cancel">Cancelar Inscrição</button>' +
                 '</form>';
         }
 
+        if (state.isOnWaitlist) {
+            const pos = state.waitlistPosition || '?';
+            return '<p class="waitlist-status">Lista de espera — posição <strong>' + escapeHtml(String(pos)) + '</strong></p>' +
+                '<form class="enrollment-form" method="POST" action="' + escapeHtml(waitlistLeaveUrl) + '" data-enrollment-action="waitlist-leave">' +
+                '<input type="hidden" name="csrf_token" class="enrollment-csrf" value="' + csrf + '">' +
+                '<input type="hidden" name="class_id" value="' + classId + '">' +
+                redirectField +
+                '<button type="submit" class="btn-primary btn-cancel">Sair da lista de espera</button>' +
+                '</form>';
+        }
+
         if (state.isFull) {
-            return '<button type="button" class="btn-primary disabled" disabled>Aula Cheia</button>';
+            return '<form class="enrollment-form" method="POST" action="' + escapeHtml(waitlistJoinUrl) + '" data-enrollment-action="waitlist-join">' +
+                '<input type="hidden" name="csrf_token" class="enrollment-csrf" value="' + csrf + '">' +
+                '<input type="hidden" name="class_id" value="' + classId + '">' +
+                redirectField +
+                '<button type="submit" class="btn-primary btn-waitlist">Entrar na lista de espera</button>' +
+                '</form>';
         }
 
         return '<form class="enrollment-form" method="POST" action="' + escapeHtml(bookUrl) + '" data-enrollment-action="book">' +
             '<input type="hidden" name="csrf_token" class="enrollment-csrf" value="' + csrf + '">' +
             '<input type="hidden" name="class_id" value="' + classId + '">' +
+            redirectField +
             '<button type="submit" class="btn-primary">Inscrever</button>' +
             '</form>';
     }
