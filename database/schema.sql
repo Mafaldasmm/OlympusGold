@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
     role       TEXT    NOT NULL DEFAULT 'member'
                        CHECK (role IN ('member', 'trainer', 'admin')),
     active          INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0, 1)),
+    featured        INTEGER NOT NULL DEFAULT 0 CHECK (featured IN (0, 1)),
     reviews_blocked INTEGER NOT NULL DEFAULT 0 CHECK (reviews_blocked IN (0, 1)),
     created_at      TEXT    NOT NULL DEFAULT (datetime('now'))
 );
@@ -34,6 +35,7 @@ CREATE TABLE IF NOT EXISTS classes (
     start_time  TEXT,
     end_time    TEXT,
     capacity    INTEGER NOT NULL DEFAULT 15 CHECK (capacity > 0),
+    featured    INTEGER NOT NULL DEFAULT 0 CHECK (featured IN (0, 1)),
     created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 

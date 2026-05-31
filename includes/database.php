@@ -50,6 +50,7 @@ function getDatabase(): PDO
     ensureEquipmentTable($pdo);
     migrateEquipmentMaintenanceStatus($pdo);
     ensureClassWaitlistTable($pdo);
+    ensureFeaturedColumns($pdo);
 
     return $pdo;
 }
@@ -256,6 +257,46 @@ function ensureClassWaitlistTable(PDO $pdo): void
              SELECT id FROM users WHERE role != \'member\' OR active != 1
          )'
     );
+}
+
+/**
+ * Adds featured flags for homepage promotions on existing databases.
+ */
+function ensureFeaturedColumns(PDO $pdo): void
+{
+    static $checked = false;
+
+    if ($checked) {
+        return;
+    }
+
+    $checked = true;
+
+    $userColumns = $pdo->query('PRAGMA table_info(users)')->fetchAll(PDO::FETCH_ASSOC);
+    $hasUserFeatured = false;
+    foreach ($userColumns as $column) {
+        if (($column['name'] ?? '') === 'featured') {
+            $hasUserFeatured = true;
+            break;
+        }
+    }
+    if (!$hasUserFeatured) {
+        $pdo->exec('ALTER TABLE users ADD COLUMN featured INTEGER NOT NULL DEFAULT 0');
+    }
+
+    $classColumns = $pdo->query('PRAGMA table_info(classes)')->fetchAll(PDO::FETCH_ASSOC);
+    $hasClassFeatured = false;
+    foreach ($classColumns as $column) {
+        if (($column['name'] ?? '') === 'featured') {
+            $hasClassFeatured = true;
+            break;
+        }
+    }
+    if (!$hasClassFeatured) {
+        $pdo->exec('ALTER TABLE classes ADD COLUMN featured INTEGER NOT NULL DEFAULT 0');
+    }
+
+    $pdo->exec('UPDATE users SET featured = 0 WHERE role != \'trainer\' OR active != 1');
 }
 
 /**
