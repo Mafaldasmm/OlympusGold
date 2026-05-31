@@ -10,8 +10,7 @@ require_once INCLUDES_PATH . '/class_waitlist.php';
 $user = requireLogin();
 
 if ($user['role'] === 'admin') {
-    setFlash('auth_error', 'Não tens permissões para aceder a esta área.');
-    redirect(pageUrl('home.php'));
+    redirect(pageUrl('admin_analytics.php'));
 }
 
 $trainer = requireRole('trainer');
