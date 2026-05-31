@@ -16,6 +16,12 @@ $pdo     = getDatabase();
 $errors  = [];
 $success = '';
 
+$roleLabels = [
+    'admin'   => 'Admin',
+    'trainer' => 'Treinador',
+    'member'  => 'Membro',
+];
+
 /* -------------------------------------------------------------------------
  * Handle POST actions
  * ---------------------------------------------------------------------- */
@@ -73,11 +79,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$targetUser) {
                 $errors[] = 'Utilizador não encontrado.';
             } elseif ($targetUser['role'] === $newRole) {
-                $errors[] = "O utilizador '{$targetUser['name']}' já tem o papel '{$newRole}'.";
+                $currentLabel = $roleLabels[$targetUser['role']] ?? $targetUser['role'];
+                $errors[] = "O utilizador '{$targetUser['name']}' já tem o papel '{$currentLabel}'.";
             } else {
                 $pdo->prepare('UPDATE users SET role = :role WHERE id = :id')
                     ->execute(['role' => $newRole, 'id' => $userId]);
-                $success = "Papel de '{$targetUser['name']}' atualizado para '{$newRole}'.";
+                $roleLabel = $roleLabels[$newRole] ?? $newRole;
+                $success = "Papel de '{$targetUser['name']}' alterado para '{$roleLabel}'.";
             }
         }
     }
@@ -191,21 +199,12 @@ $reviewsStmt = $pdo->prepare($reviewsSql);
 $reviewsStmt->execute($reviewsParams);
 $allReviews = $reviewsStmt->fetchAll();
 
-$filterUserName = '';
-if ($filterUserId > 0) {
-    foreach ($users as $u) {
-        if ((int) $u['id'] === $filterUserId) {
-            $filterUserName = (string) ($u['name'] ?? $u['username']);
-            break;
-        }
-    }
-}
-
-$roleLabels = [
-    'admin'   => 'Admin',
-    'trainer' => 'Treinador',
-    'member'  => 'Membro',
-];
+$reviewAuthors = $pdo->query(
+    'SELECT DISTINCT u.id, u.name, u.username
+     FROM users u
+     INNER JOIN reviews r ON r.user_id = u.id
+     ORDER BY u.name, u.username'
+)->fetchAll();
 
 $currentPage      = 'admin';
 $pageTitle        = 'Gestão de Utilizadores | Admin';
@@ -236,9 +235,11 @@ require INCLUDES_PATH . '/nav.php';
         <?php endif; ?>
 
         <!-- ===== FORM: CREATE USER ===== -->
-        <section class="admin-card">
-            <h2>Criar Novo Utilizador</h2>
-
+        <details class="admin-card admin-details">
+            <summary class="admin-details__summary">
+                <span class="admin-details__title">Criar Novo Utilizador</span>
+            </summary>
+            <div class="admin-details__body">
             <form method="POST" action="<?= e(pageUrl('admin_users.php')) ?>" novalidate>
                 <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
                 <input type="hidden" name="action"     value="create">
@@ -279,14 +280,40 @@ require INCLUDES_PATH . '/nav.php';
                     <button type="submit" class="btn-admin-primary">➕ Criar Utilizador</button>
                 </div>
             </form>
-        </section>
+            </div>
+        </details>
 
         <!-- ===== TABLE: USER LIST ===== -->
-        <section class="admin-card">
-            <h2>Utilizadores <span class="badge-count"><?= count($users) ?></span></h2>
+        <details class="admin-card admin-details" open>
+            <summary class="admin-details__summary">
+                <span class="admin-details__title">
+                    Utilizadores
+                    <span class="badge-count"><?= count($users) ?></span>
+                </span>
+            </summary>
+            <div class="admin-details__body">
+            <div class="admin-filters" role="search">
+                <input type="search"
+                       id="user-search"
+                       placeholder="Pesquisar por nome, username ou email…"
+                       aria-label="Pesquisar utilizadores">
+                <select id="user-filter-role" aria-label="Filtrar por papel">
+                    <option value="">Todos os papéis</option>
+                    <option value="member">Membro</option>
+                    <option value="trainer">Treinador</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <select id="user-filter-active" aria-label="Filtrar por estado">
+                    <option value="">Todos os estados</option>
+                    <option value="1">Ativos</option>
+                    <option value="0">Inativos</option>
+                </select>
+                <button type="button" class="btn-admin-filter-clear" id="user-filter-clear">Limpar</button>
+                <span class="admin-filter-count" id="user-filter-count"></span>
+            </div>
 
             <div class="table-wrapper">
-                <table class="admin-table">
+                <table class="admin-table" id="users-table">
                     <thead>
                         <tr>
                             <th>Nome</th>
@@ -295,32 +322,47 @@ require INCLUDES_PATH . '/nav.php';
                             <th>Papel</th>
                             <th>Estado</th>
                             <th>Avaliações</th>
-                            <th>Promover Para</th>
+                            <th>Alterar papel</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($users as $u): ?>
-                            <tr class="<?= $u['active'] ? '' : 'row--inactive' ?>">
-                                <td><strong><?= e($u['name'] ?? '—') ?></strong></td>
-                                <td><?= e($u['username']) ?></td>
-                                <td><?= e($u['email'] ?? '—') ?></td>
-                                <td>
+                        <?php foreach ($users as $u):
+                            $searchBlob = strtolower(implode(' ', array_filter([
+                                (string) ($u['name'] ?? ''),
+                                (string) $u['username'],
+                                (string) ($u['email'] ?? ''),
+                            ])));
+                        ?>
+                            <tr class="<?= $u['active'] ? '' : 'row--inactive' ?>"
+                                data-user-row="1"
+                                data-search="<?= e($searchBlob) ?>"
+                                data-role="<?= e((string) $u['role']) ?>"
+                                data-active="<?= (int) $u['active'] ?>"
+                                data-user-id="<?= (int) $u['id'] ?>">
+                                <td data-label="Nome"><strong><?= e($u['name'] ?? '—') ?></strong></td>
+                                <td data-label="Username"><?= e($u['username']) ?></td>
+                                <td data-label="Email"><?= e($u['email'] ?? '—') ?></td>
+                                <td data-label="Papel">
                                     <span class="role-badge role-badge--<?= e($u['role']) ?>">
                                         <?= e($roleLabels[$u['role']] ?? $u['role']) ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Estado">
                                     <span class="status-dot <?= $u['active'] ? 'status-dot--on' : 'status-dot--off' ?>">
                                         <?= $u['active'] ? 'Ativo' : 'Inativo' ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Avaliações">
                                     <?php $reviewCount = (int) ($u['review_count'] ?? 0); ?>
                                     <span class="review-count-badge"><?= $reviewCount ?></span>
                                     <?php if ($reviewCount > 0): ?>
-                                        <a href="<?= e(pageUrl('admin_users.php') . '?user=' . (int) $u['id'] . '#reviews-section') ?>"
-                                           class="btn-table-edit">Ver</a>
+                                        <button type="button"
+                                                class="filter-user-link"
+                                                data-filter-user="<?= (int) $u['id'] ?>"
+                                                data-filter-label="<?= e((string) ($u['name'] ?? $u['username'])) ?>">
+                                            Ver avaliações
+                                        </button>
                                     <?php else: ?>
                                         <span class="text-muted">—</span>
                                     <?php endif; ?>
@@ -337,29 +379,44 @@ require INCLUDES_PATH . '/nav.php';
                                         </form>
                                     <?php endif; ?>
                                 </td>
-                                <td>
+                                <td data-label="Alterar papel">
                                     <?php
-                                    $promotions = [];
-                                    if ($u['role'] !== 'trainer') $promotions['trainer'] = 'Treinador';
-                                    if ($u['role'] !== 'admin')   $promotions['admin']   = 'Admin';
-                                    if ($u['role'] !== 'member')  $promotions['member']  = 'Membro';
+                                    $availableRoles = [];
+                                    if ($u['role'] !== 'trainer') {
+                                        $availableRoles['trainer'] = 'Treinador';
+                                    }
+                                    if ($u['role'] !== 'admin') {
+                                        $availableRoles['admin'] = 'Admin';
+                                    }
+                                    if ($u['role'] !== 'member') {
+                                        $availableRoles['member'] = 'Membro';
+                                    }
+                                    $canApplyRole = $availableRoles !== [] && (int) $u['id'] !== (int) $admin['id'];
                                     ?>
-                                    <form method="POST" action="<?= e(pageUrl('admin_users.php')) ?>" class="inline-form">
+                                    <form method="POST"
+                                          action="<?= e(pageUrl('admin_users.php')) ?>"
+                                          class="inline-form role-apply-form"
+                                          data-user-name="<?= e((string) ($u['name'] ?? $u['username'])) ?>">
                                         <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
-                                        <input type="hidden" name="action"    value="promote">
-                                        <input type="hidden" name="user_id"   value="<?= (int) $u['id'] ?>">
-                                        <select name="new_role" class="select-inline">
-                                            <?php foreach ($promotions as $val => $label): ?>
+                                        <input type="hidden" name="action" value="promote">
+                                        <input type="hidden" name="user_id" value="<?= (int) $u['id'] ?>">
+                                        <select name="new_role"
+                                                class="select-inline"
+                                                <?= !$canApplyRole ? 'disabled' : '' ?>
+                                                required>
+                                            <?php foreach ($availableRoles as $val => $label): ?>
                                                 <option value="<?= e($val) ?>"><?= e($label) ?></option>
                                             <?php endforeach; ?>
                                         </select>
-                                        <button type="submit" class="btn-table-promote"
-                                            <?= ((int) $u['id'] === (int) $admin['id']) ? 'disabled' : '' ?>>
-                                            ↑ Promover
+                                        <button type="submit"
+                                                class="btn-table-apply"
+                                                title="Aplicar o papel selecionado"
+                                                <?= !$canApplyRole ? 'disabled' : '' ?>>
+                                            ✓ Aplicar
                                         </button>
                                     </form>
                                 </td>
-                                <td class="table-actions">
+                                <td data-label="Ações" class="table-actions">
                                     <form method="POST"
                                           action="<?= e(pageUrl('admin_users.php')) ?>"
                                           data-confirm="Alterar o estado deste utilizador?"
@@ -378,28 +435,44 @@ require INCLUDES_PATH . '/nav.php';
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                <p class="empty-state users-filter-empty" hidden>Nenhum utilizador corresponde aos filtros.</p>
             </div>
-        </section>
+            </div>
+        </details>
 
         <!-- ===== REVIEWS MANAGEMENT ===== -->
-        <section class="admin-card" id="reviews-section">
-            <h2>
-                Gestão de Avaliações
-                <span class="badge-count"><?= count($allReviews) ?></span>
-            </h2>
-
-            <?php if ($filterUserId > 0): ?>
-                <p class="reviews-filter-notice">
-                    A mostrar avaliações de <strong><?= e($filterUserName) ?></strong>.
-                    <a href="<?= e(pageUrl('admin_users.php') . '#reviews-section') ?>">Ver todas</a>
-                </p>
-            <?php endif; ?>
+        <details class="admin-card admin-details" id="reviews-section"<?= $filterUserId > 0 ? ' open' : '' ?>>
+            <summary class="admin-details__summary">
+                <span class="admin-details__title">
+                    Gestão de Avaliações
+                    <span class="badge-count"><?= count($allReviews) ?></span>
+                </span>
+            </summary>
+            <div class="admin-details__body">
+            <div class="admin-filters" role="search">
+                <input type="search"
+                       id="review-user-search"
+                       placeholder="Pesquisar por nome ou username do membro…"
+                       aria-label="Pesquisar avaliações por membro">
+                <select id="review-user-select" aria-label="Filtrar avaliações por utilizador">
+                    <option value="">Todos os membros com avaliações</option>
+                    <?php foreach ($reviewAuthors as $author): ?>
+                        <option value="<?= (int) $author['id'] ?>"
+                                data-label="<?= e((string) ($author['name'] ?? $author['username'])) ?>"
+                                <?= $filterUserId === (int) $author['id'] ? 'selected' : '' ?>>
+                            <?= e((string) ($author['name'] ?? $author['username'])) ?> (@<?= e($author['username']) ?>)
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="button" class="btn-admin-filter-clear" id="review-filter-clear">Limpar</button>
+                <span class="admin-filter-count" id="review-filter-count"></span>
+            </div>
 
             <?php if (count($allReviews) === 0): ?>
-                <p class="empty-state">Não há avaliações<?= $filterUserId > 0 ? ' para este utilizador' : '' ?>.</p>
+                <p class="empty-state">Não há avaliações registadas.</p>
             <?php else: ?>
                 <div class="table-wrapper">
-                    <table class="admin-table admin-table--reviews">
+                    <table class="admin-table admin-table--reviews" id="reviews-table">
                         <thead>
                             <tr>
                                 <th>Membro</th>
@@ -411,8 +484,16 @@ require INCLUDES_PATH . '/nav.php';
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($allReviews as $review): ?>
-                                <tr>
+                            <?php foreach ($allReviews as $review):
+                                $reviewSearchBlob = strtolower(implode(' ', [
+                                    (string) ($review['member_name'] ?? ''),
+                                    (string) $review['username'],
+                                    (string) ($review['class_title'] ?? ''),
+                                ]));
+                            ?>
+                                <tr data-review-row="1"
+                                    data-user-id="<?= (int) $review['user_id'] ?>"
+                                    data-search="<?= e($reviewSearchBlob) ?>">
                                     <td data-label="Membro">
                                         <strong><?= e($review['member_name'] ?? $review['username']) ?></strong>
                                         <br><small>@<?= e($review['username']) ?></small>
@@ -453,10 +534,14 @@ require INCLUDES_PATH . '/nav.php';
                         </tbody>
                     </table>
                 </div>
+                <p class="empty-state reviews-filter-empty" hidden>Nenhuma avaliação corresponde aos filtros.</p>
             <?php endif; ?>
-        </section>
+            </div>
+        </details>
 
     </div>
 </main>
+
+<script src="<?= e(asset('js/admin-users.js')) ?>"></script>
 
 <?php require INCLUDES_PATH . '/footer.php'; ?>
