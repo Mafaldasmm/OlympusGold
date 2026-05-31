@@ -4,8 +4,8 @@ database/*.sqlite-journal
 database/*.sqlite-wal
 database/*.sqlite-shm
 storage/sessions/
-public/uploads/profiles/*
-!public/uploads/profiles/.gitkeep
+uploads/profiles/*
+!uploads/profiles/.gitkeep
 
 # Reference project (local only, not part of this repo)
 chinook/
@@ -17,8 +17,7 @@ Thumbs.db
 *~
 
 storage/sessions/
-public/uploads/profiles/*
-!public/uploads/profiles/.gitkeep
+uploads/profiles/*
+!uploads/profiles/.gitkeep
 context/
-router.php
 docs

@@ -3,68 +3,83 @@
 declare(strict_types=1);
 
 /**
- * Database initialization script (CLI).
+ * Database initialization — creates olympus.sqlite from schema.sql and seed.sql.
  *
- * Creates database/olympus.sqlite if it does not exist,
- * then applies schema.sql and seed.sql.
- *
- * Usage:
+ * CLI:
  *   php database/init.php
- *   php database/init.php --force   # recreate from scratch
+ *   php database/init.php --force
  */
 
-$baseDir = __DIR__;
-$dbFile  = $baseDir . '/olympus.sqlite';
-$force   = in_array('--force', $argv ?? [], true);
+/**
+ * @throws RuntimeException
+ */
+function bootstrapOlympusDatabase(bool $force = false): void
+{
+    $baseDir = __DIR__;
+    $dbFile  = $baseDir . '/olympus.sqlite';
 
-if (file_exists($dbFile) && !$force) {
-    fwrite(STDERR, "Database already exists: {$dbFile}\n");
-    fwrite(STDERR, "Use --force to recreate from schema and seed.\n");
-    exit(1);
-}
-
-if ($force && file_exists($dbFile)) {
-    unlink($dbFile);
-}
-
-$schemaFile = $baseDir . '/schema.sql';
-$seedFile   = $baseDir . '/seed.sql';
-
-foreach ([$schemaFile, $seedFile] as $file) {
-    if (!is_readable($file)) {
-        fwrite(STDERR, "Missing SQL file: {$file}\n");
-        exit(1);
-    }
-}
-
-$schema = file_get_contents($schemaFile);
-$seed   = file_get_contents($seedFile);
-
-if ($schema === false || $seed === false) {
-    fwrite(STDERR, "Failed to read SQL files.\n");
-    exit(1);
-}
-
-try {
-    $pdo = new PDO('sqlite:' . $dbFile, null, null, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    ]);
-
-    $pdo->exec('PRAGMA foreign_keys = ON');
-    $pdo->exec($schema);
-    $pdo->exec($seed);
-
-    if (!is_writable($dbFile)) {
-        throw new RuntimeException('Database file is not writable.');
+    if (file_exists($dbFile) && !$force) {
+        return;
     }
 
-    echo "Database created successfully: {$dbFile}\n";
-    echo "Tables: users, classes, enrollments, reviews\n";
-    echo "Demo password for all seed users: demo123\n";
-} catch (PDOException $e) {
-    fwrite(STDERR, 'Database initialization failed: ' . $e->getMessage() . "\n");
-    if (file_exists($dbFile)) {
+    if ($force && file_exists($dbFile)) {
         unlink($dbFile);
     }
-    exit(1);
+
+    $schemaFile = $baseDir . '/schema.sql';
+    $seedFile   = $baseDir . '/seed.sql';
+
+    foreach ([$schemaFile, $seedFile] as $file) {
+        if (!is_readable($file)) {
+            throw new RuntimeException("Missing SQL file: {$file}");
+        }
+    }
+
+    $schema = file_get_contents($schemaFile);
+    $seed   = file_get_contents($seedFile);
+
+    if ($schema === false || $seed === false) {
+        throw new RuntimeException('Failed to read SQL files.');
+    }
+
+    try {
+        $pdo = new PDO('sqlite:' . $dbFile, null, null, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        ]);
+
+        $pdo->exec('PRAGMA foreign_keys = ON');
+        $pdo->exec($schema);
+        $pdo->exec($seed);
+
+        if (!is_writable($dbFile)) {
+            throw new RuntimeException('Database file is not writable.');
+        }
+    } catch (PDOException $e) {
+        if (file_exists($dbFile)) {
+            unlink($dbFile);
+        }
+
+        throw new RuntimeException('Database initialization failed: ' . $e->getMessage(), 0, $e);
+    }
+}
+
+if (PHP_SAPI === 'cli' && realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === realpath(__FILE__)) {
+    $force = in_array('--force', $argv ?? [], true);
+
+    if (file_exists(__DIR__ . '/olympus.sqlite') && !$force) {
+        fwrite(STDERR, 'Database already exists: ' . __DIR__ . "/olympus.sqlite\n");
+        fwrite(STDERR, "Use --force to recreate from schema and seed.\n");
+        exit(1);
+    }
+
+    try {
+        bootstrapOlympusDatabase($force);
+    } catch (RuntimeException $e) {
+        fwrite(STDERR, $e->getMessage() . "\n");
+        exit(1);
+    }
+
+    echo 'Database created successfully: ' . __DIR__ . "/olympus.sqlite\n";
+    echo "Demo accounts (demo123): admin, ana.silva, joao.membro\n";
+    echo "Other seed users password: OgGym2026!\n";
 }

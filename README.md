@@ -33,9 +33,19 @@
 
 ## Running
 
+From the project root (matches course delivery test):
+
+```bash
+php -S localhost:9000
+```
+
+Open http://localhost:9000/ — the database is created automatically on first request if missing.
+
+To reset or recreate the database manually:
+
 ```bash
 php reset_db.php
-php -S localhost:8000 -t public/
+# or: php database/init.php --force
 ```
 
 ## Credentials

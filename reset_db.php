@@ -89,5 +89,5 @@ say('');
 say('Other seed users password: OgGym2026!');
 say('Totals: 10 trainers, 40 members, 3 admins');
 say('');
-say('Run server: php -S localhost:8000 -t public/');
+say('Run server: php -S localhost:9000');
  

@@ -30,6 +30,11 @@ function getDatabase(): PDO
     }
 
     if (!file_exists(DB_PATH)) {
+        require_once dirname(__DIR__) . '/database/init.php';
+        bootstrapOlympusDatabase();
+    }
+
+    if (!file_exists(DB_PATH)) {
         throw new RuntimeException(
             'Database file not found at ' . DB_PATH . '. Run: php database/init.php'
         );

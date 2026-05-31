@@ -97,7 +97,7 @@ function respondScheduleEnrollment(
 }
 
 /**
- * Validates redirect target is a safe relative page under public/.
+ * Validates redirect target is a safe relative page under the site root.
  */
 function scheduleEnrollmentRedirectTarget(): string
 {

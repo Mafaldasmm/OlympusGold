@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Bootstrap for public pages: path helpers and include directory.
+ * Bootstrap for web pages: path helpers and include directory.
  */
 
 define('PUBLIC_ROOT', dirname(__DIR__));
@@ -47,7 +47,7 @@ function utf8Strtoupper(string $value): string
 }
 
 /**
- * Relative URL prefix from the executing script back to public/.
+ * Relative URL prefix from the executing script back to the site root.
  */
 function publicBasePath(): string
 {
@@ -89,7 +89,7 @@ function asset(string $path): string
     return publicBasePath() . 'assets/' . ltrim($path, '/');
 }
 
-/** Link to another page under public/. */
+/** Link to another page under the site root. */
 function pageUrl(string $page): string
 {
     return publicBasePath() . ltrim($page, '/');

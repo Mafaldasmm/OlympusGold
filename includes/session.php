@@ -11,7 +11,7 @@ declare(strict_types=1);
  */
 function sessionStoragePath(): string
 {
-    return dirname(__DIR__, 2) . '/storage/sessions';
+    return dirname(__DIR__) . '/storage/sessions';
 }
 
 /**
