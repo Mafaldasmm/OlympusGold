@@ -48,6 +48,20 @@ CREATE TABLE IF NOT EXISTS trainer_specializations (
 );
 
 -- ---------------------------------------------------------------------------
+-- equipment (main training area availability)
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS equipment (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    name       TEXT    NOT NULL,
+    type       TEXT    NOT NULL,
+    area       TEXT    NOT NULL DEFAULT 'main'
+                       CHECK (area IN ('main')),
+    status     TEXT    NOT NULL DEFAULT 'available'
+                       CHECK (status IN ('available', 'in_use', 'unavailable')),
+    updated_at TEXT    NOT NULL DEFAULT (datetime('now'))
+);
+
+-- ---------------------------------------------------------------------------
 -- enrollments
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS enrollments (
@@ -78,6 +92,9 @@ CREATE INDEX IF NOT EXISTS idx_users_role ON users (role);
 
 CREATE INDEX IF NOT EXISTS idx_trainer_specializations_trainer
     ON trainer_specializations (trainer_id);
+
+CREATE INDEX IF NOT EXISTS idx_equipment_area ON equipment (area);
+CREATE INDEX IF NOT EXISTS idx_equipment_status ON equipment (status);
 
 CREATE INDEX IF NOT EXISTS idx_classes_trainer ON classes (trainer_id);
 CREATE INDEX IF NOT EXISTS idx_classes_type ON classes (type);

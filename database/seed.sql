@@ -48,6 +48,18 @@ INSERT INTO classes (title, description, type, trainer_id, day_of_week, start_ti
     ('HIIT Intenso',  'Treino intervalado de alta intensidade para queima máxima.',                                                           'hiit',    4, 'friday',    '07:00', '07:45', 10),
     ('Zumba Party',   'Treino aeróbico de alta energia que transforma o exercício numa verdadeira festa de dança.',                           'zumba',   3, 'friday',    '19:00', '20:00', 18);
 
+INSERT INTO equipment (name, type, area, status) VALUES
+    ('Banco de supino',        'strength', 'main', 'available'),
+    ('Smith machine',          'strength', 'main', 'in_use'),
+    ('Passadeira elétrica 1',  'cardio',   'main', 'in_use'),
+    ('Passadeira elétrica 2',  'cardio',   'main', 'available'),
+    ('Bicicleta estática A',   'cardio',   'main', 'available'),
+    ('Bicicleta estática B',   'cardio',   'main', 'unavailable'),
+    ('Leg press',              'strength', 'main', 'in_use'),
+    ('Cabos crossover',        'functional','main', 'available'),
+    ('Rack de agachamento',    'strength', 'main', 'available'),
+    ('Elíptica',               'cardio',   'main', 'unavailable');
+
 INSERT INTO enrollments (user_id, class_id) VALUES
     (5, 1),
     (5, 5);
